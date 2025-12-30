@@ -1,0 +1,29 @@
+{
+  "project": "string",
+  "problem": {
+    "statement": "string",
+    "constraints": ["string"]
+  },
+  "architecture": {
+    "overview": "string",
+    "block_diagram": ["string"]
+  },
+  "components": [
+    {
+      "subsystem": "string",
+      "chosen_option": "string",
+      "why_chosen": "string",
+      "pros": ["string"],
+      "cons": ["string"]
+    }
+  ],
+  "execution_steps": ["string"],
+  "testing": {
+    "methods": ["string"],
+    "success_criteria": "string"
+  },
+  "references": ["string"],
+  "extensions": ["string"],
+  "cost": "string",
+  "skills": "string"
+}
