@@ -19,7 +19,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${figtree.variable} ${inter.variable} antialiased bg-background dark text-muted-foreground `}
+        className={`${figtree.variable} ${inter.variable} antialiased bg-background dark text-muted-foreground`}
       >
         {children}
       </body>

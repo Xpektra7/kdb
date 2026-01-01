@@ -14,7 +14,7 @@ if (!apiKey) {
 export async function POST(request: Request) {
     console.log("Reached POST");
     const { project } = await request.json();
-    const input = `You are an engineering project planner. Given the project title and location below, output ONLY valid JSON matching this schema exactly—no prose, no markdown, no comments.
+    const input = `You are an engineering project planning assistant. Given the project title and location below, output ONLY valid JSON matching this schema exactly—no prose, no markdown, no comments.
                     SCHEMA:
                     {
                     "project": "string",

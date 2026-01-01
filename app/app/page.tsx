@@ -12,12 +12,14 @@ type User = {
 };
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 
+import airQualityData from "@/schema/air-quality-result2.json";
+
 export default function Page() {
 
     const [user, setUser] = useState<User | null>(null);
-    const [projectDescription, setProjectDescription] = useState<string>("");
+    const [projectDescription, setProjectDescription] = useState<string>(" ");
     const [loading, setLoading] = useState<boolean>(false);
-    const [responseData, setResponseData] = useState<any>(null);
+    const [responseData, setResponseData] = useState<any>("r");
     const [error, setError] = useState<any>(null);
 
     useEffect(() => {
@@ -58,8 +60,8 @@ export default function Page() {
             .then((data) => {
                 const parsedData = JSON.parse(data.output);
                 setResponseData(parsedData);
+                setError(null);
                 console.log("Response from API:", parsedData);
-                
             })
             .catch((err) => {
                 console.error(err);
@@ -72,7 +74,7 @@ export default function Page() {
     }
 
     return (
-        <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-[1440px] py-0 pb-12">
+        <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-[1440px] py-0 pb-12 mx-auto">
             <div className="flex justify-between items-center w-full border-b border-border p-4">
                 <div className="flex items-center gap-0">
                     <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
@@ -121,7 +123,7 @@ export default function Page() {
                                         {error.message}
                                     </AlertDescription>
                                 </Alert>
-                            ) : <DecisionMatrix output={responseData} />
+                            ) : <DecisionMatrix output={airQualityData.output} />
                         }
                     </div>
                 ) : null}

@@ -141,7 +141,7 @@
     @apply py-4 px-8 md:px-16 lg:px-32;
   }
   .p-page-lg {
-    @apply py-4 px-16 md:px-32 lg:px-64;
+    @apply py-4 px-8 md:px-32 lg:px-64;
   }
   p{
     @apply text-muted-foreground;
