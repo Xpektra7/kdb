@@ -20,7 +20,7 @@ export default function Hero() {
       >
         Start Building
       </Button>
-      <Marquee />
+      {/* <Marquee /> */}
     </div>
   );
 }
