@@ -17,7 +17,7 @@ import airQualityData from "@/schema/air-quality-result2.json";
 export default function Page() {
 
     const [user, setUser] = useState<User | null>(null);
-    const [projectDescription, setProjectDescription] = useState<string>(" ");
+    const [projectDescription, setProjectDescription] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [responseData, setResponseData] = useState<any>("r");
     const [error, setError] = useState<any>(null);
@@ -92,11 +92,15 @@ export default function Page() {
                     <p>Welcome {user?.name.split(" ")[0]}!</p>
                     <h1 className="text-4xl font-semibold text-foreground">What are we forging today?</h1>
                 </div>
-                <div className="flex w-full bg-muted/70 cursor-pointer p-2 h-auto rounded-xl ">
-                    <input type="text" name="project" className="flex-1 px-2 outline-none text-sm" placeholder="Describe your project..." onChange={(e) => setProjectDescription(e.target.value)} />
-                    <Button className={`ml-4 aspect-square  rounded-xl hover:bg-white ${projectDescription.length === 0 ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length === 0} title="Build" onClick={() => handleBuildClick(projectDescription)}>
-                        <HugeiconsIcon icon={ArrowUp} color="currentColor" className="h-full w-full " />
-                    </Button>
+                <div className="flex flex-col w-full bg-muted/70 cursor-pointer p-4 gap-2 h-auto rounded-xl ">
+                    <textarea name="project" className="flex-1 px-2 outline-none text-sm h-23 text-wrap resize-none overflow-hidden" placeholder="Describe your project..." onChange={(e) => setProjectDescription(e.target.value)} rows={3} maxLength={150}/>
+                    <hr />
+                    <div className="flex w-full justify-between items-center px-2">
+                        <p className={`text-sm ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-red-400" : "text-foreground")}`}>{projectDescription.length} / 150 </p>
+                        <Button className={`aspect-square  rounded-xl hover:bg-white ${(projectDescription.length < 8) ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8 } title="Build" onClick={() => handleBuildClick(projectDescription)}>
+                            <HugeiconsIcon icon={ArrowUp} color="currentColor" className="h-full w-full " />
+                        </Button>
+                    </div>
                 </div>
                 {responseData != null ? (
                     <div className="w-full h-auto flex flex-col gap-4">
