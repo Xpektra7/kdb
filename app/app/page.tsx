@@ -1,25 +1,25 @@
 "use client";
 import { useEffect, useState } from "react";
 import Image from "next/image";
+import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
-import { HugeiconsIcon } from '@hugeicons/react';
-import { ArrowUp, Alert01Icon } from '@hugeicons/core-free-icons';
-import DecisionMatrix from "@/components/decision-matrix/decision-matrix";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowUp, Alert01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
+import { useResultStore } from "@/components/providers/result-store";
 type User = {
     name: string;
     email: string;
 };
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
-
-import airQualityData from "@/schema/air-quality-result2.json";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Page() {
+    const router = useRouter();
+    const { setResult } = useResultStore();
 
     const [user, setUser] = useState<User | null>(null);
     const [projectDescription, setProjectDescription] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [responseData, setResponseData] = useState<any>("r");
     const [error, setError] = useState<any>(null);
 
     useEffect(() => {
@@ -32,45 +32,45 @@ export default function Page() {
             });
         };
 
-        fetchUserData().then((user) => {
-            console.log("User data:", user);
-            setUser(user);
+        fetchUserData().then((fetchedUser) => {
+            console.log("User data:", fetchedUser);
+            setUser(fetchedUser);
         });
     }, []);
 
-
-    function handleBuildClick(projectDescription: string) {
-        setResponseData(" ");
+    function handleBuildClick(currentProjectDescription: string) {
+        setResult(null);
         setLoading(true);
         setError(null);
 
         fetch("/api/generate/decision-matrix", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ project: projectDescription }),
+            body: JSON.stringify({ project: currentProjectDescription }),
         })
             .then(async (response) => {
                 if (!response.ok) {
                     const errorText = await response.text();
-                    setError({ title: `API Error`, message: `${response.status} - ${errorText}` });
+                    setError({ title: "API Error", message: `${response.status} - ${errorText}` });
                     throw new Error(`API Error: ${response.status} - ${errorText}`);
                 }
                 return response.json();
             })
             .then((data) => {
                 const parsedData = JSON.parse(data.output);
-                setResponseData(parsedData);
+                setResult(parsedData);
                 setError(null);
-                console.log("Response from API:", parsedData);
+                router.push("/app/result");
             })
             .catch((err) => {
                 console.error(err);
+                setError({ title: "Request Failed", message: err?.message || "Unknown error" });
             })
             .finally(() => {
-                setLoading(false); // <-- stops spinner after success or error
+                setLoading(false);
             });
 
-        console.log("Build clicked with project description:", projectDescription);
+        console.log("Build clicked with project description:", currentProjectDescription);
     }
 
     return (
@@ -80,57 +80,40 @@ export default function Page() {
                     <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
                     <h1 className="text-2xl font-bold text-foreground">pollo</h1>
                 </div>
-                {user && (
-                    <div className="flex w-8 items-center justify-center aspect-square rounded-full bg-muted p-0">
-                        {user.name.charAt(0).toUpperCase()}
-                    </div>
-                )}
+                <div className="flex w-8 items-center justify-center aspect-square rounded-full bg-muted p-0">
+                    {user ? user.name.charAt(0).toUpperCase() : "?"}
+                </div>
 
             </div>
             <div className="flex flex-col w-full gap-8 justify-center items-center mt-32 max-w-2xl">
                 <div className="flex flex-col w-full">
-                    <p>Welcome {user?.name.split(" ")[0]}!</p>
+                    <p>Welcome {user ? user.name.split(" ")[0] : "Guest"}!</p>
                     <h1 className="text-4xl font-semibold text-foreground">What are we forging today?</h1>
                 </div>
                 <div className="flex flex-col w-full bg-muted/70 cursor-pointer p-4 gap-2 h-auto rounded-xl ">
-                    <textarea name="project" className="flex-1 px-2 outline-none text-sm h-23 text-wrap resize-none overflow-hidden" placeholder="Describe your project..." onChange={(e) => setProjectDescription(e.target.value)} rows={3} maxLength={150}/>
+                    <textarea name="project" className="flex-1 px-2 outline-none text-sm h-23 text-wrap resize-none overflow-hidden" placeholder="Describe your project..." onChange={(e) => setProjectDescription(e.target.value)} rows={3} maxLength={300} />
                     <hr />
                     <div className="flex w-full justify-between items-center px-2">
-                        <p className={`text-sm ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-red-400" : "text-foreground")}`}>{projectDescription.length} / 150 </p>
-                        <Button className={`aspect-square  rounded-xl hover:bg-white ${(projectDescription.length < 8) ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8 } title="Build" onClick={() => handleBuildClick(projectDescription)}>
+                        <p className={`text-sm ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-red-400" : "text-foreground")}`}>{projectDescription.length} / 300 </p>
+                        <Button className={`aspect-square  rounded-xl hover:bg-white ${(projectDescription.length < 8) ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={() => handleBuildClick(projectDescription)}>
                             <HugeiconsIcon icon={ArrowUp} color="currentColor" className="h-full w-full " />
                         </Button>
                     </div>
                 </div>
-                {responseData != null ? (
-                    <div className="w-full h-auto flex flex-col gap-4">
-                        <div className="flex flex-col">
-                            <h2 className="text-2xl font-bold text-foreground">Decision Matrix</h2>
-                            <p className="max-w-2xl text-muted-foreground">
-                                Analyze and compare different options based on multiple criteria to make informed decisions.
-                            </p>
-                        </div>
-
-
-                        {loading ? (
-                            <div className="flex items-center gap-2 justify-center p-8 border border-border rounded-lg h-64">
-                                <Spinner />
-                                <p>Generating decision matrix...</p>
-                            </div>
-                        ) :
-                            error ? (
-                                <Alert variant="destructive" className="flex items-baseline justify-center py-16">
-                                    <HugeiconsIcon icon={Alert01Icon} className="" />
-                                    <AlertTitle>{error.title}</AlertTitle>
-
-                                    <AlertDescription>
-                                        {error.message}
-                                    </AlertDescription>
-                                </Alert>
-                            ) : <DecisionMatrix output={airQualityData.output} />
-                        }
+                <small className="text-sm text-center -mt-4">Try to be as specific as possible to get the best results.</small>
+                {loading && (
+                    <div className="flex items-center gap-2 justify-center p-8 border border-border rounded-lg w-full">
+                        <Spinner />
+                        <p>Generating decision matrix...</p>
                     </div>
-                ) : null}
+                )}
+                {error && (
+                    <Alert variant="destructive" className="flex items-baseline justify-center py-4 w-full">
+                        <HugeiconsIcon icon={Alert01Icon} className="" />
+                        <AlertTitle>{error.title}</AlertTitle>
+                        <AlertDescription>{error.message}</AlertDescription>
+                    </Alert>
+                )}
 
             </div>
 

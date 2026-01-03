@@ -1,5 +1,4 @@
 import Hero from "@/components/homepage/hero";
-import Marquee from "@/components/homepage/marquee";
 import Navbar from "@/components/navbar";
 import GettingStarted from "@/components/homepage/getting-started";
 
