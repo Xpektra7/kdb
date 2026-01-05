@@ -11,7 +11,7 @@ Most students:
 
 * Pick a project idea
 * Randomly choose sensors, MCUs, and power systems
-* Realize too late that parts are incompatible, expensive, or unavailable
+* Realize too late that parts are incompatible, expensive, or unavailable.
 * End up with half-working demos and shallow understanding
 
 Apollo fixes this by **slowing the user down in the right places**.
