@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp, Alert01Icon } from "@hugeicons/core-free-icons";
+import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
 import { useResultStore } from "@/components/providers/result-store";
 type User = {
@@ -21,6 +21,7 @@ export default function Page() {
     const [projectDescription, setProjectDescription] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<any>(null);
+    const [abortController, setAbortController] = useState<AbortController | null>(null);
 
     useEffect(() => {
         // Simulate fetching user data
@@ -43,10 +44,14 @@ export default function Page() {
         setLoading(true);
         setError(null);
 
+        const controller = new AbortController();
+        setAbortController(controller);
+
         fetch("/api/generate/decision-matrix", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ project: currentProjectDescription }),
+            signal: controller.signal,
         })
             .then(async (response) => {
                 if (!response.ok) {
@@ -60,17 +65,28 @@ export default function Page() {
                 const parsedData = JSON.parse(data.output);
                 setResult(parsedData);
                 setError(null);
-                router.push("/app/result");
+                router.push("/app/decision-matrix");
             })
             .catch((err) => {
+                if (err.name === "AbortError") {
+                    console.log("Request aborted");
+                    return;
+                }
                 console.error(err);
                 setError({ title: "Request Failed", message: err?.message || "Unknown error" });
             })
             .finally(() => {
                 setLoading(false);
+                setAbortController(null);
             });
 
         console.log("Build clicked with project description:", currentProjectDescription);
+    }
+
+    function handleCancel() {
+        if (abortController) {
+            abortController.abort();
+        }
     }
 
     return (
@@ -102,9 +118,15 @@ export default function Page() {
                 </div>
                 <small className="text-sm text-center -mt-4">Try to be as specific as possible to get the best results.</small>
                 {loading && (
-                    <div className="flex items-center gap-2 justify-center p-8 border border-border rounded-lg w-full">
-                        <Spinner />
-                        <p>Generating decision matrix...</p>
+                    <div className="flex items-center justify-between p-4 border border-border rounded-lg w-full bg-muted/20">
+                        <div className="flex items-center gap-3">
+                            <Spinner />
+                            <p className="text-sm text-muted-foreground">Generating decision matrix...</p>
+                        </div>
+                        <Button variant="ghost" size="sm" onClick={handleCancel} className="text-muted-foreground hover:text-destructive gap-2 h-8 px-3">
+                            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
+                            Cancel
+                        </Button>
                     </div>
                 )}
                 {error && (

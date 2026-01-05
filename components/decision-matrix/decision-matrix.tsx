@@ -1,3 +1,4 @@
+import AccordionList from "./AccordionList";
 import ProblemsOverall from "./problems";
 import Research from "./research";
 import Subsystem from "./subsystem";
@@ -14,7 +15,7 @@ export default function DecisionMatrix({ output }: { output: any }) {
   return (
     <div className="w-full flex flex-col justify-center gap-8 ">
       <div className="flex flex-col gap-2">
-        <h1 className="text-2xl">{output.project}</h1>
+        <h1 className="text-4xl font-semibold">{output.project}</h1>
         <p>{output.concept}</p>
       </div>
       {
@@ -41,7 +42,8 @@ export default function DecisionMatrix({ output }: { output: any }) {
           </AccordionContent>
         </AccordionItem>
       </Accordion>
-
+      <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
+      <AccordionList name="Suggestions" list={output.suggestions || []} />
     </div>
   );
 }
