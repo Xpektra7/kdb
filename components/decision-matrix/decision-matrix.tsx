@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { Menu, X } from 'lucide-react';
+import { BlockDiagram } from "../block-diagram/block-diagram";
 import AccordionList from "./AccordionList";
 import ProblemsOverall from "./problems";
 import Research from "./research";
@@ -204,6 +205,34 @@ export default function DecisionMatrix({ output }: { output: any }) {
           </div>
         </div>
       </div>
+      {
+        output.research && (
+          <Research research={output.research} />
+        )
+      }
+      {
+        output.problems_overall && (
+          <ProblemsOverall problems={output.problems_overall} />
+        )
+      }
+      <BlockDiagram data={output.blockDiagram || []} />
+      <Accordion type="single" collapsible>
+        <AccordionItem value="item-1">
+          <AccordionTrigger className="bg-transparent">
+            <h1 className="text-2xl">Components</h1>
+          </AccordionTrigger>
+          <AccordionContent>
+            {output.decision_matrix && (
+              <div className="flex flex-col border border-border rounded-lg p-4 gap-4">
+                {output.decision_matrix.map((matrix: any, index: number) => <Subsystem key={index} subsystem={matrix} />)}
+              </div> )
+            }
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+      <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
+      <AccordionList name="Suggestions" list={output.suggestions || []} />
     </div>
   );
 }
+
