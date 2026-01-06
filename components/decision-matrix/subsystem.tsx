@@ -11,7 +11,7 @@ import { Badge } from "../ui/badge";
 
 export default function Subsystem({ subsystem }: { subsystem: any }) {
     return (
-        <Accordion type="single" collapsible className="w-full border-b border-border pb-2">
+        <Accordion type="single" collapsible defaultValue={subsystem.subsystem} className="w-full border-b border-border pb-2">
             <AccordionItem value={subsystem.subsystem}>
                 <AccordionTrigger className="py-2 bg-background text-xl">
                     {subsystem.subsystem} System
