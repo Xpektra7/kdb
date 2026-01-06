@@ -12,7 +12,7 @@ export default function Page() {
   const hasResult = Boolean(result);
 
   return (
-    <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-[1440px] py-0 pb-12 mx-auto">
+    <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-360 py-0 pb-12 mx-auto">
       <div className="flex w-full justify-between items-center border-b border-border py-4">
         <div className="flex items-center gap-2">
           <h1 className="text-2xl font-bold text-foreground">Decision Matrix</h1>
@@ -25,7 +25,7 @@ export default function Page() {
         {!hasResult ? (
           <div className="flex flex-col gap-2 rounded-lg border border-border p-8 text-center">
             <p className="text-lg font-semibold text-foreground">No data available</p>
-            <p className="text-muted-foreground">Generate a matrix first, then you'll see it here.</p>
+            <p className="text-muted-foreground">Generate a matrix first, then you&apos;ll see it here.</p>
             <div className="flex justify-center">
               <Button onClick={() => router.push("/app")}>Start a new matrix</Button>
             </div>
