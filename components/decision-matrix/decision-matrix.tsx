@@ -1,3 +1,4 @@
+import { BlockDiagram } from "../block-diagram/block-diagram";
 import AccordionList from "./AccordionList";
 import ProblemsOverall from "./problems";
 import Research from "./research";
@@ -28,6 +29,7 @@ export default function DecisionMatrix({ output }: { output: any }) {
           <ProblemsOverall problems={output.problems_overall} />
         )
       }
+      <BlockDiagram data={output.blockDiagram || []} />
       <Accordion type="single" collapsible>
         <AccordionItem value="item-1">
           <AccordionTrigger className="bg-transparent">
@@ -47,3 +49,4 @@ export default function DecisionMatrix({ output }: { output: any }) {
     </div>
   );
 }
+

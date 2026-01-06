@@ -24,7 +24,7 @@ export default function Subsystem({ subsystem }: { subsystem: any }) {
                                     <div className="flex flex-col gap-2">
                                         <h3 className="text-normal font-semibold">{option.name}</h3>
                                     </div>
-                                    <input type="radio" name={subsystem.subsystem} id={option.name} />
+                                    <input type="radio" name={subsystem.subsystem} id={option.name} className="size-6 "/>
                                 </div>
                                 <div className="text-sm text-muted-foreground">
                                     <p>{option.why_it_works}</p>
