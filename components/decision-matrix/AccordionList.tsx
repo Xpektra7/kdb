@@ -6,7 +6,7 @@ import {
 } from "@/components/ui/accordion"
 
 
-export default function AccordionList({ name, list } : { name: string, list: String[]}) {
+export default function AccordionList({ name, list } : { name: string, list: string[]}) {
   return (
     <Accordion type="single" collapsible className="w-full border-b border-border mb-2">
       <AccordionItem value={name}>

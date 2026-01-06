@@ -62,10 +62,18 @@ export default function Page() {
                 return response.json();
             })
             .then((data) => {
-                const parsedData = JSON.parse(data.output);
-                setResult(parsedData);
-                setError(null);
-                router.push("/app/decision-matrix");
+                try {
+                    const parsedData = JSON.parse(data.output);
+                    setResult(parsedData);
+                    setError(null);
+                    router.push("/app/decision-matrix");
+                } catch (parseError) {
+                    setError({ 
+                        title: "Parse Error", 
+                        message: "Failed to parse response. Please try again." 
+                    });
+                    console.error("JSON Parse Error:", parseError);
+                }
             })
             .catch((err) => {
                 if (err.name === "AbortError") {
