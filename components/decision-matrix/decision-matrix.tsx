@@ -3,13 +3,7 @@ import AccordionList from "./AccordionList";
 import ProblemsOverall from "./problems";
 import Research from "./research";
 import Subsystem from "./subsystem";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
-
+import { BlockDiagram } from '../block-diagram/block-diagram';
 interface DecisionMatrixProps {
   output: any;
   contentRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
@@ -41,7 +35,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
             <ProblemsOverall problems={output.problems_overall} />
           </div>
         )}
-
+          <BlockDiagram data={output.blockDiagram} />
         {/* Components */}
         <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
           <h1 className="text-2xl">Components</h1>

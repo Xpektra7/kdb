@@ -206,7 +206,7 @@ export function BlockDiagram({ data, className }: BlockDiagramProps) {
             key={line.id}
             d={`M ${line.x1} ${line.y1} C ${(line.x1 + line.x2) / 2} ${line.y1}, ${(line.x1 + line.x2) / 2} ${line.y2}, ${line.x2} ${line.y2}`}
             stroke="currentColor"
-            strokeWidth="1.5"
+            strokeWidth="1"
             fill="none"
             markerEnd="url(#arrowhead)"
             className="text-muted-foreground"
