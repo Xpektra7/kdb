@@ -30,7 +30,7 @@ SCHEMA:
       "suggested_solution": "string"
     }
   ],
-  "blockDiagram": [
+  "block_diagram": [
     {
       "block": "string",
       "from": "string | string[] | null",

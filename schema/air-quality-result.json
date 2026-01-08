@@ -1,340 +1,110 @@
 {
-  "output": {
-    "project": "IoT-based Outdoor Air Quality Monitoring System for Smart Cities",
-    "concept": "Low-power, weatherproof, scalable sensor network for real-time air quality data across urban areas using IoT protocols.",
-    "research-pap": [
-      "Mead, M.I., et al. 2013. The Use of Low-Cost Sensor Technology for Personal and Local Air Quality Monitoring. Atmospheric Environment.",
-      "Snyder, E.G., et al. 2013. The Use of Low-Cost Sensor Technology for Air Quality Monitoring and Exposure Assessment. Atmospheric Environment.",
-      "Castell, N., et al. 2017. A robust monitoring network based on low-cost sensors for urban air quality. Environmental Science & Technology.",
-      "DalMaso, A., et al. 2020. IoT-based air quality monitoring using LoRaWAN: design and deployment. IEEE Internet of Things Journal."
-    ],
-    "problems_overall": [
-      {
-        "problem": "Power autonomy for continuous outdoor operation",
-        "suggested_solution": "Optimize duty cycle, enable deep sleep modes, and select energy-dense storage with solar charging."
-      },
-      {
-        "problem": "Sensor drift and cross-sensitivity to humidity/temperature",
-        "suggested_solution": "Implement periodic calibration with reference stations and algorithmic compensation; batch-install collocations."
-      },
-      {
-        "problem": "Data reliability in dense urban RF environments",
-        "suggested_solution": "In-network buffering, multi-network fallback, and time-synchronization with calibrated clocks."
-      }
-    ],
-    "decision_matrix": [
-      {
-        "subsystem": "Sensing",
-        "options": [
-          {
-            "name": "All-in-one multi-parameter sensor module (PM2.5/PM10, VOC, CO2, RH/Temp)",
-            "why_it_works": "Simplifies integration and reduces BOM; factory calibration data aids accuracy.",
-            "pros": [
-              "Low BOM cost",
-              "Small footprint",
-              "Quasi-ready for deployment"
-            ],
-            "cons": [
-              "Cross-sensitivity and drift",
-              "Limited long-term accuracy"
-            ],
-            "add_ons": [
-              "I2C/SPI interface",
-              "Factory calibration coefficients",
-              "Power-efficient data-ready interrupts"
-            ]
-          },
-          {
-            "name": "PM optical sensor + electrochemical gas sensors + RH/Temp",
-            "why_it_works": "Modular sensing allows tailored pollutant targets and calibration strategy.",
-            "pros": [
-              "Modular performance",
-              "Targeted measurement capability"
-            ],
-            "cons": [
-              "Higher power consumption",
-              "More complex calibration"
-            ],
-            "add_ons": [
-              "Modular sensor board",
-              "Automatic cross-calibration routines"
-            ]
-          },
-          {
-            "name": "Optical PM counter + NDIR CO2 sensor",
-            "why_it_works": "Provides high-quality PM measurements with accurate CO2 data.",
-            "pros": [
-              "High accuracy",
-              "Stable long-term"
-            ],
-            "cons": [
-              "Higher cost",
-              "Bulkier",
-              "Increased power"
-            ],
-            "add_ons": [
-              "Auto-calibration",
-              "Vent/flow control integration"
-            ]
-          },
-          {
-            "name": "MEMS-based gas sensors with humidity compensation",
-            "why_it_works": "Low power and small form factor suitable for dense networks.",
-            "pros": [
-              "Low power",
-              "Compact form factor"
-            ],
-            "cons": [
-              "Drift over time",
-              "Humidity cross-sensitivity"
-            ],
-            "add_ons": [
-              "Algorithmic compensation",
-              "Periodic cross-validation routines"
-            ]
-          }
-        ]
-      },
-      {
-        "subsystem": "Power",
-        "options": [
-          {
-            "name": "Rechargeable Li-ion battery with MPPT solar charging and BMS",
-            "why_it_works": "Enables true off-grid operation with predictable energy supply.",
-            "pros": [
-              "Off-grid operation",
-              "High energy density",
-              "Safe charge management"
-            ],
-            "cons": [
-              "Requires solar exposure",
-              "Battery degradation over time"
-            ],
-            "add_ons": [
-              "MPPT controller",
-              "Battery management system",
-              "Power budgeting logic"
-            ]
-          },
-          {
-            "name": "Battery-only operation with deep-sleep optimization",
-            "why_it_works": "Minimizes energy draw for ultra-low-power sensors.",
-            "pros": [
-              "Very low active power",
-              "Simple hardware"
-            ],
-            "cons": [
-              "Limited autonomy under cloudy conditions",
-              "No energy harvesting"
-            ],
-            "add_ons": [
-              "Dynamic duty cycling",
-              "Ultra-low-power interrupts"
-            ]
-          },
-          {
-            "name": "Power over infrastructure (PoE/AC backup)",
-            "why_it_works": "Leverages existing urban infrastructure where available.",
-            "pros": [
-              "Stable power",
-              "Simplified energy management"
-            ],
-            "cons": [
-              "Limited deployment sites",
-              "Requires conduits/infrastructure access"
-            ],
-            "add_ons": [
-              "DC-DC conversion",
-              "Battery backup for outages"
-            ]
-          }
-        ]
-      },
-      {
-        "subsystem": "Communication",
-        "options": [
-          {
-            "name": "NB-IoT / LTE-M (LPWAN)",
-            "why_it_works": "Wide coverage, low power, good urban penetration.",
-            "pros": [
-              "Long-range",
-              "Strong indoor penetration",
-              "Operator-managed network"
-            ],
-            "cons": [
-              "Operator costs",
-              "Variable coverage in some areas"
-            ],
-            "add_ons": [
-              "SIM provisioning",
-              "OTA updates",
-              "Network-side data queuing"
-            ]
-          },
-          {
-            "name": "LoRaWAN",
-            "why_it_works": "Low-power, long-range radio ideal for dense deployments with gateways.",
-            "pros": [
-              "Low power",
-              "Scalability in city deployments",
-              "Flexible gateway placement"
-            ],
-            "cons": [
-              "Requires gateways",
-              "Lower data rate"
-            ],
-            "add_ons": [
-              "Gateway integration",
-              "Network server (The Things Network)",
-              "Data buffering"
-            ]
-          },
-          {
-            "name": "Wi-Fi",
-            "why_it_works": "High bandwidth in coverage-rich areas; simple integration with local gateways.",
-            "pros": [
-              "High data rate",
-              "Leverages existing infrastructure"
-            ],
-            "cons": [
-              "Limited range",
-              "Power-hungry",
-              "Dependence on network availability"
-            ],
-            "add_ons": [
-              "Mesh networking",
-              "VPN tunnel for cloud data"
-            ]
-          }
-        ]
-      },
-      {
-        "subsystem": "Processing & Control",
-        "options": [
-          {
-            "name": "32-bit ARM Cortex-M MCU with RTOS (e.g., STM32)",
-            "why_it_works": "Low power, deterministic control, adequate sensor drivers.",
-            "pros": [
-              "Low power",
-              "Deterministic latency",
-              "Mature toolchain"
-            ],
-            "cons": [
-              "Limited processing power",
-              "Less flexible for complex analytics"
-            ],
-            "add_ons": [
-              "Secure boot",
-              "OTA firmware updates",
-              "FreeRTOS integration"
-            ]
-          },
-          {
-            "name": "Embedded Linux SBC (e.g., Raspberry Pi Zero W)",
-            "why_it_works": "High compute, easier software stack, ML inference capability.",
-            "pros": [
-              "Rich software ecosystem",
-              "Flexible data processing",
-              "Easier scripting"
-            ],
-            "cons": [
-              "Higher power",
-              "More heat",
-              "OS maintenance"
-            ],
-            "add_ons": [
-              "Containerized services",
-              "OTA updates",
-              "Local data caching"
-            ]
-          },
-          {
-            "name": "ESP32-based microcontroller",
-            "why_it_works": "Cost-effective, integrated connectivity, suitable for moderate workloads.",
-            "pros": [
-              "Low cost",
-              "Dual-core processing",
-              "Built-in Wi-Fi/Bluetooth"
-            ],
-            "cons": [
-              "Limited memory",
-              "Restricted CPU for heavy analytics"
-            ],
-            "add_ons": [
-              "Wi-Fi/Bluetooth coexistence",
-              "Low-power deep sleep modes"
-            ]
-          }
-        ]
-      },
-      {
-        "subsystem": "Enclosure & Environmental Protection",
-        "options": [
-          {
-            "name": "IP65-rated polycarbonate enclosure with gasket and flush vents",
-            "why_it_works": "Weatherproof, lightweight, cost-effective.",
-            "pros": [
-              "Weatherproof",
-              "Low weight",
-              "Cost-effective"
-            ],
-            "cons": [
-              "Thermal management challenge",
-              "UV exposure degradation over time"
-            ],
-            "add_ons": [
-              "Desiccant pack",
-              "Vent filters",
-              "Thermal pad for cooling"
-            ]
-          },
-          {
-            "name": "Aluminum weatherproof enclosure with heat sink",
-            "why_it_works": "Better thermal management; robust for long-term outdoor use.",
-            "pros": [
-              "Durable",
-              "Good thermal performance",
-              "EMI shielding"
-            ],
-            "cons": [
-              "Heavier",
-              "Higher cost"
-            ],
-            "add_ons": [
-              "Thermal management fins",
-              "Anti-condensation heater",
-              "Sun shade"
-            ]
-          },
-          {
-            "name": "3D-printed enclosure with IP-rated gaskets and replaceable filters",
-            "why_it_works": "Rapid, low-cost customization; easy field service.",
-            "pros": [
-              "Rapid prototyping",
-              "Low cost",
-              "Easier maintenance"
-            ],
-            "cons": [
-              "Not as durable",
-              "Requires careful design to meet IP rating"
-            ],
-            "add_ons": [
-              "Replaceable internal seals",
-              "Filter media",
-              "UV-stable materials"
-            ]
-          }
-        ]
-      }
-    ],
-    "cost": "Estimated per-node cost (sensors, electronics, enclosure): USD 120–650; pilot deployment (20–50 nodes) USD 24k–32.5k hardware; ongoing maintenance extra.",
-    "skills": "Embedded hardware design, sensor calibration, PCB layout, firmware development, network integration, data analytics, cloud deployment, and field deployment planning.",
-    "suggestions": [
-      "Prototype with off-the-shelf modules to reduce risk and accelerate testing.",
-      "Establish a sensor calibration plan with reference-grade collocation sites.",
-      "Perform network coverage analysis early to guide gateway placement and choice of communication protocol.",
-      "Design for modularity so sensors and radios can be swapped as technology evolves.",
-      "Implement robust OTA updates and data validation pipelines to ensure long-term reliability."
+  "project": "string",
+
+  "problem": {
+    "statement": "string",
+    "constraints": [
+      "cost",
+      "power",
+      "environment",
+      "availability",
+      "regulatory"
     ]
-  }
+  },
+
+  "architecture": {
+    "overview": "string",
+    "block_diagram": [
+      {
+        "block": "string",
+        "from": ["string"],
+        "to": ["string"]
+      }
+    ],
+    "data_flow": "string"
+  },
+
+  "subsystems": [
+    {
+      "name": "string",
+      "role": "string",
+      "interfaces": [
+        {
+          "type": "I2C | SPI | UART | GPIO | Analog",
+          "voltage": "string",
+          "notes": "string"
+        }
+      ]
+    }
+  ],
+
+  "components": [
+    {
+      "subsystem": "string",
+      "chosen_option": "string",
+      "why_chosen": "string",
+      "features": ["string"],
+      "pros": ["string"],
+      "cons": ["string"],
+      "alternatives_considered": ["string"],
+      "availability": "string",
+      "estimated_cost": "string"
+    }
+  ],
+
+  "power_budget": {
+    "source": "string",
+    "active_current": "string",
+    "sleep_current": "string",
+    "runtime_estimate": "string"
+  },
+
+  "execution_steps": [
+    "hardware assembly",
+    "firmware bring-up",
+    "sensor calibration",
+    "integration",
+    "deployment"
+  ],
+
+  "testing": {
+    "methods": [
+      "unit test",
+      "integration test",
+      "field test"
+    ],
+    "success_criteria": "string"
+  },
+
+  "failure_modes": [
+    {
+      "issue": "string",
+      "mitigation": "string"
+    }
+  ],
+
+  "data_model": {
+    "sample_payload": {
+      "timestamp": "ISO-8601",
+      "values": {
+        "parameter": "value"
+      }
+    }
+  },
+
+  "references": [
+    "textbook",
+    "peer-reviewed paper",
+    "datasheet"
+  ],
+
+  "extensions": [
+    "optional feature"
+  ],
+
+  "skills": [
+    "hardware",
+    "firmware",
+    "data"
+  ]
 }

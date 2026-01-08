@@ -26,6 +26,33 @@
         "suggested_solution": "Implement periodic co-location with a reference monitor and in-field drift correction using cross-sensor data fusion."
       }
     ],
+    "block_diagram" : [
+      {
+        "block": "Sensing Unit",
+        "from": "Power Unit",
+        "to" : "Control Unit"
+      },
+      {
+        "block": "Control Unit",
+        "from": "Sensing Unit",
+        "to" : "Communication Module"
+      },
+      {
+        "block": "Power Unit",
+        "from": null,
+        "to" : "Sensing Unit"
+      },
+      {
+        "block": "Communication Module",
+        "from": "Control Unit",
+        "to" : "Cloud Infrastructure"
+      },
+      {
+        "block": "Cloud Infrastructure",
+        "from": "Communication Module",
+        "to" : null
+      }
+    ],
     "decision_matrix": [
       {
         "subsystem": "Sensing",

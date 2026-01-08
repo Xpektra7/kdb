@@ -4,12 +4,18 @@ import ProblemsOverall from "./problems";
 import Research from "./research";
 import Subsystem from "./subsystem";
 import { BlockDiagram } from '../block-diagram/block-diagram';
+import { Button } from '../ui/button';
+import { useRouter } from 'next/navigation';
+import { useState, useRef } from 'react';
 interface DecisionMatrixProps {
   output: any;
   contentRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
 }
 
 export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixProps) {
+
+  const router = useRouter();
+
   return (
     <div className="w-full">
       <div className="w-full flex flex-col gap-8">
@@ -35,7 +41,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
             <ProblemsOverall problems={output.problems_overall} />
           </div>
         )}
-          <BlockDiagram data={output.blockDiagram} />
+        <BlockDiagram data={output.block_diagram} />
         {/* Components */}
         <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
           <h1 className="text-2xl">Components</h1>
@@ -63,6 +69,10 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         <div ref={(el) => { contentRefs.current['suggestions'] = el; }} className="scroll-mt-20">
           <AccordionList name="Suggestions" list={output.suggestions || []} />
         </div>
+
+        <Button variant="default" onClick={() => router.push('/app/blueprint')}>
+          Proceed
+        </Button>
       </div>
     </div>
   );

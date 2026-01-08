@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { useResultStore } from "@/components/providers/result-store";
 import NavigationSidebar from "@/components/decision-matrix/NavigationSideBar";
 import { HugeiconsIcon } from '@hugeicons/react';
-import { Menu01Icon } from '@hugeicons/core-free-icons';
+import { Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 
 
 export default function Page() {
@@ -140,11 +140,12 @@ export default function Page() {
         {hasResult && !sidebarOpen && (
           <button
             onClick={() => setSidebarOpen(true)}
-            className="fixed top-20 left-4 p-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow z-10"
+            className="fixed top-12 left-12 p-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow z-10"
           >
-            <HugeiconsIcon icon={Menu01Icon} size={20} />
+            <HugeiconsIcon icon={Menu01Icon} size={15} />
           </button>
         )}
+
 
         <div className="max-w-5xl mx-auto px-8 py-6">
           {/* Header */}

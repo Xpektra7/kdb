@@ -4,9 +4,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
+import { ArrowUp, Alert01Icon, Cancel01Icon, UserAdd01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
 import { useResultStore } from "@/components/providers/result-store";
+import airQuality from "@/schema/air-quality-result2.json";
 type User = {
     name: string;
     email: string;
@@ -22,6 +23,8 @@ export default function Page() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<any>(null);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
+
+    const USE_HARDCODED_DATA = true;
 
     useEffect(() => {
         // Simulate fetching user data
@@ -91,6 +94,18 @@ export default function Page() {
         console.log("Build clicked with project description:", currentProjectDescription);
     }
 
+    function handleDummyBuildClick() {
+        setResult(null);
+        setLoading(true);
+        setError(null);
+
+        setTimeout(() => {
+            setResult(airQuality.output);
+            setLoading(false);
+            router.push("/app/decision-matrix");
+        }, 1500);
+    }
+
     function handleCancel() {
         if (abortController) {
             abortController.abort();
@@ -119,7 +134,7 @@ export default function Page() {
                     <hr />
                     <div className="flex w-full justify-between items-center px-2">
                         <p className={`text-sm ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-red-400" : "text-foreground")}`}>{projectDescription.length} / 300 </p>
-                        <Button className={`aspect-square  rounded-xl hover:bg-white ${(projectDescription.length < 8) ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={() => handleBuildClick(projectDescription)}>
+                        <Button className={`aspect-square  rounded-xl hover:bg-white ${(projectDescription.length < 8) ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={USE_HARDCODED_DATA ? handleDummyBuildClick : () => handleBuildClick(projectDescription)}>
                             <HugeiconsIcon icon={ArrowUp} color="currentColor" className="h-full w-full " />
                         </Button>
                     </div>

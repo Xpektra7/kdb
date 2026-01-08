@@ -1,29 +1,110 @@
 {
   "project": "string",
+
   "problem": {
     "statement": "string",
-    "constraints": ["string"]
+    "constraints": [
+      "cost",
+      "power",
+      "environment",
+      "availability",
+      "regulatory"
+    ]
   },
+
   "architecture": {
     "overview": "string",
-    "block_diagram": ["string"]
+    "block_diagram": [
+      {
+        "block": "string",
+        "from": ["string"],
+        "to": ["string"]
+      }
+    ],
+    "data_flow": "string"
   },
+
+  "subsystems": [
+    {
+      "name": "string",
+      "role": "string",
+      "interfaces": [
+        {
+          "type": "I2C | SPI | UART | GPIO | Analog",
+          "voltage": "string",
+          "notes": "string"
+        }
+      ]
+    }
+  ],
+
   "components": [
     {
       "subsystem": "string",
       "chosen_option": "string",
       "why_chosen": "string",
+      "features": ["string"],
       "pros": ["string"],
-      "cons": ["string"]
+      "cons": ["string"],
+      "alternatives_considered": ["string"],
+      "availability": "string",
+      "estimated_cost": "string"
     }
   ],
-  "execution_steps": ["string"],
+
+  "power_budget": {
+    "source": "string",
+    "active_current": "string",
+    "sleep_current": "string",
+    "runtime_estimate": "string"
+  },
+
+  "execution_steps": [
+    "hardware assembly",
+    "firmware bring-up",
+    "sensor calibration",
+    "integration",
+    "deployment"
+  ],
+
   "testing": {
-    "methods": ["string"],
+    "methods": [
+      "unit test",
+      "integration test",
+      "field test"
+    ],
     "success_criteria": "string"
   },
-  "references": ["string"],
-  "extensions": ["string"],
-  "cost": "string",
-  "skills": "string"
+
+  "failure_modes": [
+    {
+      "issue": "string",
+      "mitigation": "string"
+    }
+  ],
+
+  "data_model": {
+    "sample_payload": {
+      "timestamp": "ISO-8601",
+      "values": {
+        "parameter": "value"
+      }
+    }
+  },
+
+  "references": [
+    "textbook",
+    "peer-reviewed paper",
+    "datasheet"
+  ],
+
+  "extensions": [
+    "optional feature"
+  ],
+
+  "skills": [
+    "hardware",
+    "firmware",
+    "data"
+  ]
 }
