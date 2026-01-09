@@ -168,7 +168,7 @@ export default function Page() {
             className="fixed top-3 left-3 sm:top-4 sm:left-4 p-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow z-30"
             aria-label="Open navigation menu"
           >
-            <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-[18px] sm:h-[18px]" />
+            <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-4.5 sm:h-4.5" />
           </button>
         )}
 

@@ -113,7 +113,7 @@ export default function Page() {
     }
 
     return (
-        <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-[1440px] py-0 pb-12 mx-auto">
+        <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-360 py-0 pb-12 mx-auto">
             <div className="flex justify-between items-center w-full border-b border-border p-4">
                 <div className="flex items-center gap-0">
                     <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />

@@ -16,7 +16,7 @@ export default function AccordionList({ name, list } : { name: string, list: str
         <AccordionContent>
           <ul className="text-xs sm:text-sm gap-1 flex flex-col">
             {list.map((item, index) => (
-              <li key={index} className="break-words">- {item}</li>
+              <li key={index} className="wrap-break-words">- {item}</li>
             ))}
           </ul>
         </AccordionContent>

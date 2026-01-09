@@ -105,7 +105,7 @@ export default function NavigationSidebar({
         {/* Header */}
         <div className="p-3 sm:p-3.5 md:p-4 border-b border-border flex items-center justify-between bg-card/50 shrink-0">
           <div className="flex items-center gap-2">
-            <HugeiconsIcon icon={Book02Icon} size={16} className="text-primary shrink-0 sm:w-[18px] sm:h-[18px]" />
+            <HugeiconsIcon icon={Book02Icon} size={16} className="text-primary shrink-0 sm:w-4.5 sm:h-4.5" />
             <h2 className="font-semibold text-xs sm:text-sm text-foreground tracking-tight">Contents</h2>
           </div>
           <button
@@ -113,7 +113,7 @@ export default function NavigationSidebar({
             className="bg-transparent hover:bg-accent p-1.5 sm:p-2 rounded-lg transition-colors shrink-0"
             aria-label="Close navigation"
           >
-            <HugeiconsIcon icon={Cancel01Icon} size={14} className="sm:w-[16px] sm:h-[16px]" />
+            <HugeiconsIcon icon={Cancel01Icon} size={14} className="sm:w-4 sm:h-4" />
           </button>
         </div>
 

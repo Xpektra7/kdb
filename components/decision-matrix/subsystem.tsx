@@ -22,7 +22,7 @@ export default function Subsystem({ subsystem }: { subsystem: any }) {
                                     <div className="flex flex-col gap-1 sm:gap-2 flex-1">
                                         <h3 className="text-sm sm:text-base md:text-lg font-semibold">{option.name}</h3>
                                     </div>
-                                    <input type="radio" name={subsystem.subsystem} id={option.name} className="mt-1 size-4 sm:size-5 md:size-6 flex-shrink-0"/>
+                                    <input type="radio" name={subsystem.subsystem} id={option.name} className="mt-1 size-4 sm:size-5 md:size-6 shrink-0"/>
                                 </div>
                                 <div className="text-xs sm:text-sm text-muted-foreground">
                                     <p className="line-clamp-none">{option.why_it_works}</p>
