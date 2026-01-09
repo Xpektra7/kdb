@@ -91,7 +91,7 @@ export default function NavigationSidebar({
   return (
     <aside
       className={`
-        sm:p-3 md:p-4
+        
         fixed inset-y-0 left-0 w-64 sm:w-72 max-w-[85vw]
         bg-background border-r border-border
         z-50
@@ -103,7 +103,7 @@ export default function NavigationSidebar({
     >
       <div className="w-64 sm:w-72 flex flex-col h-full">
         {/* Header */}
-        <div className="p-3 sm:p-3.5 md:p-4 border-b border-border flex items-center justify-between bg-card/50 shrink-0">
+        <div className="p-4 border-b border-border flex items-center justify-between bg-card/50 shrink-0">
           <div className="flex items-center gap-2">
             <HugeiconsIcon icon={Book02Icon} size={16} className="text-primary shrink-0 sm:w-4.5 sm:h-4.5" />
             <h2 className="font-semibold text-xs sm:text-sm text-foreground tracking-tight">Contents</h2>

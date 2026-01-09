@@ -29,7 +29,7 @@ export default function Page() {
 
   const buildNavStructure = () => {
     if (!output) return [];
-    
+
     const nav: any[] = [
       { id: 'overview', label: 'Project Overview', level: 0 }
     ];
@@ -81,7 +81,7 @@ export default function Page() {
         behavior: 'smooth'
       });
       setActiveSection(id);
-      
+
       if (window.innerWidth < 768) {
         setSidebarOpen(false);
       }
@@ -94,7 +94,7 @@ export default function Page() {
 
   useEffect(() => {
     if (!output) return;
-    
+
     const observers: IntersectionObserver[] = [];
     const options = {
       root: null,
@@ -137,11 +137,11 @@ export default function Page() {
 
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className={`flex w-full flex-col pt-0 p-page-lg py-4 ${hasResult && sidebarOpen ? 'md:pl-88 md:pr-16 p-4' : ''} gap-8 overflow-x-hidden`}>
       {/* Overlay for mobile when sidebar is open */}
       {hasResult && sidebarOpen && (
-        <div 
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+        <div
+          className="absolute inset-0 bg-black/50 z-40 md:hidden"
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -160,64 +160,57 @@ export default function Page() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 transition-all duration-300">
-        {/* Menu button */}
-        {hasResult && !sidebarOpen && (
-          <button
-            onClick={() => setSidebarOpen(true)}
-            className="fixed top-3 left-3 sm:top-4 sm:left-4 p-2 bg-card border border-border rounded-lg shadow-sm hover:shadow-md transition-shadow z-30"
-            aria-label="Open navigation menu"
-          >
-            <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-4.5 sm:h-4.5" />
-          </button>
-        )}
+      <main className="flex-1 transition-all duration-300 xl:self-center">
 
-
-        <div className="w-full max-w-full sm:max-w-3xl md:max-w-4xl lg:max-w-5xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-3 sm:py-4 md:py-6">
-          {/* Header */}
-          <div className="flex flex-col sm:flex-row w-full justify-between items-start sm:items-center border-b border-border py-2 sm:py-3 md:py-4 mb-4 sm:mb-6 md:mb-8 gap-3 sm:gap-4">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 sm:gap-3">
-              <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-bold text-foreground">Decision Matrix</h1>
-              <Badge className="text-xs sm:text-sm text-muted-foreground" variant="secondary">
-                Latest generated result
-              </Badge>
-            </div>
-            <Button 
-              variant="outline" 
-              size="sm" 
-              className="px-3 sm:px-4 md:px-6 w-full sm:w-auto text-xs sm:text-sm" 
-              onClick={() => router.push("/app")}
-            >
-              Back
-            </Button>
+        {/* Header */}
+        <div className="fixed md:relative flex w-full max-w-6xl right-0 justify-between border-b border-border p-4 bg-black z-40 md:z-0 md:px-0">
+          <div className="flex gap-2 items-center">
+            {hasResult && !sidebarOpen && (
+              <button
+                onClick={() => setSidebarOpen(true)}
+                className="p-2 bg-card border border-border rounded-lg z-30"
+                aria-label="Open navigation menu"
+              >
+                <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-4.5 sm:h-4.5" />
+              </button>
+            )}
+            <h1 className="text-xl lg:text-3xl">Decision Matrix</h1>
           </div>
-
-          {/* Content */}
-          {!hasResult ? (
-            <div className="flex flex-col gap-2 sm:gap-3 rounded-lg border border-border p-4 sm:p-6 md:p-8 text-center">
-              <p className="text-base sm:text-lg font-semibold text-foreground">No data available</p>
-              <p className="text-xs sm:text-sm md:text-base text-muted-foreground">
-                Generate a matrix first, then you&apos;ll see it here.
-              </p>
-              <div className="flex justify-center mt-2 sm:mt-3">
-                <Button onClick={() => router.push("/app")} className="w-full sm:w-auto text-xs sm:text-sm">
-                  Start a new matrix
-                </Button>
-              </div>
-            </div>
-          ) : output ? (
-            <div className="w-full h-auto flex flex-col gap-2 sm:gap-3 md:gap-4">
-              <p className="max-w-2xl text-xs sm:text-sm md:text-base text-muted-foreground">
-                Analyze and compare different options based on multiple criteria to make informed decisions.
-              </p>
-              <DecisionMatrix output={output} contentRefs={contentRefs} />
-            </div>
-          ) : (
-            <div className="flex flex-col gap-2 rounded-lg border border-border p-4 sm:p-6 md:p-8 text-center">
-              <p className="text-base sm:text-lg font-semibold text-foreground">Loading...</p>
-            </div>
-          )}
+          <Button
+            variant="outline"
+            size="sm"
+            className="px-3"
+            onClick={() => router.push("/app")}
+          >
+            Back
+          </Button>
         </div>
+
+        {/* Content */}
+        {!hasResult ? (
+          <div className="flex flex-col w-full gap-2 rounded-lg border border-border p-4 text-center">
+            <h2 className="text-base">No data available</h2>
+            <p className="text-xs">
+              Generate a matrix first, then you&apos;ll see it here.
+            </p>
+            <div className="flex justify-center mt-2">
+              <Button onClick={() => router.push("/app")} className="w-full sm:w-auto text-sm">
+                Start a new matrix
+              </Button>
+            </div>
+          </div>
+        ) : output ? (
+          <div className="w-full h-auto flex flex-col gap-8 mt-20 md:mt-4">
+            <p className="max-w-2xl text-sm">
+              Analyze and compare different options based on multiple criteria to make informed decisions.
+            </p>
+            <DecisionMatrix output={output} contentRefs={contentRefs} />
+          </div>
+        ) : (
+          <div className="flex flex-col gap-2 rounded-lg border border-border p-6 text-center">
+            <h2 className="text-base font-semibold">Loading...</h2>
+          </div>
+        )}
       </main>
     </div>
   );

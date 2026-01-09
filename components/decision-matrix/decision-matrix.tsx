@@ -18,63 +18,61 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
   const router = useRouter();
 
   return (
-    <div className="w-full">
-      <div className="w-full flex flex-col gap-4 sm:gap-6 md:gap-8">
-        {/* Project Overview */}
-        <div
-          ref={(el) => { contentRefs.current['overview'] = el; }}
-          className="flex flex-col gap-1 sm:gap-2 scroll-mt-20"
-        >
-          <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold">{output.project}</h1>
-          <p className="text-xs sm:text-sm md:text-base text-muted-foreground">{output.concept}</p>
-        </div>
-
-        {/* Research */}
-        {output.research && (
-          <div ref={(el) => { contentRefs.current['research'] = el; }} className="scroll-mt-20">
-            <Research research={output.research} />
-          </div>
-        )}
-
-        {/* Problems */}
-        {output.problems_overall && (
-          <div ref={(el) => { contentRefs.current['problems'] = el; }} className="scroll-mt-20">
-            <ProblemsOverall problems={output.problems_overall} />
-          </div>
-        )}
-        <BlockDiagram data={output.block_diagram} />
-        {/* Components */}
-        <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
-          <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4">Components</h1>
-          {output.decision_matrix && (
-            <div className="flex flex-col rounded-lg p-1 sm:p-2 md:p-4 gap-3 sm:gap-4 md:gap-5">
-              {output.decision_matrix.map((matrix: any, index: number) => (
-                <div
-                  key={index}
-                  ref={(el) => { contentRefs.current[`component-${index}`] = el; }}
-                  className="scroll-mt-20"
-                >
-                  <Subsystem subsystem={matrix} />
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Skills Required */}
-        <div ref={(el) => { contentRefs.current['skills'] = el; }} className="scroll-mt-20">
-          <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
-        </div>
-
-        {/* Suggestions */}
-        <div ref={(el) => { contentRefs.current['suggestions'] = el; }} className="scroll-mt-20">
-          <AccordionList name="Suggestions" list={output.suggestions || []} />
-        </div>
-
-        <Button variant="default" className="w-full sm:w-auto" onClick={() => router.push('/app/blueprint')}>
-          Proceed
-        </Button>
+    <div className="w-full max-w-6xl text-wrap flex flex-col gap-8 overflow-x-hidden">
+      {/* Project Overview */}
+      <div
+        ref={(el) => { contentRefs.current['overview'] = el; }}
+        className="flex flex-col gap-1 sm:gap-2 scroll-mt-20"
+      >
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold">{output.project}</h1>
+        <p className="text-xs sm:text-sm md:text-base text-muted-foreground">{output.concept}</p>
       </div>
+
+      {/* Research */}
+      {output.research && (
+        <div ref={(el) => { contentRefs.current['research'] = el; }} className="scroll-mt-20">
+          <Research research={output.research} />
+        </div>
+      )}
+
+      {/* Problems */}
+      {output.problems_overall && (
+        <div ref={(el) => { contentRefs.current['problems'] = el; }} className="scroll-mt-20">
+          <ProblemsOverall problems={output.problems_overall} />
+        </div>
+      )}
+      <BlockDiagram data={output.block_diagram} />
+      {/* Components */}
+      <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
+        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4">Components</h1>
+        {output.decision_matrix && (
+          <div className="flex flex-col rounded-lg p-1 sm:p-2 md:p-4 gap-3 sm:gap-4 md:gap-5">
+            {output.decision_matrix.map((matrix: any, index: number) => (
+              <div
+                key={index}
+                ref={(el) => { contentRefs.current[`component-${index}`] = el; }}
+                className="scroll-mt-20"
+              >
+                <Subsystem subsystem={matrix} />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* Skills Required */}
+      <div ref={(el) => { contentRefs.current['skills'] = el; }} className="scroll-mt-20">
+        <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
+      </div>
+
+      {/* Suggestions */}
+      <div ref={(el) => { contentRefs.current['suggestions'] = el; }} className="scroll-mt-20">
+        <AccordionList name="Suggestions" list={output.suggestions || []} />
+      </div>
+
+      <Button variant="default" className="w-full sm:w-auto" onClick={() => router.push('/app/blueprint')}>
+        Proceed
+      </Button>
     </div>
   );
 }
