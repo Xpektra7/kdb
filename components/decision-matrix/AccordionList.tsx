@@ -10,13 +10,13 @@ export default function AccordionList({ name, list } : { name: string, list: str
   return (
     <Accordion type="single" collapsible className="w-full border-b border-border mb-2">
       <AccordionItem value={name}>
-        <AccordionTrigger className="py-2 bg-transparent text-normal font-medium">
+        <AccordionTrigger className="py-2 sm:py-2.5 bg-transparent text-xs sm:text-sm font-medium hover:text-primary transition-colors">
           {name.charAt(0).toUpperCase() + name.slice(1)}
         </AccordionTrigger>
         <AccordionContent>
-          <ul className="">
+          <ul className="text-xs sm:text-sm gap-1 flex flex-col">
             {list.map((item, index) => (
-              <li key={index}>- {item}</li>
+              <li key={index} className="break-words">- {item}</li>
             ))}
           </ul>
         </AccordionContent>
