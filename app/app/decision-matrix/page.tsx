@@ -160,7 +160,7 @@ export default function Page() {
       )}
 
       {/* Main Content */}
-      <main className="flex-1 transition-all duration-300 xl:self-center">
+      <main className={`flex flex-col transition-all duration-300 ${hasResult ? "xl:self-center" : ""}`}>
 
         {/* Header */}
         <div className="fixed md:relative flex w-full max-w-6xl right-0 justify-between border-b border-border p-4 bg-black z-40 md:z-0 md:px-0">

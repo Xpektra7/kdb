@@ -14,72 +14,31 @@ if (!apiKey) {
 export async function POST(request: Request) {
     console.log("Reached POST");
     const { project } = await request.json();
-const input = `You are an engineering project planning assistant.
-
-Given the project title and location below, output ONLY valid JSON matching this schema exactly.
-No prose, no markdown, no comments, no trailing text.
-
+const input = `You are an engineering project planner. Return ONLY valid minified JSON (no whitespace, no newlines), No prose, markdown, or extra text.
 SCHEMA:
 {
-  "project": "string",
-  "concept": "string",
-  "research": ["string"],
-  "problems_overall": [
-    {
-      "problem": "string",
-      "suggested_solution": "string"
-    }
-  ],
-  "block_diagram": [
-    {
-      "block": "string",
-      "from": "string | string[] | null",
-      "to": "string | string[] | null"
-    }
-  ],
-  "decision_matrix": [
-    {
-      "subsystem": "string",
-      "options": [
-        {
-          "name": "string",
-          "why_it_works": "string",
-          "features": ["string"],
-          "pros": ["string"],
-          "cons": ["string"],
-          "estimated_cost": ["string"],
-          "availability": "string"
-        }
-      ]
-    }
-  ],
-  "skills": "string",
-  "suggestions": ["string"]
+  "project":"string",
+  "concept":"string",
+  "research":["string"],
+  "problems_overall":[{"problem":"string","suggested_solution":"string"}],
+  "block_diagram":[{"block":"string","from":"string|string[]|null","to":"string|string[]|null"}],
+  "decision_matrix":[{"subsystem":"string","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":["string"],"availability":"string"}]}],
+  "skills":"string",
 }
-
-CRITICAL RULES (DO NOT VIOLATE):
-- blockDiagram represents the **abstract system architecture only**.
-- blockDiagram blocks MUST be generic subsystems (e.g. Power, Control, Sensing).
-- NEVER include specific technologies, components, or options in blockDiagram.(❌ Solar,❌ Battery,❌ ESP32,❌ GSM,❌ Camera)
-- blockDiagram MUST be decision-agnostic and stable regardless of options.
-- Implementation choices belong ONLY in decision_matrix.
-- Subsystems in decision_matrix MUST map 1-to-1 to blockDiagram blocks.
-- If a subsystem has no viable options, omit it entirely.
-
-GENERAL RULES:
+RULES:
+- block_diagram represents abstract subsystems only and must be decision-agnostic and stable, and should ONLY include subsystem name.
+- decision_matrix subsystems must map 1-to-1 to block_diagram blocks.
+- Omit subsystems with no viable options.
 - Engineering systems only.
 - Provide 2–4 options per subsystem with real tradeoffs.
-- Keep content concise and execution-focused.
-- Assume the user is in Nigeria; reflect local availability and cost in NGN.
-- Prioritize textbooks or peer-reviewed sources.
+- Keep output concise and execution-focused.
+- Prefer textbooks or peer-reviewed sources.
 - Describe the simplest viable system; extras are optional.
-- Suggestions: max 5, only critical items.
-
-PROJECT TITLE:
+PROJECT:
 ${project}
-
 LOCATION:
-Nigeria`;
+Nigeria
+`;
 
     // The client gets the API key from the environment variable `GEMINI_API_KEY`.
     const ai = new GoogleGenAI({apiKey});
