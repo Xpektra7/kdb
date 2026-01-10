@@ -1,38 +1,59 @@
 {
-  "project": "string",
+  "project": "Low-Cost Air Quality Monitor",
 
   "problem": {
-    "statement": "string",
+    "statement": "Urban residents lack access to affordable, real-time air quality data at street level.",
     "constraints": [
-      "cost",
-      "power",
-      "environment",
-      "availability",
-      "regulatory"
+      "low cost",
+      "low power",
+      "high temperature and humidity",
+      "local component availability",
+      "basic calibration accuracy"
     ]
   },
 
   "architecture": {
-    "overview": "string",
+    "overview": "A compact IoT device that senses particulate matter and environmental data, processes it locally, and transmits readings wirelessly to a dashboard.",
     "block_diagram": [
-      {
-        "block": "string",
-        "from": ["string"],
-        "to": ["string"]
-      }
+      { "block": "Sensing", "from": [], "to": ["Control"] },
+      { "block": "Control", "from": ["Sensing"], "to": ["Communication"] },
+      { "block": "Communication", "from": ["Control"], "to": [] },
+      { "block": "Power", "from": [], "to": ["Sensing", "Control", "Communication"] }
     ],
-    "data_flow": "string"
+    "data_flow": "Sensor readings are sampled periodically, filtered by the controller, then transmitted as structured packets to a remote endpoint."
   },
 
   "subsystems": [
     {
-      "name": "string",
-      "role": "string",
+      "name": "Sensing",
+      "role": "Measure particulate matter and ambient conditions",
       "interfaces": [
         {
-          "type": "I2C | SPI | UART | GPIO | Analog",
-          "voltage": "string",
-          "notes": "string"
+          "type": "UART",
+          "voltage": "5V",
+          "notes": "Used by PM sensor"
+        }
+      ]
+    },
+    {
+      "name": "Control",
+      "role": "Coordinate sensing, data processing, and communication",
+      "interfaces": [
+        {
+          "type": "GPIO",
+          "voltage": "3.3V",
+          "notes": "Status LEDs and power control"
+        }
+      ]
+    },
+    {
+      "name": "Communication",
+      "role": "Transmit data wirelessly",
+      "interfaces": [
+        {
+          "type": "UART",
+          "voltage": "3.3V",
+          "notes": "Connected to MCU"
         }
       ]
     }
@@ -40,71 +61,94 @@
 
   "components": [
     {
-      "subsystem": "string",
-      "chosen_option": "string",
-      "why_chosen": "string",
-      "features": ["string"],
-      "pros": ["string"],
-      "cons": ["string"],
-      "alternatives_considered": ["string"],
-      "availability": "string",
-      "estimated_cost": "string"
+      "subsystem": "Sensing",
+      "chosen_option": "PMS5003 particulate matter sensor",
+      "why_chosen": "Widely available, acceptable accuracy for PM2.5 at low cost",
+      "features": [
+        "PM1.0 / PM2.5 / PM10 measurement",
+        "UART output",
+        "Factory calibrated"
+      ],
+      "pros": ["Low cost", "Good community support"],
+      "cons": ["Relatively high power draw"],
+      "alternatives_considered": ["SDS011", "GP2Y1010"],
+      "availability": "Common in local electronics markets",
+      "estimated_cost": "₦18,000"
+    },
+    {
+      "subsystem": "Control",
+      "chosen_option": "ESP32",
+      "why_chosen": "Integrated Wi-Fi, sufficient processing power, strong ecosystem",
+      "features": [
+        "Dual-core MCU",
+        "Low-power modes",
+        "Integrated Wi-Fi"
+      ],
+      "pros": ["Cheap", "Flexible", "Large community"],
+      "cons": ["Higher power than simple MCUs"],
+      "alternatives_considered": ["ESP8266", "ATmega328P"],
+      "availability": "Very common",
+      "estimated_cost": "₦6,000"
     }
   ],
 
   "power_budget": {
-    "source": "string",
-    "active_current": "string",
-    "sleep_current": "string",
-    "runtime_estimate": "string"
+    "source": "5V USB adapter",
+    "active_current": "~200 mA",
+    "sleep_current": "~20 mA",
+    "runtime_estimate": "Continuous operation when mains-powered"
   },
 
   "execution_steps": [
-    "hardware assembly",
-    "firmware bring-up",
-    "sensor calibration",
-    "integration",
-    "deployment"
+    "Assemble sensors and MCU on perfboard",
+    "Flash firmware and verify serial output",
+    "Calibrate sensor against reference station",
+    "Deploy device in outdoor enclosure"
   ],
 
   "testing": {
     "methods": [
-      "unit test",
-      "integration test",
-      "field test"
+      "bench testing",
+      "serial log validation",
+      "field comparison with reference data"
     ],
-    "success_criteria": "string"
+    "success_criteria": "PM2.5 readings within ±15% of reference sensor over 24 hours"
   },
 
   "failure_modes": [
     {
-      "issue": "string",
-      "mitigation": "string"
+      "issue": "Sensor clogging due to dust",
+      "mitigation": "Periodic cleaning and airflow mesh filter"
     }
   ],
 
   "data_model": {
     "sample_payload": {
-      "timestamp": "ISO-8601",
+      "timestamp": "2026-01-01T12:00:00Z",
       "values": {
-        "parameter": "value"
+        "pm2_5": 35,
+        "temperature": 31,
+        "humidity": 70
       }
     }
   },
 
   "references": [
-    "textbook",
-    "peer-reviewed paper",
-    "datasheet"
+    "PMS5003 Datasheet",
+    "WHO Air Quality Guidelines",
+    "ESP32 Technical Reference Manual"
   ],
 
   "extensions": [
-    "optional feature"
+    "Battery-backed operation",
+    "Solar power add-on",
+    "Mobile app visualization"
   ],
 
   "skills": [
-    "hardware",
-    "firmware",
-    "data"
+    "embedded systems",
+    "basic electronics",
+    "firmware development",
+    "data visualization"
   ]
 }
