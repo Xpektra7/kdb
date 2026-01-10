@@ -28,6 +28,11 @@
     ],
     "block_diagram" : [
       {
+        "block": "Power Unit",
+        "from": null,
+        "to" : ["Sensing Unit", "Control Unit", "Communication Module"]
+      },
+      {
         "block": "Sensing Unit",
         "from": "Power Unit",
         "to" : "Control Unit"
@@ -36,11 +41,6 @@
         "block": "Control Unit",
         "from": "Sensing Unit",
         "to" : "Communication Module"
-      },
-      {
-        "block": "Power Unit",
-        "from": null,
-        "to" : "Sensing Unit"
       },
       {
         "block": "Communication Module",

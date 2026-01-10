@@ -2,6 +2,7 @@ import Hero from "@/components/homepage/hero";
 import Navbar from "@/components/navbar";
 import GettingStarted from "@/components/homepage/getting-started";
 import { BlockDiagram } from "@/components/block-diagram/block-diagram";
+import Marquee from "@/components/homepage/marquee";
 
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
       <Navbar />
       <Hero />
       <GettingStarted />
+      <Marquee />
     </main>
   );
 }

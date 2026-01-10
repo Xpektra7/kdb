@@ -7,16 +7,18 @@ import {
 
 export default function ProblemsOverall({ problems }: { problems: { problem: string; suggested_solution: string }[] }) {
   return (
-    <div className="w-full flex flex-col gap-2 sm:gap-3">
-      <h2 className="text-base sm:text-lg md:text-xl lg:text-2xl font-semibold">Problems</h2>
+    <div className="w-full flex flex-col gap-3 sm:gap-4">
+      <h2 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold">Problems & Solutions</h2>
       <Accordion type="single" collapsible className="w-full">
         {problems.map((problem, index) => (
           <AccordionItem key={index} value={`item-${index}`}>
-            <AccordionTrigger className="py-2 sm:py-2.5 bg-background text-xs sm:text-sm md:text-base hover:text-primary transition-colors">
+            <AccordionTrigger className="py-3 sm:py-3.5 bg-background text-xs sm:text-sm md:text-base hover:text-foreground transition-colors font-medium">
               {problem.problem}
             </AccordionTrigger>
-            <AccordionContent >
-              <p className="text-xs sm:text-sm text-muted-foreground py-2">{problem.suggested_solution}</p>
+            <AccordionContent>
+              <div className="bg-muted/30 rounded-lg p-3 sm:p-4 border border-border">
+                <p className="text-xs sm:text-sm text-foreground leading-relaxed">{problem.suggested_solution}</p>
+              </div>
             </AccordionContent>
           </AccordionItem>
         ))}

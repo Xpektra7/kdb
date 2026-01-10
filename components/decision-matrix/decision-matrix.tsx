@@ -18,14 +18,14 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
   const router = useRouter();
 
   return (
-    <div className="w-full max-w-6xl text-wrap flex flex-col gap-8 overflow-x-hidden">
+    <div className="w-full max-w-6xl text-wrap flex flex-col gap-10 overflow-x-hidden">
       {/* Project Overview */}
       <div
         ref={(el) => { contentRefs.current['overview'] = el; }}
-        className="flex flex-col gap-1 sm:gap-2 scroll-mt-20"
+        className="flex flex-col gap-3 sm:gap-4 scroll-mt-20 pb-6 border-b border-border"
       >
-        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold">{output.project}</h1>
-        <p className="text-xs sm:text-sm md:text-base text-muted-foreground">{output.concept}</p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight">{output.project}</h1>
+        <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">{output.concept}</p>
       </div>
 
       {/* Research */}
@@ -44,9 +44,9 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
       <BlockDiagram data={output.block_diagram} />
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
-        <h1 className="text-lg sm:text-xl md:text-2xl lg:text-3xl font-semibold mb-3 sm:mb-4">Components</h1>
+        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">Component Options</h1>
         {output.decision_matrix && (
-          <div className="flex flex-col rounded-lg p-1 sm:p-2 md:p-4 gap-3 sm:gap-4 md:gap-5">
+          <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
             {output.decision_matrix.map((matrix: any, index: number) => (
               <div
                 key={index}
@@ -70,8 +70,8 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         <AccordionList name="Suggestions" list={output.suggestions || []} />
       </div>
 
-      <Button variant="default" className="w-full sm:w-auto" onClick={() => router.push('/app/blueprint')}>
-        Proceed
+      <Button variant="default" className="w-full sm:w-auto mt-6" onClick={() => router.push('/app/blueprint')}>
+        Proceed to Blueprint
       </Button>
     </div>
   );

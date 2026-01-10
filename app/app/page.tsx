@@ -114,39 +114,39 @@ export default function Page() {
 
     return (
         <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-360 py-0 pb-12 mx-auto">
-            <div className="flex justify-between items-center w-full border-b border-border p-4">
-                <div className="flex items-center gap-0">
+            <div className="flex justify-between items-center w-full border-b border-border p-4 backdrop-blur-sm bg-background/80">
+                <div className="flex items-center gap-0 cursor-pointer">
                     <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
                     <h1 className="text-2xl font-bold text-foreground">pollo</h1>
                 </div>
-                <div className="flex w-8 items-center justify-center aspect-square rounded-full bg-muted p-0">
+                <div className="flex w-10 h-10 items-center justify-center rounded-full bg-muted border border-border font-semibold text-foreground">
                     {user ? user.name.charAt(0).toUpperCase() : "?"}
                 </div>
 
             </div>
             <div className="flex flex-col w-full gap-8 justify-center items-center mt-32 max-w-2xl">
-                <div className="flex flex-col w-full">
-                    <p>Welcome {user ? user.name.split(" ")[0] : "Guest"}!</p>
-                    <h1 className="text-4xl font-semibold text-foreground">What are we forging today?</h1>
+                <div className="flex flex-col w-full gap-3">
+                    <p className="text-base">Welcome {user ? user.name.split(" ")[0] : "Guest"}!</p>
+                    <h1 className="text-4xl font-semibold text-foreground leading-tight">What are we forging today?</h1>
                 </div>
-                <div className="flex flex-col w-full bg-muted/70 cursor-pointer p-4 gap-2 h-auto rounded-xl ">
-                    <textarea name="project" className="flex-1 px-2 outline-none text-sm h-23 text-wrap resize-none overflow-hidden" placeholder="Describe your project..." onChange={(e) => setProjectDescription(e.target.value)} rows={3} maxLength={300} />
-                    <hr />
+                <div className="flex flex-col w-full bg-muted/50 cursor-pointer p-5 gap-3 h-auto rounded-xl border border-border hover:border-muted-foreground/30 transition-colors">
+                    <textarea name="project" className="flex-1 px-3 py-2 outline-none text-sm h-24 text-wrap resize-none overflow-hidden bg-transparent text-foreground placeholder:text-muted-foreground" placeholder="Describe your project in detail..." onChange={(e) => setProjectDescription(e.target.value)} rows={3} maxLength={300} />
+                    <div className="h-px bg-border" />
                     <div className="flex w-full justify-between items-center px-2">
-                        <p className={`text-sm ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-red-400" : "text-foreground")}`}>{projectDescription.length} / 300 </p>
-                        <Button className={`aspect-square  rounded-xl hover:bg-white ${(projectDescription.length < 8) ? "bg-transparent text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={USE_HARDCODED_DATA ? handleDummyBuildClick : () => handleBuildClick(projectDescription)}>
+                        <p className={`text-sm font-medium ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-destructive" : "text-foreground")}`}>{projectDescription.length} / 300 </p>
+                        <Button className={`aspect-square rounded-xl ${(projectDescription.length < 8) ? "bg-muted text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={USE_HARDCODED_DATA ? handleDummyBuildClick : () => handleBuildClick(projectDescription)}>
                             <HugeiconsIcon icon={ArrowUp} color="currentColor" className="h-full w-full " />
                         </Button>
                     </div>
                 </div>
-                <small className="text-sm text-center -mt-4">Try to be as specific as possible to get the best results.</small>
+                <small className="text-sm text-center -mt-4 text-muted-foreground">Try to be as specific as possible to get the best results.</small>
                 {loading && (
-                    <div className="flex items-center justify-between p-4 border border-border rounded-lg w-full bg-muted/20">
+                    <div className="flex items-center justify-between p-5 border border-border rounded-lg w-full bg-muted/30">
                         <div className="flex items-center gap-3">
                             <Spinner />
-                            <p className="text-sm text-muted-foreground">Generating decision matrix...</p>
+                            <p className="text-sm text-foreground font-medium">Generating decision matrix...</p>
                         </div>
-                        <Button variant="ghost" size="sm" onClick={handleCancel} className="text-muted-foreground hover:text-destructive gap-2 h-8 px-3">
+                        <Button variant="ghost" size="sm" onClick={handleCancel} className="text-muted-foreground hover:text-destructive gap-2 h-8 px-3 hover:bg-destructive/10">
                             <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
                             Cancel
                         </Button>

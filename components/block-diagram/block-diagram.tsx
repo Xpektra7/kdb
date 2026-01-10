@@ -136,6 +136,7 @@ export function BlockDiagram({ data, className }: BlockDiagramProps) {
   const calculateLines = () => {
     if (!containerRef.current) return;
     const containerRect = containerRef.current.getBoundingClientRect();
+    const ARROW_GAP = 12; // keep arrowheads visible near node edges
     const newLines: typeof lines = [];
 
     edges.forEach((edge) => {
@@ -152,11 +153,14 @@ export function BlockDiagram({ data, className }: BlockDiagramProps) {
         const x2 = targetRect.left - containerRect.left;
         const y2 = targetRect.top + targetRect.height / 2 - containerRect.top;
 
+        const direction = x2 >= x1 ? 1 : -1;
+        const adjustedX2 = x2 - direction * ARROW_GAP;
+
         newLines.push({
           id: edge.id,
           x1,
           y1,
-          x2,
+          x2: adjustedX2,
           y2,
         });
       }
@@ -188,7 +192,10 @@ export function BlockDiagram({ data, className }: BlockDiagramProps) {
   return (
     <div className={cn("relative w-full overflow-x-auto p-8", className)} ref={containerRef}>
       {/* SVG Layer for Lines */}
-      <svg className="absolute top-0 left-0 w-full h-full pointer-events-none" style={{ minWidth: '100%', minHeight: '100%' }}>
+      <svg
+        className="absolute top-0 left-0 w-full h-full pointer-events-none"
+        style={{ minWidth: '100%', minHeight: '100%', overflow: 'visible' }}
+      >
         <defs>
           <marker
             id="arrowhead"
@@ -214,17 +221,17 @@ export function BlockDiagram({ data, className }: BlockDiagramProps) {
         ))}
       </svg>
 
-      {/* Nodes Layer */}
-      <div className="flex gap-20 items-stretch justify-start min-w-max">
+      {/* Nodes Layer - Responsive Grid Layout */}
+      <div className="flex flex-wrap gap-4 sm:gap-8 md:gap-12 lg:gap-20 items-start justify-start">
         {sortedLevels.map((level) => (
-          <div key={level} className="flex flex-col gap-10 justify-center z-10">
+          <div key={level} className="flex flex-col gap-4 sm:gap-6 md:gap-8 lg:gap-10 justify-start z-10">
             {nodesByLevel[level].map((nodeId) => (
               <motion.div
                 key={nodeId}
                 id={`node-${nodeId}`}
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
-                className="p-4 bg-background border-2 border-border rounded-lg shadow-sm min-w-[120px] text-center font-medium capitalize"
+                className="p-3 sm:p-4 bg-background border-2 border-border rounded-lg shadow-sm min-w-[100px] sm:min-w-[120px] text-center text-sm sm:text-base font-medium capitalize"
               >
                 {nodeId}
               </motion.div>
