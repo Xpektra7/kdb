@@ -1,4 +1,5 @@
-import { AlertCircle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Alert01Icon } from '@hugeicons/core-free-icons';
 import { Badge } from '@/components/ui/badge';
 
 interface ProblemStatementProps {
@@ -11,7 +12,7 @@ export function ProblemStatement({ statement, constraints, contentRef }: Problem
   return (
     <section ref={contentRef} className=" rounded-lg shadow-sm border border-border p-4 sm:p-6">
       <h2 className="text-lg sm:text-xl mb-3 sm:mb-4 flex items-center gap-2">
-        <AlertCircle className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+        <HugeiconsIcon icon={Alert01Icon} className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
         <span>Problem Statement</span>
       </h2>
       <p className="text-sm sm:text-base mb-4">{statement}</p>

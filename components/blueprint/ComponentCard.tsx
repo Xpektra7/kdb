@@ -1,4 +1,5 @@
-import { ChevronDown, ChevronRight, CheckCircle } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowDown01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
 
 interface Component {
   subsystem: string;
@@ -34,8 +35,8 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
           </p>
         </div>
         {isExpanded ? 
-          <ChevronDown className="w-5 h-5 shrink-0" /> : 
-          <ChevronRight className="w-5 h-5 shrink-0" />
+          <HugeiconsIcon icon={ArrowDown01Icon} className="w-5 h-5 shrink-0" /> : 
+          <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 shrink-0" />
         }
       </button>
       
@@ -51,7 +52,7 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
             <ul className="space-y-1">
               {component.features.map((feature, j) => (
                 <li key={j} className="text-xs sm:text-sm flex items-start gap-2">
-                  <CheckCircle className="w-3 h-3 sm:w-4 sm:h-4 mt-0.5 shrink-0" />
+                  <span className="shrink-0 mt-0.5">•</span>
                   <span className="flex-1">{feature}</span>
                 </li>
               ))}

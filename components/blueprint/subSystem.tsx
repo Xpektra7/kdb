@@ -1,4 +1,5 @@
-import { ChevronDown, ChevronRight, Wrench } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { ArrowDown01Icon, ArrowRight01Icon, Book02Icon } from '@hugeicons/core-free-icons';
 
 interface SubsystemInterface {
   type: string;
@@ -27,12 +28,12 @@ export function Subsystems({ subsystems, isExpanded, onToggle, contentRef }: Sub
         className="w-full flex bg-transparent items-center justify-between mb-4"
       >
         <h2 className="text-lg sm:text-xl flex items-center gap-2">
-          <Wrench className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+          <HugeiconsIcon icon={Book02Icon} className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span>Subsystems</span>
         </h2>
         {isExpanded ? 
-          <ChevronDown className="w-5 h-5 shrink-0" /> : 
-          <ChevronRight className="w-5 h-5 shrink-0" />
+          <HugeiconsIcon icon={ArrowDown01Icon} className="w-5 h-5 shrink-0" /> : 
+          <HugeiconsIcon icon={ArrowRight01Icon} className="w-5 h-5 shrink-0" />
         }
       </button>
       

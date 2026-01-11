@@ -1,4 +1,5 @@
-import { Lightbulb } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Book02Icon } from '@hugeicons/core-free-icons';
 import { Badge } from '@/components/ui/badge';
 
 interface SkillsProps {
@@ -10,7 +11,7 @@ export function Skills({ skills, contentRef }: SkillsProps) {
   return (
     <section ref={contentRef} className=" rounded-lg shadow-sm border border-border p-4 sm:p-6">
       <h2 className="text-lg sm:text-xl mb-4 flex items-center gap-2">
-        <Lightbulb className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+        <HugeiconsIcon icon={Book02Icon} className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
         <span>Skills Required</span>
       </h2>
       <div className="flex flex-wrap gap-2">
