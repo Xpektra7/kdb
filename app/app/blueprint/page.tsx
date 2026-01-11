@@ -210,7 +210,7 @@ export default function Page() {
       <main className="flex-1 w-full">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
           {/* Fixed Header */}
-          <div className="sticky top-0 z-30 bg-black pb-4 flex justify-between items-center border-b border-black/10">
+          <div className="sticky top-0 z-30 bg-black pb-4 flex justify-between items-center">
             <h1 className="text-xl sm:text-2xl font-bold text-white">Blueprint</h1>
             <Button
               variant="outline"

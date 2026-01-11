@@ -10,10 +10,10 @@ export function ExecutionSteps({ steps, contentRef }: ExecutionStepsProps) {
       <ol className="space-y-3">
         {steps.map((step, i) => (
           <li key={i} className="flex gap-3">
-            <span className="flex-shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-blue-600  rounded-full flex items-center justify-center text-xs sm:text-sm font-medium">
+            <span className="shrink-0 w-6 h-6 sm:w-7 sm:h-7 bg-white rounded-full flex items-center justify-center text-xs sm:text-sm font-medium">
               {i + 1}
             </span>
-            <span className="pt-0.5 text-xs sm:text-sm lg:text-base flex-1">{step}</span>
+            <span className="pt-0.5 text-xs sm:text-sm lg:text-base flex-1 ">{step}</span>
           </li>
         ))}
       </ol>

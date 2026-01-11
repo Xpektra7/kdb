@@ -105,9 +105,28 @@ export function NavigationSidebar({
               <X className="w-5 h-5" />
             </button>
           </div>
-
+          
           {/* Navigation Items */}
-          <div className="flex-1 overflow-y-auto py-3 sm:py-3.5 md:py-4 px-2 sm:px-3">
+          <div className="flex-1 overflow-y-auto py-3 sm:py-3.5 md:py-4 px-2 sm:px-3 scrollbar-thin scrollbar-thumb-gray-400 scrollbar-track-transparent hover:scrollbar-thumb-gray-500">
+            <style dangerouslySetInnerHTML={{__html: `
+              .scrollbar-thin::-webkit-scrollbar {
+                width: 6px;
+              }
+              .scrollbar-thin::-webkit-scrollbar-track {
+                background: transparent;
+              }
+              .scrollbar-thin::-webkit-scrollbar-thumb {
+                background: #9ca3af;
+                border-radius: 3px;
+              }
+              .scrollbar-thin::-webkit-scrollbar-thumb:hover {
+                background: #6b7280;
+              }
+              .scrollbar-thin {
+                scrollbar-width: thin;
+                scrollbar-color: #9ca3af transparent;
+              }
+            `}} />
             <nav className="space-y-1">
               {navStructure && navStructure.length > 0 ? (
                 navStructure.map((item) => renderNavItem(item))

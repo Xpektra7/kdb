@@ -11,7 +11,7 @@ export function ExtensionsAndReferences({ extensions, references }: ExtensionsAn
         <ul className="space-y-2">
           {extensions.map((ext, i) => (
             <li key={i} className="flex items-start gap-2  text-xs sm:text-sm">
-              <span className="text-purple-600 mt-0.5 flex-shrink-0">▸</span>
+              <span className=" mt-0.5 shrink-0">▸</span>
               <span className="flex-1">{ext}</span>
             </li>
           ))}
@@ -23,8 +23,8 @@ export function ExtensionsAndReferences({ extensions, references }: ExtensionsAn
         <ul className="space-y-2">
           {references.map((ref, i) => (
             <li key={i} className="flex items-start gap-2  text-xs sm:text-sm">
-              <span className="text-blue-600 mt-0.5 flex-shrink-0">→</span>
-              <span className="flex-1 break-words">{ref}</span>
+              <span className=" mt-0.5 shrink-0">→</span>
+              <span className="flex-1 wrap-break-words">{ref}</span>
             </li>
           ))}
         </ul>
