@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp, Alert01Icon, Cancel01Icon, UserAdd01Icon } from "@hugeicons/core-free-icons";
+import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
 import { useResultStore } from "@/components/providers/result-store";
 import airQuality from "@/schema/air-quality-result2.json";

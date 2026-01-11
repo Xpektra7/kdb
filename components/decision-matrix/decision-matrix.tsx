@@ -6,7 +6,6 @@ import Subsystem from "./subsystem";
 import { BlockDiagram } from '../block-diagram/block-diagram';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-import { useState, useRef } from 'react';
 
 interface DecisionMatrixProps {
   output: any;

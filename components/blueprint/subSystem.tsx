@@ -21,12 +21,12 @@ interface SubsystemsProps {
 
 export function Subsystems({ subsystems, isExpanded, onToggle, contentRef }: SubsystemsProps) {
   return (
-    <section ref={contentRef} className="bg-black rounded-lg shadow-sm border border-border p-4 sm:p-6">
+    <section ref={contentRef} className=" rounded-lg shadow-sm border border-border p-4 sm:p-6">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between mb-4"
+        className="w-full flex bg-transparent items-center justify-between mb-4"
       >
-        <h2 className="text-lg sm:text-xl flex items-center gap-2 text-black">
+        <h2 className="text-lg sm:text-xl flex items-center gap-2">
           <Wrench className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span>Subsystems</span>
         </h2>
@@ -39,13 +39,13 @@ export function Subsystems({ subsystems, isExpanded, onToggle, contentRef }: Sub
       {isExpanded && (
         <div className="space-y-3">
           {subsystems.map((subsystem, i) => (
-            <div key={i} className="border border-border rounded-lg p-3 sm:p-4 bg-black">
-              <h3 className=" mb-2 text-sm sm:text-base">{subsystem.name}</h3>
-              <p className="text-xs sm:text-sm  mb-3">{subsystem.role}</p>
+            <div key={i} className="border border-border rounded-lg p-3 sm:p-4 ">
+              <h3 className="mb-2 text-sm sm:text-base">{subsystem.name}</h3>
+              <p className="text-xs sm:text-sm mb-3">{subsystem.role}</p>
               <div className="space-y-2">
                 <p className="text-xs">Interfaces:</p>
                 {subsystem.interfaces.map((iface, j) => (
-                  <div key={j} className="bg-black p-2 rounded border border-border text-xs sm:text-sm">
+                  <div key={j} className=" p-2 rounded border border-border text-xs sm:text-sm">
                     <span className="font-medium">{iface.type}</span> • {iface.voltage}
                     {iface.notes && <span className="block sm:inline sm:ml-1">— {iface.notes}</span>}
                   </div>

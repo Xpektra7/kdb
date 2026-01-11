@@ -1,3 +1,5 @@
+import { Badge } from '@/components/ui/badge';
+
 interface Testing {
   methods: string[];
   success_criteria: string;
@@ -17,15 +19,15 @@ export function Testing({ testing, contentRef }: TestingProps) {
           <p className="text-xs sm:text-sm mb-2">Methods</p>
           <div className="flex flex-wrap gap-2">
             {testing.methods.map((method, i) => (
-              <span key={i} className="px-2 sm:px-3 py-1rounded text-xs sm:text-sm border border-border">
+              <Badge key={i} variant="outline" className="text-xs sm:text-sm">
                 {method}
-              </span>
+              </Badge>
             ))}
           </div>
         </div>
         <div>
           <p className="text-xs sm:text-sm mb-1">Success Criteria</p>
-          <p className="text-xs sm:text-sm bg-black p-3 rounded border border-border">
+          <p className="text-xs sm:text-sm  p-3 rounded border border-border">
             {testing.success_criteria}
           </p>
         </div>

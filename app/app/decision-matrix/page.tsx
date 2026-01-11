@@ -3,7 +3,6 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import { useRouter } from "next/navigation";
 import DecisionMatrix from "@/components/decision-matrix/decision-matrix";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { useResultStore } from "@/components/providers/result-store";
 import NavigationSidebar from "@/components/decision-matrix/NavigationSideBar";
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -141,7 +140,7 @@ export default function Page() {
       {/* Overlay for mobile when sidebar is open */}
       {hasResult && sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 md:hidden"
+          className="fixed inset-0 /50 md:hidden"
           style={{ zIndex: Z_INDEX.OVERLAY }}
           onClick={() => setSidebarOpen(false)}
         />

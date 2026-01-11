@@ -23,11 +23,13 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
     <div className="border border-border rounded-lg overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full bg-linear-to-r  p-3 sm:p-4 flex items-center justify-between transition-colors"
+        className="w-full bg-transparent  p-3 sm:p-4 flex items-center justify-between transition-colors "
       >
         <div className="text-left flex-1 min-w-0">
-          <p className="text-xs mb-1 text-black">{component.subsystem} System</p>
-          <p className=" text-sm sm:text-base wrap-break-words pr-2 text-black">
+          <p className="text-xs mb-1">
+            {component.subsystem} System
+          </p>
+          <p className="text-sm sm:text-base wrap-break-words pr-2">
             {component.chosen_option}
           </p>
         </div>
@@ -38,14 +40,14 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
       </button>
       
       {isExpanded && (
-        <div className="p-3 sm:p-4 space-y-3 bg-black border-t border-border">
+        <div className="p-3 sm:p-4 space-y-3  border-t border-border">
           <div>
             <p className="text-xs mb-1">Why Chosen</p>
             <p className="text-xs sm:text-sm">{component.why_chosen}</p>
           </div>
           
           <div>
-            <p className="text-xs  mb-1">Features</p>
+            <p className="text-xs mb-1">Features</p>
             <ul className="space-y-1">
               {component.features.map((feature, j) => (
                 <li key={j} className="text-xs sm:text-sm flex items-start gap-2">
@@ -58,10 +60,10 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <p className="text-x mb-1">Pros</p>
+              <p className="text-xs mb-1">Pros</p>
               <ul className="space-y-1">
                 {component.pros.map((pro, j) => (
-                  <li key={j} className="text-xs sm:text-sm ">• {pro}</li>
+                  <li key={j} className="text-xs sm:text-sm">• {pro}</li>
                 ))}
               </ul>
             </div>
@@ -69,14 +71,14 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
               <p className="text-xs mb-1">Cons</p>
               <ul className="space-y-1">
                 {component.cons.map((con, j) => (
-                  <li key={j} className="text-xs sm:text-sm text-slate-700">• {con}</li>
+                  <li key={j} className="text-xs sm:text-sm">• {con}</li>
                 ))}
               </ul>
             </div>
           </div>
           
           <div>
-            <p className="text-xs 0 mb-1">Alternatives Considered</p>
+            <p className="text-xs mb-1">Alternatives Considered</p>
             <p className="text-xs sm:text-sm">{component.alternatives_considered.join(', ')}</p>
           </div>
           

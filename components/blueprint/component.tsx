@@ -24,12 +24,12 @@ interface ComponentsProps {
 
 export function Components({ components, isExpanded, onToggle, expandedItems, onItemToggle, contentRef }: ComponentsProps) {
   return (
-    <section ref={contentRef} className="bg-black rounded-lg shadow-sm border border-border p-4 sm:p-6">
+    <section ref={contentRef} className=" rounded-lg shadow-sm border border-border p-4 sm:p-6">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between mb-4"
+        className="w-full flex bg-transparent items-center justify-between mb-4"
       >
-        <h2 className="text-lg sm:text-xl  flex items-center gap-2 text-black">
+        <h2 className="text-lg sm:text-xl flex items-center gap-2">
           <Zap className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span>Components</span>
         </h2>

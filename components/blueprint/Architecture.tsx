@@ -26,14 +26,14 @@ export function Architecture({
   return (
     <section
       ref={contentRef}
-      className="bg-black rounded-lg shadow-sm border border-border p-4 sm:p-6"
+      className="rounded-lg shadow-sm border border-border p-4 sm:p-6"
     >
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between mb-4"
+        className="w-full flex items-center bg-background justify-between"
       >
-        <h2 className="text-lg sm:text-xl font-semibold flex items-center gap-2 text-black">
-          <Code className="w-4 h-4 sm:w-5 sm:h-5 text-black shrink-0" />
+        <h2 className="text-lg bg-transparent sm:text-xl flex items-center gap-2">
+          <Code className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
           <span>Architecture</span>
         </h2>
         {isExpanded ? (
@@ -46,20 +46,20 @@ export function Architecture({
       {isExpanded && (
         <div className="space-y-4">
           <div>
-            <h3 className=" mb-2 text-sm sm:text-base">Overview</h3>
-            <p className=" text-sm sm:text-base">{overview}</p>
+            <h3 className="mb-2 text-sm sm:text-base">Overview</h3>
+            <p className="text-sm sm:text-base">{overview}</p>
           </div>
 
           <div>
             <h3 className="font-medium mb-3 text-sm sm:text-base">
               Block Diagram
             </h3>
-            <div className="bg-black rounded-lg p-3 sm:p-4 border border-black">
+            <div className="rounded-lg p-3 sm:p-4 border border-border">
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 border border-border p-3 rounded-2xl">
                 {blockDiagram.map((block, i) => (
                   <div
                     key={i}
-                    className="bg-black p-3 rounded border border-black"
+                    className="p-3 rounded border border-border"
                   >
                     <p className="text-sm sm:text-base">{block.block}</p>
                     {block.to.length > 0 && (

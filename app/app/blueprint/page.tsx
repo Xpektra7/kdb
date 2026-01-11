@@ -2,7 +2,6 @@
 import dummydata from '@/schema/air-quality-result.json';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ApolloHeader } from '@/components/blueprint/blueprint-ui';
 import { ProblemStatement } from '@/components/blueprint/problems';
 import { Architecture } from '@/components/blueprint/Architecture';
 import { Subsystems } from '@/components/blueprint/subSystem';
@@ -14,8 +13,17 @@ import { FailureModes } from '@/components/blueprint/FailureModes';
 import { DataModel } from '@/components/blueprint/DataModel';
 import { Skills } from '@/components/blueprint/Skills';
 import { ExtensionsAndReferences } from '@/components/blueprint/ExtensionAndRef';
-import { NavigationSidebar } from '@/components/blueprint/NavigationalSideBar';
+import NavigationSidebar from '@/components/decision-matrix/NavigationSideBar';
 import { Button } from '@/components/ui/button';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Menu01Icon } from '@hugeicons/core-free-icons';
+
+// Z-index scale for consistent layering
+const Z_INDEX = {
+  OVERLAY: 40,
+  SIDEBAR: 50,
+  HEADER: 30,
+} as const;
 
 
 export default function Page() {
@@ -27,7 +35,10 @@ export default function Page() {
     components: true
   });
   const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.innerWidth >= 768;
+  });
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   // Build navigation structure
@@ -186,11 +197,12 @@ export default function Page() {
   }, []);
 
   return (
-    <div className={`flex w-full min-h-screen bg-black ${sidebarOpen ? 'md:pl-80' : ''}`}>
-      {/* Overlay for mobile */}
+    <div className="min-h-screen">
+      {/* Overlay for mobile when sidebar is open */}
       {sidebarOpen && (
         <div
-          className="fixed inset-0 bg-black/50 z-40 md:hidden"
+          className="fixed inset-0 bg-black/50 md:hidden"
+          style={{ zIndex: Z_INDEX.OVERLAY }}
           onClick={() => setSidebarOpen(false)}
         />
       )}
@@ -199,109 +211,131 @@ export default function Page() {
       <NavigationSidebar
         navStructure={navStructure}
         activeSection={activeSection}
-        expandedSections={expandedSections}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
         scrollToSection={scrollToSection}
-        toggleSection={toggleSection}
       />
 
       {/* Main Content */}
-      <main className="flex-1 w-full">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6 lg:py-8 space-y-6 sm:space-y-8">
-          {/* Fixed Header */}
-          <div className="sticky top-0 z-30 bg-black pb-4 flex justify-between items-center">
-            <h1 className="text-xl sm:text-2xl font-bold text-white">Blueprint</h1>
+      <main className={`transition-all duration-300 ${sidebarOpen ? 'md:ml-72 lg:ml-80' : ''}`}>
+        <div className="flex flex-col max-w-6xl mx-auto w-full px-4 py-4 gap-8">
+          {/* Header */}
+          <div className="fixed top-0 left-0 right-0 md:relative flex w-full justify-between border-b border-border p-4 md:p-6 bg-background/95 backdrop-blur-sm md:px-0" style={{ zIndex: Z_INDEX.HEADER }}>
+            <div className="flex gap-3 items-center">
+              {!sidebarOpen && (
+                <button
+                  onClick={() => setSidebarOpen(true)}
+                  className="p-2 bg-muted border border-border rounded-lg hover:bg-muted/70 transition-colors"
+                  aria-label="Open navigation menu"
+                >
+                  <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-4.5 sm:h-4.5" />
+                </button>
+              )}
+              <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Blueprint</h1>
+            </div>
             <Button
               variant="outline"
               size="sm"
+              className="px-4"
               onClick={() => router.push('/app')}
             >
               Back
             </Button>
           </div>
 
-          {/* Header */}
-          <ApolloHeader
-            projectName={dummydata.project}
-          />
+          {/* Content */}
+          <div className="w-full h-auto flex flex-col gap-6 mt-20 md:mt-8">
+            <div className="bg-muted/30 p-4 rounded-lg border-l-2 border-border">
+              <p className="text-sm leading-relaxed">
+                Comprehensive project blueprint with architecture, components, and execution plan.
+              </p>
+            </div>
 
-          {/* Problem Statement */}
-          <ProblemStatement
-            statement={dummydata.problem.statement}
-            constraints={dummydata.problem.constraints}
-            contentRef={(el) => (contentRefs.current['problem'] = el)}
-          />
+            {/* Project Header */}
+            <div className="bg-background rounded-lg shadow-sm border border-border p-4 sm:p-6">
+              <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-2 wrap-break-words">
+                {dummydata.project}
+              </h1>
+              <p className="text-xs sm:text-sm text-muted-foreground">Blueprint</p>
+            </div>
 
-          {/* Architecture */}
-          <Architecture
-            overview={dummydata.architecture.overview}
-            blockDiagram={dummydata.architecture.block_diagram}
-            dataFlow={dummydata.architecture.data_flow}
-            isExpanded={expandedSections.architecture}
-            onToggle={() => toggleSection('architecture')}
-            contentRef={(el) => (contentRefs.current['architecture'] = el)}
-          />
+            {/* Problem Statement */}
+            <ProblemStatement
+              statement={dummydata.problem.statement}
+              constraints={dummydata.problem.constraints}
+              contentRef={(el) => (contentRefs.current['problem'] = el)}
+            />
 
-          {/* Subsystems */}
-          <Subsystems
-            subsystems={dummydata.subsystems}
-            isExpanded={expandedSections.subsystems}
-            onToggle={() => toggleSection('subsystems')}
-            contentRef={(el) => (contentRefs.current['subsystems'] = el)}
-          />
+            {/* Architecture */}
+            <Architecture
+              overview={dummydata.architecture.overview}
+              blockDiagram={dummydata.architecture.block_diagram}
+              dataFlow={dummydata.architecture.data_flow}
+              isExpanded={expandedSections.architecture}
+              onToggle={() => toggleSection('architecture')}
+              contentRef={(el) => (contentRefs.current['architecture'] = el)}
+            />
 
-          {/* Components */}
-          <Components
-            components={dummydata.components}
-            isExpanded={expandedSections.components}
-            onToggle={() => toggleSection('components')}
-            expandedItems={expandedItems}
-            onItemToggle={toggleItem}
-            contentRef={(el) => (contentRefs.current['components'] = el)}
-          />
+            {/* Subsystems */}
+            <Subsystems
+              subsystems={dummydata.subsystems}
+              isExpanded={expandedSections.subsystems}
+              onToggle={() => toggleSection('subsystems')}
+              contentRef={(el) => (contentRefs.current['subsystems'] = el)}
+            />
 
-          {/* Power Budget */}
-          <PowerBudget
-            powerBudget={dummydata.power_budget}
-            contentRef={(el) => (contentRefs.current['power'] = el)}
-          />
+            {/* Components */}
+            <Components
+              components={dummydata.components}
+              isExpanded={expandedSections.components}
+              onToggle={() => toggleSection('components')}
+              expandedItems={expandedItems}
+              onItemToggle={toggleItem}
+              contentRef={(el) => (contentRefs.current['components'] = el)}
+            />
 
-          {/* Execution Steps */}
-          <ExecutionSteps
-            steps={dummydata.execution_steps}
-            contentRef={(el) => (contentRefs.current['execution'] = el)}
-          />
+            {/* Power Budget */}
+            <PowerBudget
+              powerBudget={dummydata.power_budget}
+              contentRef={(el) => (contentRefs.current['power'] = el)}
+            />
 
-          {/* Testing */}
-          <Testing
-            testing={dummydata.testing}
-            contentRef={(el) => (contentRefs.current['testing'] = el)}
-          />
+            {/* Execution Steps */}
+            <ExecutionSteps
+              steps={dummydata.execution_steps}
+              contentRef={(el) => (contentRefs.current['execution'] = el)}
+            />
 
-          {/* Failure Modes */}
-          <FailureModes
-            failureModes={dummydata.failure_modes}
-            contentRef={(el) => (contentRefs.current['failures'] = el)}
-          />
+            {/* Testing */}
+            <Testing
+              testing={dummydata.testing}
+              contentRef={(el) => (contentRefs.current['testing'] = el)}
+            />
 
-          {/* Data Model */}
-          <DataModel
-            dataModel={dummydata.data_model}
-            contentRef={(el) => (contentRefs.current['data'] = el)}
-          />
+            {/* Failure Modes */}
+            <FailureModes
+              failureModes={dummydata.failure_modes}
+              contentRef={(el) => (contentRefs.current['failures'] = el)}
+            />
 
-          {/* Skills */}
-          <Skills
-            skills={dummydata.skills}
-            contentRef={(el) => (contentRefs.current['skills'] = el)}
-          />
+            {/* Data Model */}
+            <DataModel
+              dataModel={dummydata.data_model}
+              contentRef={(el) => (contentRefs.current['data'] = el)}
+            />
 
-          {/* Extensions & References */}
-          <ExtensionsAndReferences
-            extensions={dummydata.extensions}
-            references={dummydata.references}
-          />
+            {/* Skills */}
+            <Skills
+              skills={dummydata.skills}
+              contentRef={(el) => (contentRefs.current['skills'] = el)}
+            />
+
+            {/* Extensions & References */}
+            <ExtensionsAndReferences
+              extensions={dummydata.extensions}
+              references={dummydata.references}
+            />
+          </div>
         </div>
       </main>
     </div>
