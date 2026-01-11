@@ -117,7 +117,7 @@ export default function Page() {
             <div className="flex justify-between items-center w-full border-b border-border p-4 backdrop-blur-sm bg-background/80">
                 <div className="flex items-center gap-0 cursor-pointer">
                     <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
-                    <h1 className="text-2xl font-bold text-foreground">pollo</h1>
+                    <h1 className="text-2xl font-bold text-foreground">Apollo</h1>
                 </div>
                 <div className="flex w-10 h-10 items-center justify-center rounded-full bg-muted border border-border font-semibold text-foreground">
                     {user ? user.name.charAt(0).toUpperCase() : "?"}
