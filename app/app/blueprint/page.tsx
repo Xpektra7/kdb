@@ -261,7 +261,7 @@ export default function Page() {
       />
 
       {/* Main Content */}
-      <main className={`transition-all duration-300 ${sidebarOpen ? 'md:ml-72 lg:ml-80' : ''}`}>
+      <main className={`transition-all duration-300 scroll-custom ${sidebarOpen ? 'md:ml-72 lg:ml-80' : ''}`}>
         <div className="flex flex-col max-w-6xl mx-auto w-full px-4 py-4 gap-8">
           {/* Header */}
           <div className="fixed top-0 left-0 right-0 md:relative flex w-full justify-between border-b border-border p-4 md:p-6 bg-background/95 backdrop-blur-sm md:px-0" style={{ zIndex: Z_INDEX.HEADER }}>

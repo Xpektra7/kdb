@@ -19,6 +19,8 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
   
   // Track selected options for each subsystem
   const [selectedOptions, setSelectedOptions] = useState<Record<string, any>>({});
+  // Track subsystems missing a selection for UX feedback
+  const [missingSubs, setMissingSubs] = useState<string[]>([]);
 
   // Handle selection change for each subsystem
   const handleOptionSelect = (subsystemName: string, selectedOption: any) => {
@@ -26,10 +28,28 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
       ...prev,
       [subsystemName]: selectedOption,
     }));
+    // Clear error highlight for this subsystem once user selects
+    setMissingSubs((prev) => prev.filter((name) => name !== subsystemName));
   };
 
   // Send selected options to blueprint API and navigate
   const handleProceedToBlueprint = async () => {
+    // Validate all subsystems have a selection
+    const missing = (output.decision_matrix || [])
+      .filter((m: any) => !selectedOptions[m.subsystem])
+      .map((m: any) => m.subsystem);
+
+    if (missing.length > 0) {
+      setMissingSubs(missing);
+      // Scroll to the first missing subsystem for better UX
+      const firstMissingIdx = (output.decision_matrix || []).findIndex((m: any) => m.subsystem === missing[0]);
+      const target = contentRefs.current[`component-${firstMissingIdx}`] || contentRefs.current['components'];
+      if (target) {
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+      return;
+    }
+
     const useDummyData = getDataMode();
     
     if (useDummyData) {
@@ -109,6 +129,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
                   subsystem={matrix} 
                   onOptionSelect={(selectedOption) => handleOptionSelect(matrix.subsystem, selectedOption)}
                   selectedOption={selectedOptions[matrix.subsystem]}
+                  showError={missingSubs.includes(matrix.subsystem)}
                 />
               </div>
             ))}

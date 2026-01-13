@@ -11,9 +11,10 @@ interface SubsystemProps {
     subsystem: any;
     onOptionSelect?: (selectedOption: any) => void;
     selectedOption?: any;
+    showError?: boolean;
 }
 
-export default function Subsystem({ subsystem, onOptionSelect, selectedOption }: SubsystemProps) {
+export default function Subsystem({ subsystem, onOptionSelect, selectedOption, showError }: SubsystemProps) {
     const handleOptionChange = (option: any) => {
         if (onOptionSelect) {
             onOptionSelect(option);
@@ -28,7 +29,7 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption }:
                 <AccordionContent className="pt-2">
                     {subsystem.options.map((option: any, index: number) => (
                         <label htmlFor={option.name} key={index} className="flex items-center gap-2 mb-4 sm:mb-5 cursor-pointer group">
-                            <div className="w-full flex flex-col gap-3 sm:gap-4 border border-border rounded-lg p-4 sm:p-5 md:p-6 hover:bg-muted/30 hover:border-muted-foreground/20 transition-colors">
+                            <div className={`w-full flex flex-col gap-3 sm:gap-4 border rounded-lg p-4 sm:p-5 md:p-6 hover:bg-muted/30 transition-colors ${showError ? 'border-destructive/60 ring-1 ring-destructive/30' : 'border-border hover:border-muted-foreground/20'}`}>
                                 <div className="w-full flex flex-row items-center justify-between">
                                     <div className="flex flex-col gap-2 flex-1">
                                         <h3 className="text-sm sm:text-base md:text-lg font-semibold">{option.name}</h3>
@@ -40,6 +41,7 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption }:
                                         className="mt-1 size-5 md:size-6 shrink-0 cursor-pointer"
                                         checked={selectedOption?.name === option.name}
                                         onChange={() => handleOptionChange(option)}
+                                        aria-invalid={showError}
                                     />
                                 </div>
                                 <div className="text-xs sm:text-sm text-muted-foreground">
@@ -53,6 +55,9 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption }:
                                 <AccordionList name="Pros" list={option.pros} />
                                 <AccordionList name="Cons" list={option.cons} />
 
+                                {showError && (
+                                    <p className="text-xs sm:text-sm text-destructive font-medium">Select an option to continue.</p>
+                                )}
                             </div>
                         </label>
                     ))}
