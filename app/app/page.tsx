@@ -8,6 +8,7 @@ import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
 import { useResultStore } from "@/components/providers/result-store";
 import airQuality from "@/schema/air-quality-result2.json";
+import { getDataMode } from "@/lib/data-mode";
 type User = {
     name: string;
     email: string;
@@ -23,8 +24,12 @@ export default function Page() {
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<any>(null);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
+    const [useDummyData, setUseDummyData] = useState<boolean>(false);
 
-    const USE_HARDCODED_DATA = true;
+    // Load data mode preference
+    useEffect(() => {
+        setUseDummyData(getDataMode());
+    }, []);
 
     useEffect(() => {
         // Simulate fetching user data
@@ -134,7 +139,7 @@ export default function Page() {
                     <div className="h-px bg-border" />
                     <div className="flex w-full justify-between items-center px-2">
                         <p className={`text-sm font-medium ${projectDescription.length === 0 ? "text-muted-foreground" : (projectDescription.length < 8 ? "text-destructive" : "text-foreground")}`}>{projectDescription.length} / 300 </p>
-                        <Button className={`aspect-square rounded-xl ${(projectDescription.length < 8) ? "bg-muted text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={USE_HARDCODED_DATA ? handleDummyBuildClick : () => handleBuildClick(projectDescription)}>
+                        <Button className={`aspect-square rounded-xl ${(projectDescription.length < 8) ? "bg-muted text-foreground" : ""}`} size="icon-sm" disabled={projectDescription.length < 8} title="Build" onClick={useDummyData ? handleDummyBuildClick : () => handleBuildClick(projectDescription)}>
                             <HugeiconsIcon icon={ArrowUp} color="currentColor" className="h-full w-full " />
                         </Button>
                     </div>

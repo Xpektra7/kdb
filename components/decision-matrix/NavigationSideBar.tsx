@@ -27,10 +27,7 @@ export default function NavigationSidebar({
   const NavItemComponent = ({ item, isChild = false }: { item: NavItem; isChild?: boolean }) => {
     const hasChildren = item.children && item.children.length > 0;
     const isActive = activeSection === item.id;
-    const isComponentsSection = item.id === 'components';
-
-    // Always show children for components section, no toggle needed
-    const showChildren = isComponentsSection && hasChildren;
+    const showChildren = hasChildren; // Always render children when present
 
     const handleClick = () => {
       requestAnimationFrame(() => {
@@ -39,20 +36,20 @@ export default function NavigationSidebar({
     };
 
     return (
-      <div className={isChild ? 'ml-2 sm:ml-3 md:ml-4 border-l-2 border-border' : ''}>
+      <div className={isChild ? 'ml-2 sm:ml-3 text-sm md:ml-4 border-l-2 border-border' : ''}>
         <div
           className={`flex items-center gap-2 px-3 sm:px-4 py-2.5 sm:py-3 rounded-lg cursor-pointer transition-colors ${isActive
-            ? 'bg-muted text-foreground font-semibold border-l-2 border-foreground'
-            : 'text-muted-foreground hover:text-foreground hover:bg-muted/50'
+            ? 'text-accent font-medium bg-muted/50'
+            : 'text-muted-foreground hover:text-foreground hover:bg-muted/30'
             } ${isChild ? 'ml-2 sm:ml-3 text-xs sm:text-sm' : 'text-sm sm:text-base font-medium'}`}
           onClick={handleClick}
         >
-          {isComponentsSection && hasChildren && (
+          {hasChildren && (
             <span className="p-0.5 text-muted-foreground shrink-0">
               <HugeiconsIcon icon={ArrowDown01Icon} size={14} />
             </span>
           )}
-          <span className="truncate">
+          <span className="truncate text-sm font-medium">
             {item.label}
           </span>
         </div>
@@ -71,7 +68,7 @@ export default function NavigationSidebar({
     <aside
       className={`
         
-        fixed inset-y-0 left-0 w-64 sm:w-72 max-w-[85vw]
+        fixed inset-y-0 text-sm left-0 w-64 sm:w-72 max-w-[85vw]
         bg-background border-r border-border
         z-50
         transform transition-transform duration-300 ease-out
@@ -97,7 +94,7 @@ export default function NavigationSidebar({
         </div>
 
         {/* Navigation Items */}
-        <div className="flex-1 overflow-y-auto py-4 sm:py-5 md:py-6 px-3 sm:px-4">
+        <div className="flex-1 text-sm overflow-y-auto py-4 sm:py-5 md:py-6 px-3 sm:px-4">
           <nav className="space-y-1.5">
             {navStructure && navStructure.length > 0 ? (
               navStructure.map(item => (

@@ -12,11 +12,13 @@ import { Testing } from '@/components/blueprint/Testing';
 import { FailureModes } from '@/components/blueprint/FailureModes';
 import { DataModel } from '@/components/blueprint/DataModel';
 import { Skills } from '@/components/blueprint/Skills';
+import { Cost } from '@/components/blueprint/Cost';
 import { ExtensionsAndReferences } from '@/components/blueprint/ExtensionAndRef';
 import NavigationSidebar from '@/components/decision-matrix/NavigationSideBar';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon } from '@hugeicons/core-free-icons';
+import { getDataMode } from '@/lib/data-mode';
 
 // Z-index scale for consistent layering
 const Z_INDEX = {
@@ -28,6 +30,9 @@ const Z_INDEX = {
 
 export default function Page() {
   const router = useRouter();
+  const [blueprintData, setBlueprintData] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('overview');
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
     architecture: true,
@@ -41,17 +46,52 @@ export default function Page() {
   });
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
+  // Load blueprint data from sessionStorage or use dummy data
+  useEffect(() => {
+    try {
+      const useDummyData = getDataMode();
+      
+      if (useDummyData) {
+        // Use dummy data when toggle is enabled
+        setBlueprintData(dummydata);
+        setIsLoading(false);
+        setError(null);
+        return;
+      }
+      
+      const storedData = sessionStorage.getItem('blueprintData');
+      if (storedData) {
+        const parsed = JSON.parse(storedData);
+        setBlueprintData(parsed);
+        setError(null);
+        sessionStorage.removeItem('blueprintData');
+      } else {
+        // Show error if no API data and not using dummy data
+        setError('No blueprint data available. Please generate from the decision matrix.');
+        setBlueprintData(null);
+      }
+    } catch (err) {
+      console.error('Error loading blueprint data:', err);
+      setError(`Failed to parse blueprint data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      setBlueprintData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
   // Build navigation structure
   const buildNavStructure = () => {
+    if (!blueprintData) return [];
+    
     const nav: any[] = [
       { id: 'overview', label: 'Project Overview', level: 0 }
     ];
 
-    if (dummydata.problem) {
+    if (blueprintData.problem) {
       nav.push({ id: 'problem', label: 'Problem Statement', level: 0 });
     }
 
-    if (dummydata.architecture) {
+    if (blueprintData.architecture) {
       nav.push({
         id: 'architecture',
         label: 'Architecture',
@@ -64,12 +104,12 @@ export default function Page() {
       });
     }
 
-    if (dummydata.subsystems) {
+    if (blueprintData.subsystems) {
       nav.push({
         id: 'subsystems',
         label: 'Subsystems',
         level: 0,
-        children: dummydata.subsystems.map((s: any, i: number) => ({
+        children: blueprintData.subsystems.map((s: any, i: number) => ({
           id: `subsystem-${i}`,
           label: s.name,
           level: 1
@@ -77,12 +117,12 @@ export default function Page() {
       });
     }
 
-    if (dummydata.components) {
+    if (blueprintData.components) {
       nav.push({
         id: 'components',
         label: 'Components',
         level: 0,
-        children: dummydata.components.map((c: any, i: number) => ({
+        children: blueprintData.components.map((c: any, i: number) => ({
           id: `component-${i}`,
           label: `${c.subsystem} System`,
           level: 1
@@ -90,31 +130,35 @@ export default function Page() {
       });
     }
 
-    if (dummydata.power_budget) {
+    if (blueprintData.power_budget) {
       nav.push({ id: 'power', label: 'Power Budget', level: 0 });
     }
 
-    if (dummydata.execution_steps) {
+    if (blueprintData.execution_steps) {
       nav.push({ id: 'execution', label: 'Execution Steps', level: 0 });
     }
 
-    if (dummydata.testing) {
+    if (blueprintData.testing) {
       nav.push({ id: 'testing', label: 'Testing', level: 0 });
     }
 
-    if (dummydata.failure_modes) {
+    if (blueprintData.failure_modes) {
       nav.push({ id: 'failures', label: 'Failure Modes', level: 0 });
     }
 
-    if (dummydata.data_model) {
+    if (blueprintData.data_model) {
       nav.push({ id: 'data', label: 'Data Model', level: 0 });
     }
 
-    if (dummydata.skills) {
+    if (blueprintData.skills) {
       nav.push({ id: 'skills', label: 'Skills Required', level: 0 });
     }
 
-    if (dummydata.extensions || dummydata.references) {
+    if (blueprintData.cost) {
+      nav.push({ id: 'cost', label: 'Cost Estimation', level: 0 });
+    }
+
+    if (blueprintData.extensions || blueprintData.references) {
       nav.push({ id: 'extras', label: 'Extensions & References', level: 0 });
     }
 
@@ -231,7 +275,12 @@ export default function Page() {
                   <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-4.5 sm:h-4.5" />
                 </button>
               )}
-              <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Blueprint</h1>
+              <div className="flex items-center gap-2">
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Blueprint</h1>
+                {isLoading && (
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
+                )}
+              </div>
             </div>
             <Button
               variant="outline"
@@ -245,96 +294,160 @@ export default function Page() {
 
           {/* Content */}
           <div className="w-full h-auto flex flex-col gap-6 mt-20 md:mt-8">
-            <div className="bg-muted/30 p-4 rounded-lg border-l-2 border-border">
-              <p className="text-sm leading-relaxed">
-                Comprehensive project blueprint with architecture, components, and execution plan.
-              </p>
-            </div>
+            {isLoading ? (
+              <div className="flex items-center justify-center min-h-[400px]">
+                <div className="flex flex-col items-center gap-4">
+                  <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                  <p className="text-muted-foreground">Loading blueprint...</p>
+                </div>
+              </div>
+            ) : error ? (
+              <div className="flex flex-col gap-4">
+                <div className="bg-destructive/10 border border-destructive rounded-lg p-6">
+                  <h2 className="text-lg font-semibold text-destructive mb-2">Error Loading Blueprint</h2>
+                  <p className="text-sm text-muted-foreground mb-4">{error}</p>
+                  <div className="flex gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push('/app')}
+                    >
+                      Go Back
+                    </Button>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => router.push('/app/decision-matrix')}
+                    >
+                      Back to Decision Matrix
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            ) : blueprintData ? (
+              <>
+                <div className="bg-muted/30 p-4 rounded-lg border-l-2 border-border">
+                  <p className="text-sm leading-relaxed">
+                    Comprehensive project blueprint with architecture, components, and execution plan.
+                  </p>
+                </div>
 
-            {/* Project Header */}
-            <div className="bg-background rounded-lg shadow-sm border border-border p-4 sm:p-6">
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-2 wrap-break-words">
-                {dummydata.project}
-              </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground">Blueprint</p>
-            </div>
+                {/* Project Header */}
+                <div className="bg-background rounded-lg shadow-sm border border-border p-4 sm:p-6">
+                  <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-2 wrap-break-words">
+                    {blueprintData.project}
+                  </h1>
+                  <p className="text-xs sm:text-sm text-muted-foreground">Blueprint</p>
+                </div>
 
-            {/* Problem Statement */}
-            <ProblemStatement
-              statement={dummydata.problem.statement}
-              constraints={dummydata.problem.constraints}
-              contentRef={(el) => (contentRefs.current['problem'] = el)}
-            />
+                {/* Problem Statement */}
+                {blueprintData.problem && (
+                  <ProblemStatement
+                    statement={blueprintData.problem.statement}
+                    constraints={blueprintData.problem.constraints}
+                    contentRef={(el) => (contentRefs.current['problem'] = el)}
+                  />
+                )}
 
-            {/* Architecture */}
-            <Architecture
-              overview={dummydata.architecture.overview}
-              blockDiagram={dummydata.architecture.block_diagram}
-              dataFlow={dummydata.architecture.data_flow}
-              isExpanded={expandedSections.architecture}
-              onToggle={() => toggleSection('architecture')}
-              contentRef={(el) => (contentRefs.current['architecture'] = el)}
-            />
+                {/* Architecture */}
+                {blueprintData.architecture && (
+                  <Architecture
+                    overview={blueprintData.architecture.overview}
+                    blockDiagram={blueprintData.architecture.block_diagram}
+                    dataFlow={blueprintData.architecture.data_flow}
+                    isExpanded={expandedSections.architecture}
+                    onToggle={() => toggleSection('architecture')}
+                    contentRef={(el) => (contentRefs.current['architecture'] = el)}
+                  />
+                )}
 
-            {/* Subsystems */}
-            <Subsystems
-              subsystems={dummydata.subsystems}
-              isExpanded={expandedSections.subsystems}
-              onToggle={() => toggleSection('subsystems')}
-              contentRef={(el) => (contentRefs.current['subsystems'] = el)}
-            />
+                {/* Subsystems */}
+                {blueprintData.subsystems && (
+                  <Subsystems
+                    subsystems={blueprintData.subsystems}
+                    isExpanded={expandedSections.subsystems}
+                    onToggle={() => toggleSection('subsystems')}
+                    contentRef={(el) => (contentRefs.current['subsystems'] = el)}
+                  />
+                )}
 
-            {/* Components */}
-            <Components
-              components={dummydata.components}
-              isExpanded={expandedSections.components}
-              onToggle={() => toggleSection('components')}
-              expandedItems={expandedItems}
-              onItemToggle={toggleItem}
-              contentRef={(el) => (contentRefs.current['components'] = el)}
-            />
+                {/* Components */}
+                {blueprintData.components && (
+                  <Components
+                    components={blueprintData.components}
+                    isExpanded={expandedSections.components}
+                    onToggle={() => toggleSection('components')}
+                    expandedItems={expandedItems}
+                    onItemToggle={toggleItem}
+                    contentRef={(el) => (contentRefs.current['components'] = el)}
+                  />
+                )}
 
-            {/* Power Budget */}
-            <PowerBudget
-              powerBudget={dummydata.power_budget}
-              contentRef={(el) => (contentRefs.current['power'] = el)}
-            />
+                {/* Power Budget */}
+                {blueprintData.power_budget && (
+                  <PowerBudget
+                    powerBudget={blueprintData.power_budget}
+                    contentRef={(el) => (contentRefs.current['power'] = el)}
+                  />
+                )}
 
-            {/* Execution Steps */}
-            <ExecutionSteps
-              steps={dummydata.execution_steps}
-              contentRef={(el) => (contentRefs.current['execution'] = el)}
-            />
+                {/* Execution Steps */}
+                {blueprintData.execution_steps && (
+                  <ExecutionSteps
+                    steps={blueprintData.execution_steps}
+                    contentRef={(el) => (contentRefs.current['execution'] = el)}
+                  />
+                )}
 
-            {/* Testing */}
-            <Testing
-              testing={dummydata.testing}
-              contentRef={(el) => (contentRefs.current['testing'] = el)}
-            />
+                {/* Testing */}
+                {blueprintData.testing && (
+                  <Testing
+                    testing={blueprintData.testing}
+                    contentRef={(el) => (contentRefs.current['testing'] = el)}
+                  />
+                )}
 
-            {/* Failure Modes */}
-            <FailureModes
-              failureModes={dummydata.failure_modes}
-              contentRef={(el) => (contentRefs.current['failures'] = el)}
-            />
+                {/* Failure Modes */}
+                {blueprintData.failure_modes && (
+                  <FailureModes
+                    failureModes={blueprintData.failure_modes}
+                    contentRef={(el) => (contentRefs.current['failures'] = el)}
+                  />
+                )}
 
-            {/* Data Model */}
-            <DataModel
-              dataModel={dummydata.data_model}
-              contentRef={(el) => (contentRefs.current['data'] = el)}
-            />
+                {/* Data Model */}
+                {blueprintData.data_model && (
+                  <DataModel
+                    dataModel={blueprintData.data_model}
+                    contentRef={(el) => (contentRefs.current['data'] = el)}
+                  />
+                )}
 
-            {/* Skills */}
-            <Skills
-              skills={dummydata.skills}
-              contentRef={(el) => (contentRefs.current['skills'] = el)}
-            />
+                {/* Skills */}
+                {blueprintData.skills && (
+                  <Skills
+                    skills={blueprintData.skills}
+                    contentRef={(el) => (contentRefs.current['skills'] = el)}
+                  />
+                )}
 
-            {/* Extensions & References */}
-            <ExtensionsAndReferences
-              extensions={dummydata.extensions}
-              references={dummydata.references}
-            />
+                {/* Cost */}
+                {blueprintData.cost && (
+                  <Cost
+                    cost={blueprintData.cost}
+                    contentRef={(el) => (contentRefs.current['cost'] = el)}
+                  />
+                )}
+
+                {/* Extensions & References */}
+                {(blueprintData.extensions || blueprintData.references) && (
+                  <ExtensionsAndReferences
+                    extensions={blueprintData.extensions}
+                    references={blueprintData.references}
+                  />
+                )}
+              </>
+            ) : null}
           </div>
         </div>
       </main>

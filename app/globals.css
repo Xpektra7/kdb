@@ -124,6 +124,10 @@
     @apply border-border outline-ring/50 font-inter;
     font-size: 0.925rem;
     line-height: 1.5;
+
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted) var(--background);
+    
   }
   body {
     @apply bg-background text-muted-foreground antialiased;
@@ -173,3 +177,4 @@
     background-image: radial-gradient(var(--tw-gradient-stops));
   }
 }
+

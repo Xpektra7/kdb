@@ -3,14 +3,14 @@ import { ArrowDown01Icon, ArrowRight01Icon, Book02Icon } from '@hugeicons/core-f
 
 interface BlockDiagramItem {
   block: string;
-  from: string[];
-  to: string[];
+  from?: string[];
+  to?: string[];
 }
 
 interface ArchitectureProps {
   overview: string;
-  blockDiagram: BlockDiagramItem[];
-  dataFlow: string;
+  blockDiagram: BlockDiagramItem[] | string[];
+  dataFlow?: string;
   isExpanded: boolean;
   onToggle: () => void;
   contentRef?: (el: HTMLDivElement | null) => void;
@@ -24,6 +24,14 @@ export function Architecture({
   onToggle,
   contentRef,
 }: ArchitectureProps) {
+  // Handle both string array and object array formats
+  const diagramItems = blockDiagram.map((item, index) => {
+    if (typeof item === 'string') {
+      return { block: item, from: [], to: [] };
+    }
+    return { ...item, from: item.from || [], to: item.to || [] };
+  });
+
   return (
     <section
       ref={contentRef}
@@ -56,14 +64,14 @@ export function Architecture({
               Block Diagram
             </h3>
             <div className="rounded-lg p-3 sm:p-4 border border-border">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 border border-border p-3 rounded-2xl">
-                {blockDiagram.map((block, i) => (
+              <div className="flex flex-col gap-3">
+                {diagramItems.map((block, i) => (
                   <div
                     key={i}
-                    className="p-3 rounded border border-border"
+                    className="p-3 rounded border border-border bg-muted/30"
                   >
                     <p className="text-sm sm:text-base">{block.block}</p>
-                    {block.to.length > 0 && (
+                    {block.to && block.to.length > 0 && (
                       <p className="text-xs mt-1">→ {block.to.join(", ")}</p>
                     )}
                   </div>
@@ -72,10 +80,12 @@ export function Architecture({
             </div>
           </div>
 
-          <div>
-            <h3 className="mb-2 text-sm sm:text-base">Data Flow</h3>
-            <p className="text-sm sm:text-base">{dataFlow}</p>
-          </div>
+          {dataFlow && (
+            <div>
+              <h3 className="mb-2 text-sm sm:text-base">Data Flow</h3>
+              <p className="text-sm sm:text-base">{dataFlow}</p>
+            </div>
+          )}
         </div>
       )}
     </section>

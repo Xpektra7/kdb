@@ -1,4 +1,4 @@
-import { MutableRefObject } from 'react';
+import { MutableRefObject, useState } from 'react';
 import AccordionList from "./AccordionList";
 import ProblemsOverall from "./problems";
 import Research from "./research";
@@ -6,6 +6,7 @@ import Subsystem from "./subsystem";
 import { BlockDiagram } from '../block-diagram/block-diagram';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { getDataMode } from '@/lib/data-mode';
 
 interface DecisionMatrixProps {
   output: any;
@@ -15,6 +16,58 @@ interface DecisionMatrixProps {
 export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixProps) {
 
   const router = useRouter();
+  
+  // Track selected options for each subsystem
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, any>>({});
+
+  // Handle selection change for each subsystem
+  const handleOptionSelect = (subsystemName: string, selectedOption: any) => {
+    setSelectedOptions((prev) => ({
+      ...prev,
+      [subsystemName]: selectedOption,
+    }));
+  };
+
+  // Send selected options to blueprint API and navigate
+  const handleProceedToBlueprint = async () => {
+    const useDummyData = getDataMode();
+    
+    if (useDummyData) {
+      // Skip API call and go directly to blueprint with dummy data
+      router.push('/app/blueprint');
+      return;
+    }
+    
+    try {
+      const response = await fetch('/api/generate/blueprint', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          project: output.project,
+          selectedOptions,
+        }),
+      });
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Blueprint data:', data);
+        
+        // Parse the output if it's a string
+        const blueprintData = typeof data.output === 'string' 
+          ? JSON.parse(data.output) 
+          : data.output;
+        
+        // Store blueprint data in sessionStorage for the blueprint page
+        sessionStorage.setItem('blueprintData', JSON.stringify(blueprintData));
+      }
+      router.push('/app/blueprint');
+    } catch (error) {
+      console.error('Error sending selected options:', error);
+      router.push('/app/blueprint');
+    }
+  };
 
   return (
     <div className="w-full max-w-6xl text-wrap flex flex-col gap-10 overflow-x-hidden">
@@ -52,7 +105,11 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
                 ref={(el) => { contentRefs.current[`component-${index}`] = el; }}
                 className="scroll-mt-20"
               >
-                <Subsystem subsystem={matrix} />
+                <Subsystem 
+                  subsystem={matrix} 
+                  onOptionSelect={(selectedOption) => handleOptionSelect(matrix.subsystem, selectedOption)}
+                  selectedOption={selectedOptions[matrix.subsystem]}
+                />
               </div>
             ))}
           </div>
@@ -64,12 +121,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
       </div>
 
-      {/* Suggestions */}
-      <div ref={(el) => { contentRefs.current['suggestions'] = el; }} className="scroll-mt-20">
-        <AccordionList name="Suggestions" list={output.suggestions || []} />
-      </div>
-
-      <Button variant="default" className="w-full sm:w-auto mt-6" onClick={() => router.push('/app/blueprint')}>
+      <Button variant="default" className="w-full sm:w-auto mt-6" onClick={handleProceedToBlueprint}>
         Proceed to Blueprint
       </Button>
     </div>

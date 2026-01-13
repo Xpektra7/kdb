@@ -7,7 +7,18 @@ import {
 import AccordionList from "./AccordionList";
 import { Badge } from "../ui/badge";
 
-export default function Subsystem({ subsystem }: { subsystem: any }) {
+interface SubsystemProps {
+    subsystem: any;
+    onOptionSelect?: (selectedOption: any) => void;
+    selectedOption?: any;
+}
+
+export default function Subsystem({ subsystem, onOptionSelect, selectedOption }: SubsystemProps) {
+    const handleOptionChange = (option: any) => {
+        if (onOptionSelect) {
+            onOptionSelect(option);
+        }
+    };
     return (
         <Accordion type="single" collapsible defaultValue={subsystem.subsystem} className="w-full border-b border-border pb-3">
             <AccordionItem value={subsystem.subsystem}>
@@ -22,7 +33,14 @@ export default function Subsystem({ subsystem }: { subsystem: any }) {
                                     <div className="flex flex-col gap-2 flex-1">
                                         <h3 className="text-sm sm:text-base md:text-lg font-semibold">{option.name}</h3>
                                     </div>
-                                    <input type="radio" name={subsystem.subsystem} id={option.name} className="mt-1 size-5 md:size-6 shrink-0 cursor-pointer"/>
+                                    <input 
+                                        type="radio" 
+                                        name={subsystem.subsystem} 
+                                        id={option.name} 
+                                        className="mt-1 size-5 md:size-6 shrink-0 cursor-pointer"
+                                        checked={selectedOption?.name === option.name}
+                                        onChange={() => handleOptionChange(option)}
+                                    />
                                 </div>
                                 <div className="text-xs sm:text-sm text-muted-foreground">
                                     <p className="line-clamp-none leading-relaxed">{option.why_it_works}</p>

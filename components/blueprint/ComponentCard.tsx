@@ -5,12 +5,12 @@ interface Component {
   subsystem: string;
   chosen_option: string;
   why_chosen: string;
-  features: string[];
+  features?: string[];
   pros: string[];
   cons: string[];
-  alternatives_considered: string[];
-  availability: string;
-  estimated_cost: string;
+  alternatives_considered?: string[];
+  availability?: string;
+  estimated_cost?: string;
 }
 
 interface ComponentCardProps {
@@ -47,17 +47,19 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
             <p className="text-xs sm:text-sm">{component.why_chosen}</p>
           </div>
           
-          <div>
-            <p className="text-xs mb-1">Features</p>
-            <ul className="space-y-1">
-              {component.features.map((feature, j) => (
-                <li key={j} className="text-xs sm:text-sm flex items-start gap-2">
-                  <span className="shrink-0 mt-0.5">•</span>
-                  <span className="flex-1">{feature}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
+          {component.features && component.features.length > 0 && (
+            <div>
+              <p className="text-xs mb-1">Features</p>
+              <ul className="space-y-1">
+                {component.features.map((feature, j) => (
+                  <li key={j} className="text-xs sm:text-sm flex items-start gap-2">
+                    <span className="shrink-0 mt-0.5">•</span>
+                    <span className="flex-1">{feature}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
@@ -78,15 +80,19 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
             </div>
           </div>
           
-          <div>
-            <p className="text-xs mb-1">Alternatives Considered</p>
-            <p className="text-xs sm:text-sm">{component.alternatives_considered.join(', ')}</p>
-          </div>
+          {component.alternatives_considered && component.alternatives_considered.length > 0 && (
+            <div>
+              <p className="text-xs mb-1">Alternatives Considered</p>
+              <p className="text-xs sm:text-sm">{component.alternatives_considered.join(', ')}</p>
+            </div>
+          )}
           
-          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 pt-2 border-t border-border">
-            <span className="text-xs sm:text-sm">{component.availability}</span>
-            <span className="text-sm sm:text-base">{component.estimated_cost}</span>
-          </div>
+          {(component.availability || component.estimated_cost) && (
+            <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2 pt-2 border-t border-border">
+              {component.availability && <span className="text-xs sm:text-sm">{component.availability}</span>}
+              {component.estimated_cost && <span className="text-sm sm:text-base">{component.estimated_cost}</span>}
+            </div>
+          )}
         </div>
       )}
     </div>
