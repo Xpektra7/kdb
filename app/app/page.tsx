@@ -13,6 +13,10 @@ type User = {
     name: string;
     email: string;
 };
+type Error = {
+    title?: string;
+    message?: string;
+}
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Page() {
@@ -22,7 +26,7 @@ export default function Page() {
     const [user, setUser] = useState<User | null>(null);
     const [projectDescription, setProjectDescription] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<any>(null);
+    const [error, setError] = useState<Error>({});
     const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [useDummyData, setUseDummyData] = useState<boolean>(false);
 
@@ -50,7 +54,7 @@ export default function Page() {
     function handleBuildClick(currentProjectDescription: string) {
         setResult(null);
         setLoading(true);
-        setError(null);
+        setError({});
 
         const controller = new AbortController();
         setAbortController(controller);
@@ -73,7 +77,7 @@ export default function Page() {
                 try {
                     const parsedData = JSON.parse(data.output);
                     setResult(parsedData);
-                    setError(null);
+                    setError({});
                     router.push("/app/decision-matrix");
                 } catch (parseError) {
                     setError({ 
@@ -102,7 +106,7 @@ export default function Page() {
     function handleDummyBuildClick() {
         setResult(null);
         setLoading(true);
-        setError(null);
+        setError({});
 
         setTimeout(() => {
             setResult(airQuality.output);
