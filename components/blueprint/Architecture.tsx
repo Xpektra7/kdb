@@ -1,20 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, ArrowRight01Icon, Book02Icon } from '@hugeicons/core-free-icons';
-
-interface BlockDiagramItem {
-  block: string;
-  from?: string[];
-  to?: string[];
-}
-
-interface ArchitectureProps {
-  overview: string;
-  blockDiagram: BlockDiagramItem[] | string[];
-  dataFlow?: string;
-  isExpanded: boolean;
-  onToggle: () => void;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { ArchitectureProps, BlockDiagramItem } from '@/lib/definitions';
 
 export function Architecture({
   overview,

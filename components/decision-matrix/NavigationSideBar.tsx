@@ -1,20 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, Cancel01Icon, Book02Icon } from '@hugeicons/core-free-icons';
-
-interface NavItem {
-  id: string;
-  label: string;
-  level: number;
-  children?: NavItem[];
-}
-
-interface NavigationSidebarProps {
-  navStructure: NavItem[];
-  activeSection: string;
-  sidebarOpen: boolean;
-  setSidebarOpen: (open: boolean) => void;
-  scrollToSection: (id: string) => void;
-}
+import type { NavItem, NavigationSidebarProps } from '@/lib/definitions';
 
 export default function NavigationSidebar({
   navStructure = [],

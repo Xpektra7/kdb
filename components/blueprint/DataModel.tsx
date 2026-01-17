@@ -1,11 +1,4 @@
-interface DataModel {
-  sample_payload: Record<string, any>;
-}
-
-interface DataModelProps {
-  dataModel: DataModel;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { DataModel, DataModelProps } from '@/lib/definitions';
 
 export function DataModel({ dataModel, contentRef }: DataModelProps) {
   return (

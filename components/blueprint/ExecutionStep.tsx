@@ -1,7 +1,4 @@
-interface ExecutionStepsProps {
-  steps: string[];
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { ExecutionStepsProps } from '@/lib/definitions';
 
 // Simple function to convert basic markdown to HTML
 function parseMarkdown(text: string): string {

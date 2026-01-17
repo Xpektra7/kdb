@@ -1,7 +1,4 @@
-interface ExtensionsAndReferencesProps {
-  extensions?: string[];
-  references?: string[];
-}
+import type { ExtensionsAndReferencesProps } from '@/lib/definitions';
 
 export function ExtensionsAndReferences({ extensions = [], references = [] }: ExtensionsAndReferencesProps) {
   if (!extensions.length && !references.length) return null;

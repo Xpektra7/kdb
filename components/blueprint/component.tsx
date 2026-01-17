@@ -1,27 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, ArrowRight01Icon, Book02Icon } from '@hugeicons/core-free-icons';
 import { ComponentCard } from './ComponentCard';
-
-interface Component {
-  subsystem: string;
-  chosen_option: string;
-  why_chosen: string;
-  features: string[];
-  pros: string[];
-  cons: string[];
-  alternatives_considered: string[];
-  availability: string;
-  estimated_cost: string;
-}
-
-interface ComponentsProps {
-  components: Component[];
-  isExpanded: boolean;
-  onToggle: () => void;
-  expandedItems: Record<string, boolean>;
-  onItemToggle: (id: string) => void;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { Component, ComponentsProps } from '@/lib/definitions';
 
 export function Components({ components, isExpanded, onToggle, expandedItems, onItemToggle, contentRef }: ComponentsProps) {
   return (

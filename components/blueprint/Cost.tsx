@@ -1,10 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { DollarCircleIcon } from '@hugeicons/core-free-icons';
-
-interface CostProps {
-  cost: string;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { CostProps } from '@/lib/definitions';
 
 export function Cost({ cost, contentRef }: CostProps) {
   return (

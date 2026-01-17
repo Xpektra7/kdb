@@ -1,23 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
-
-interface Component {
-  subsystem: string;
-  chosen_option: string;
-  why_chosen: string;
-  features?: string[];
-  pros: string[];
-  cons: string[];
-  alternatives_considered?: string[];
-  availability?: string;
-  estimated_cost?: string;
-}
-
-interface ComponentCardProps {
-  component: Component;
-  isExpanded: boolean;
-  onToggle: () => void;
-}
+import type { Component, ComponentCardProps } from '@/lib/definitions';
 
 export function ComponentCard({ component, isExpanded, onToggle }: ComponentCardProps) {
   return (

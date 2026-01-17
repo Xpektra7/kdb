@@ -4,22 +4,9 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { motion } from 'framer-motion';
 import { cn } from '@/lib/utils';
 
-export interface BlockData {
-  block: string;
-  from?: string | string[] | null;
-  to?: string | string[] | null;
-}
+import type { BlockDiagramProps, Edge, BlockData } from '@/lib/definitions';
 
-interface BlockDiagramProps {
-  data: BlockData[];
-  className?: string;
-}
 
-interface Edge {
-  from: string;
-  to: string;
-  id: string;
-}
 
 export function BlockDiagram({ data, className }: BlockDiagramProps) {
   const containerRef = useRef<HTMLDivElement>(null);

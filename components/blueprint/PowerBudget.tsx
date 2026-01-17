@@ -1,14 +1,4 @@
-interface PowerBudget {
-  source: string;
-  active_current: string;
-  sleep_current: string;
-  runtime_estimate: string;
-}
-
-interface PowerBudgetProps {
-  powerBudget: PowerBudget;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { PowerBudget, PowerBudgetProps } from '@/lib/definitions';
 
 export function PowerBudget({ powerBudget, contentRef }: PowerBudgetProps) {
   return (

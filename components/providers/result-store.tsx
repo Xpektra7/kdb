@@ -1,10 +1,6 @@
 "use client";
 import { createContext, useContext, useState, type ReactNode } from "react";
-
-type ResultContextValue = {
-  result: unknown;
-  setResult: (value: unknown) => void;
-};
+import type { ResultContextValue } from '@/lib/definitions';
 
 const ResultContext = createContext<ResultContextValue | null>(null);
 

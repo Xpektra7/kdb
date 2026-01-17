@@ -1,11 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Book02Icon } from '@hugeicons/core-free-icons';
 import { Badge } from '@/components/ui/badge';
-
-interface SkillsProps {
-  skills: string[] | string;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { SkillsProps } from '@/lib/definitions';
 
 export function Skills({ skills, contentRef }: SkillsProps) {
   // Handle both array and string formats

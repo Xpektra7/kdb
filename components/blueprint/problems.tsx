@@ -1,12 +1,7 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Alert01Icon } from '@hugeicons/core-free-icons';
 import { Badge } from '@/components/ui/badge';
-
-interface ProblemStatementProps {
-  statement: string;
-  constraints: string[];
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { ProblemStatementProps } from '@/lib/definitions';
 
 export function ProblemStatement({ statement, constraints, contentRef }: ProblemStatementProps) {
   return (

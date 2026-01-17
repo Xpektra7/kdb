@@ -1,12 +1,4 @@
-interface FailureMode {
-  issue: string;
-  mitigation: string;
-}
-
-interface FailureModesProps {
-  failureModes: FailureMode[];
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { FailureMode, FailureModesProps } from '@/lib/definitions';
 
 export function FailureModes({ failureModes, contentRef }: FailureModesProps) {
   return (

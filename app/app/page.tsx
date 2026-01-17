@@ -9,14 +9,7 @@ import { Spinner } from "@/components/ui/spinner";
 import { useResultStore } from "@/components/providers/result-store";
 import airQuality from "@/schema/air-quality-result2.json";
 import { getDataMode } from "@/lib/data-mode";
-type User = {
-    name: string;
-    email: string;
-};
-type Error = {
-    title?: string;
-    message?: string;
-}
+import type { User, Error } from '@/lib/definitions';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Page() {

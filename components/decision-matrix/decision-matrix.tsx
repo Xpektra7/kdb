@@ -8,10 +8,7 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { getDataMode } from '@/lib/data-mode';
 
-interface DecisionMatrixProps {
-  output: any;
-  contentRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
-}
+import type { DecisionMatrixProps } from '@/lib/definitions';
 
 export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixProps) {
 

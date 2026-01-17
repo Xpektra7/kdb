@@ -1,24 +1,14 @@
 "use client";
-import dummydata from '@/schema/air-quality-result.json';
+import { dummydata } from '@/schema/air-quality-result';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import { ProblemStatement } from '@/components/blueprint/problems';
-import { Architecture } from '@/components/blueprint/Architecture';
-import { Subsystems } from '@/components/blueprint/subSystem';
-import { Components } from '@/components/blueprint/component';
-import { PowerBudget } from '@/components/blueprint/PowerBudget';
-import { ExecutionSteps } from '@/components/blueprint/ExecutionStep';
-import { Testing } from '@/components/blueprint/Testing';
-import { FailureModes } from '@/components/blueprint/FailureModes';
-import { DataModel } from '@/components/blueprint/DataModel';
-import { Skills } from '@/components/blueprint/Skills';
-import { Cost } from '@/components/blueprint/Cost';
-import { ExtensionsAndReferences } from '@/components/blueprint/ExtensionAndRef';
 import NavigationSidebar from '@/components/decision-matrix/NavigationSideBar';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon } from '@hugeicons/core-free-icons';
 import { getDataMode } from '@/lib/data-mode';
+import type { Blueprint, NavItem } from '@/lib/definitions';
+import BlueprintView from '@/components/blueprint/blueprint';
 
 // Z-index scale for consistent layering
 const Z_INDEX = {
@@ -28,9 +18,10 @@ const Z_INDEX = {
 } as const;
 
 
+
 export default function Page() {
   const router = useRouter();
-  const [blueprintData, setBlueprintData] = useState<any>(null);
+  const [blueprintData, setBlueprintData] = useState<Blueprint | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [activeSection, setActiveSection] = useState('overview');
@@ -53,7 +44,7 @@ export default function Page() {
       
       if (useDummyData) {
         // Use dummy data when toggle is enabled
-        setBlueprintData(dummydata);
+        setBlueprintData(dummydata as unknown as Blueprint);
         setIsLoading(false);
         setError(null);
         return;
@@ -79,84 +70,86 @@ export default function Page() {
     }
   }, []);
 
+  // Navigation configuration
+  const NAV_CONFIG = [
+    { 
+      key: 'problem', 
+      id: 'problem', 
+      label: 'Problem Statement' 
+    },
+    {
+      key: 'architecture',
+      id: 'architecture',
+      label: 'Architecture',
+      children: [
+        { id: 'arch-overview', label: 'Overview' },
+        { id: 'block-diagram', label: 'Block Diagram' },
+        { id: 'data-flow', label: 'Data Flow' }
+      ]
+    },
+    {
+      key: 'subsystems',
+      id: 'subsystems',
+      label: 'Subsystems',
+      childrenFn: (data: any) => data.map((s: any, i: number) => ({
+        id: `subsystem-${i}`,
+        label: s.name
+      }))
+    },
+    {
+      key: 'components',
+      id: 'components',
+      label: 'Components',
+      childrenFn: (data: any) => data.map((c: any, i: number) => ({
+        id: `component-${i}`,
+        label: `${c.subsystem} System`
+      }))
+    },
+    { key: 'power_budget', id: 'power', label: 'Power Budget' },
+    { key: 'execution_steps', id: 'execution', label: 'Execution Steps' },
+    { key: 'testing', id: 'testing', label: 'Testing' },
+    { key: 'failure_modes', id: 'failures', label: 'Failure Modes' },
+    { key: 'data_model', id: 'data', label: 'Data Model' },
+    { key: 'skills', id: 'skills', label: 'Skills Required' },
+    { key: 'cost', id: 'cost', label: 'Cost Estimation' },
+  ] as const;
+
   // Build navigation structure
   const buildNavStructure = () => {
     if (!blueprintData) return [];
     
-    const nav: any[] = [
+    const nav: NavItem[] = [
       { id: 'overview', label: 'Project Overview', level: 0 }
     ];
 
-    if (blueprintData.problem) {
-      nav.push({ id: 'problem', label: 'Problem Statement', level: 0 });
-    }
+    // Add sections from config
+    NAV_CONFIG.forEach(item => {
+      const value = blueprintData[item.key as keyof Blueprint];
+      if (!value) return;
 
-    if (blueprintData.architecture) {
-      nav.push({
-        id: 'architecture',
-        label: 'Architecture',
-        level: 0,
-        children: [
-          { id: 'arch-overview', label: 'Overview', level: 1 },
-          { id: 'block-diagram', label: 'Block Diagram', level: 1 },
-          { id: 'data-flow', label: 'Data Flow', level: 1 }
-        ]
-      });
-    }
+      let navItem: NavItem = {
+        id: item.id,
+        label: item.label,
+        level: 0
+      };
 
-    if (blueprintData.subsystems) {
-      nav.push({
-        id: 'subsystems',
-        label: 'Subsystems',
-        level: 0,
-        children: blueprintData.subsystems.map((s: any, i: number) => ({
-          id: `subsystem-${i}`,
-          label: s.name,
+      // Handle static children
+      if ('children' in item && item.children) {
+        navItem.children = item.children.map(child => ({
+          ...child,
           level: 1
-        }))
-      });
-    }
-
-    if (blueprintData.components) {
-      nav.push({
-        id: 'components',
-        label: 'Components',
-        level: 0,
-        children: blueprintData.components.map((c: any, i: number) => ({
-          id: `component-${i}`,
-          label: `${c.subsystem} System`,
+        }));
+      }
+      // Handle dynamic children
+      else if ('childrenFn' in item && item.childrenFn) {
+        navItem.children = item.childrenFn(value).map((child: any) => ({
+          ...child,
           level: 1
-        }))
-      });
-    }
+        }));
+      }
 
-    if (blueprintData.power_budget) {
-      nav.push({ id: 'power', label: 'Power Budget', level: 0 });
-    }
-
-    if (blueprintData.execution_steps) {
-      nav.push({ id: 'execution', label: 'Execution Steps', level: 0 });
-    }
-
-    if (blueprintData.testing) {
-      nav.push({ id: 'testing', label: 'Testing', level: 0 });
-    }
-
-    if (blueprintData.failure_modes) {
-      nav.push({ id: 'failures', label: 'Failure Modes', level: 0 });
-    }
-
-    if (blueprintData.data_model) {
-      nav.push({ id: 'data', label: 'Data Model', level: 0 });
-    }
-
-    if (blueprintData.skills) {
-      nav.push({ id: 'skills', label: 'Skills Required', level: 0 });
-    }
-
-    if (blueprintData.cost) {
-      nav.push({ id: 'cost', label: 'Cost Estimation', level: 0 });
-    }
+      nav.push(navItem);
+    });
 
     if (blueprintData.extensions || blueprintData.references) {
       nav.push({ id: 'extras', label: 'Extensions & References', level: 0 });
@@ -325,128 +318,14 @@ export default function Page() {
                 </div>
               </div>
             ) : blueprintData ? (
-              <>
-                <div className="bg-muted/30 p-4 rounded-lg border-l-2 border-border">
-                  <p className="text-sm leading-relaxed">
-                    Comprehensive project blueprint with architecture, components, and execution plan.
-                  </p>
-                </div>
-
-                {/* Project Header */}
-                <div className="bg-background rounded-lg shadow-sm border border-border p-4 sm:p-6">
-                  <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-2 wrap-break-words">
-                    {blueprintData.project}
-                  </h1>
-                  <p className="text-xs sm:text-sm text-muted-foreground">Blueprint</p>
-                </div>
-
-                {/* Problem Statement */}
-                {blueprintData.problem && (
-                  <ProblemStatement
-                    statement={blueprintData.problem.statement}
-                    constraints={blueprintData.problem.constraints}
-                    contentRef={(el) => (contentRefs.current['problem'] = el)}
-                  />
-                )}
-
-                {/* Architecture */}
-                {blueprintData.architecture && (
-                  <Architecture
-                    overview={blueprintData.architecture.overview}
-                    blockDiagram={blueprintData.architecture.block_diagram}
-                    dataFlow={blueprintData.architecture.data_flow}
-                    isExpanded={expandedSections.architecture}
-                    onToggle={() => toggleSection('architecture')}
-                    contentRef={(el) => (contentRefs.current['architecture'] = el)}
-                  />
-                )}
-
-                {/* Subsystems */}
-                {blueprintData.subsystems && (
-                  <Subsystems
-                    subsystems={blueprintData.subsystems}
-                    isExpanded={expandedSections.subsystems}
-                    onToggle={() => toggleSection('subsystems')}
-                    contentRef={(el) => (contentRefs.current['subsystems'] = el)}
-                  />
-                )}
-
-                {/* Components */}
-                {blueprintData.components && (
-                  <Components
-                    components={blueprintData.components}
-                    isExpanded={expandedSections.components}
-                    onToggle={() => toggleSection('components')}
-                    expandedItems={expandedItems}
-                    onItemToggle={toggleItem}
-                    contentRef={(el) => (contentRefs.current['components'] = el)}
-                  />
-                )}
-
-                {/* Power Budget */}
-                {blueprintData.power_budget && (
-                  <PowerBudget
-                    powerBudget={blueprintData.power_budget}
-                    contentRef={(el) => (contentRefs.current['power'] = el)}
-                  />
-                )}
-
-                {/* Execution Steps */}
-                {blueprintData.execution_steps && (
-                  <ExecutionSteps
-                    steps={blueprintData.execution_steps}
-                    contentRef={(el) => (contentRefs.current['execution'] = el)}
-                  />
-                )}
-
-                {/* Testing */}
-                {blueprintData.testing && (
-                  <Testing
-                    testing={blueprintData.testing}
-                    contentRef={(el) => (contentRefs.current['testing'] = el)}
-                  />
-                )}
-
-                {/* Failure Modes */}
-                {blueprintData.failure_modes && (
-                  <FailureModes
-                    failureModes={blueprintData.failure_modes}
-                    contentRef={(el) => (contentRefs.current['failures'] = el)}
-                  />
-                )}
-
-                {/* Data Model */}
-                {blueprintData.data_model && (
-                  <DataModel
-                    dataModel={blueprintData.data_model}
-                    contentRef={(el) => (contentRefs.current['data'] = el)}
-                  />
-                )}
-
-                {/* Skills */}
-                {blueprintData.skills && (
-                  <Skills
-                    skills={blueprintData.skills}
-                    contentRef={(el) => (contentRefs.current['skills'] = el)}
-                  />
-                )}
-
-                {/* Cost */}
-                {blueprintData.cost && (
-                  <Cost
-                    cost={blueprintData.cost}
-                    contentRef={(el) => (contentRefs.current['cost'] = el)}
-                  />
-                )}
-
-                {/* Extensions & References */}
-                {(blueprintData.extensions || blueprintData.references) && (
-                  <ExtensionsAndReferences
-                    extensions={blueprintData.extensions}
-                    references={blueprintData.references}
-                  />
-                )}
-              </>
+              <BlueprintView
+                blueprintData={blueprintData}
+                contentRefs={contentRefs}
+                expandedSections={expandedSections}
+                expandedItems={expandedItems}
+                toggleSection={toggleSection}
+                toggleItem={toggleItem}
+              />
             ) : null}
           </div>
         </div>

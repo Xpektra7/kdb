@@ -1,4 +1,7 @@
-{
+import type { Blueprint } from '@/lib/definitions';
+
+
+export const dummydata: Blueprint = {
   "project": "IoT Air Quality Monitoring System",
   "problem": {
     "statement": "Lack of accessible, real-time local air quality data in urban and semi-urban areas of Nigeria, hindering public health awareness and environmental policy decisions.",

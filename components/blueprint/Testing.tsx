@@ -1,14 +1,5 @@
 import { Badge } from '@/components/ui/badge';
-
-interface Testing {
-  methods: string[];
-  success_criteria: string;
-}
-
-interface TestingProps {
-  testing: Testing;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { Testing, TestingProps } from '@/lib/definitions';
 
 export function Testing({ testing, contentRef }: TestingProps) {
   return (

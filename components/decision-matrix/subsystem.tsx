@@ -6,13 +6,7 @@ import {
 } from "@/components/ui/accordion"
 import AccordionList from "./AccordionList";
 import { Badge } from "../ui/badge";
-
-interface SubsystemProps {
-    subsystem: any;
-    onOptionSelect?: (selectedOption: any) => void;
-    selectedOption?: any;
-    showError?: boolean;
-}
+import type { SubsystemProps } from '@/lib/definitions';
 
 export default function Subsystem({ subsystem, onOptionSelect, selectedOption, showError }: SubsystemProps) {
     const handleOptionChange = (option: any) => {

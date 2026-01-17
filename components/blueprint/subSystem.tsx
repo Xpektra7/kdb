@@ -1,24 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, ArrowRight01Icon, Book02Icon } from '@hugeicons/core-free-icons';
-
-interface SubsystemInterface {
-  type: string;
-  voltage: string;
-  notes: string;
-}
-
-interface Subsystem {
-  name: string;
-  role: string;
-  interfaces: SubsystemInterface[];
-}
-
-interface SubsystemsProps {
-  subsystems: Subsystem[];
-  isExpanded: boolean;
-  onToggle: () => void;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
+import type { SubsystemInterface, Subsystem, SubsystemsProps } from '@/lib/definitions';
 
 export function Subsystems({ subsystems, isExpanded, onToggle, contentRef }: SubsystemsProps) {
   return (
