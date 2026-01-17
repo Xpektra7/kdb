@@ -1,4 +1,4 @@
-import type { NavItem } from '@/lib/definitions';
+import type { NavItem, Blueprint, DecisionMatrixOutput, Subsystem, Component } from '@/lib/definitions';
 
 // Config-driven navigation sections for blueprint view
 const NAV_CONFIG = [
@@ -17,7 +17,7 @@ const NAV_CONFIG = [
     key: 'subsystems',
     id: 'subsystems',
     label: 'Subsystems',
-    childrenFn: (data: any) => (Array.isArray(data) ? data : []).map((s: any, i: number) => ({
+    childrenFn: (data: Subsystem[]) => (Array.isArray(data) ? data : []).map((s, i) => ({
       id: `subsystem-${i}`,
       label: s?.name ?? `Subsystem ${i + 1}`,
     })),
@@ -26,7 +26,7 @@ const NAV_CONFIG = [
     key: 'components',
     id: 'components',
     label: 'Components',
-    childrenFn: (data: any) => (Array.isArray(data) ? data : []).map((c: any, i: number) => ({
+    childrenFn: (data: Component[]) => (Array.isArray(data) ? data : []).map((c, i) => ({
       id: `component-${i}`,
       label: `${c?.subsystem ?? 'Component'} System`,
     })),
@@ -40,13 +40,13 @@ const NAV_CONFIG = [
   { key: 'cost', id: 'cost', label: 'Cost Estimation' },
 ] as const;
 
-export function buildBlueprintNav(blueprintData: any): NavItem[] {
+export function buildBlueprintNav(blueprintData: Blueprint): NavItem[] {
   if (!blueprintData) return [];
 
   const nav: NavItem[] = [{ id: 'overview', label: 'Project Overview', level: 0 }];
 
   NAV_CONFIG.forEach((item) => {
-    const value = (blueprintData as any)[item.key];
+    const value = blueprintData[item.key as keyof Blueprint];
     if (!value) return;
 
     const base: NavItem = { id: item.id, label: item.label, level: 0 };
@@ -54,13 +54,13 @@ export function buildBlueprintNav(blueprintData: any): NavItem[] {
     if ('children' in item && item.children) {
       base.children = item.children.map((child) => ({ ...child, level: 1 }));
     } else if ('childrenFn' in item && item.childrenFn) {
-      base.children = item.childrenFn(value).map((child: any) => ({ ...child, level: 1 }));
+      base.children = (item.childrenFn as (data: unknown) => Array<{id: string; label: string}>)(value).map((child) => ({ ...child, level: 1 }));
     }
 
     nav.push(base);
   });
 
-  if ((blueprintData as any).extensions || (blueprintData as any).references) {
+  if (blueprintData.extensions || blueprintData.references) {
     nav.push({ id: 'extras', label: 'Extensions & References', level: 0 });
   }
 
@@ -68,7 +68,7 @@ export function buildBlueprintNav(blueprintData: any): NavItem[] {
 }
 
 // Decision Matrix navigation builder
-export function buildDecisionMatrixNav(output: any): NavItem[] {
+export function buildDecisionMatrixNav(output: DecisionMatrixOutput): NavItem[] {
   if (!output) return [];
   const nav: NavItem[] = [{ id: 'overview', label: 'Project Overview', level: 0 }];
 
@@ -85,7 +85,7 @@ export function buildDecisionMatrixNav(output: any): NavItem[] {
       id: 'components',
       label: 'Components',
       level: 0,
-      children: output.decision_matrix.map((m: any, i: number) => ({
+      children: output.decision_matrix.map((m, i) => ({
         id: `component-${i}`,
         label: `${m.subsystem} System`,
         level: 1,
@@ -95,10 +95,6 @@ export function buildDecisionMatrixNav(output: any): NavItem[] {
 
   if (output.skills) {
     nav.push({ id: 'skills', label: 'Skills Required', level: 0 });
-  }
-
-  if (output.suggestions) {
-    nav.push({ id: 'suggestions', label: 'Suggestions', level: 0 });
   }
 
   return nav;

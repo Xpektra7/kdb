@@ -1,5 +1,5 @@
 import { MutableRefObject, useState } from 'react';
-import AccordionList from "./AccordionList";
+import AccordionList from "./accordion-list";
 import ProblemsOverall from "./problems";
 import Research from "./research";
 import Subsystem from "./subsystem";
@@ -8,19 +8,19 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { getDataMode } from '@/lib/data-mode';
 
-import type { DecisionMatrixProps } from '@/lib/definitions';
+import type { DecisionMatrixProps, DecisionMatrixOption } from '@/lib/definitions';
 
 export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixProps) {
 
   const router = useRouter();
   
   // Track selected options for each subsystem
-  const [selectedOptions, setSelectedOptions] = useState<Record<string, any>>({});
+  const [selectedOptions, setSelectedOptions] = useState<Record<string, DecisionMatrixOption>>({});
   // Track subsystems missing a selection for UX feedback
   const [missingSubs, setMissingSubs] = useState<string[]>([]);
 
   // Handle selection change for each subsystem
-  const handleOptionSelect = (subsystemName: string, selectedOption: any) => {
+  const handleOptionSelect = (subsystemName: string, selectedOption: DecisionMatrixOption) => {
     setSelectedOptions((prev) => ({
       ...prev,
       [subsystemName]: selectedOption,
@@ -33,13 +33,13 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
   const handleProceedToBlueprint = async () => {
     // Validate all subsystems have a selection
     const missing = (output.decision_matrix || [])
-      .filter((m: any) => !selectedOptions[m.subsystem])
-      .map((m: any) => m.subsystem);
+      .filter((m) => !selectedOptions[m.subsystem])
+      .map((m) => m.subsystem);
 
     if (missing.length > 0) {
       setMissingSubs(missing);
       // Scroll to the first missing subsystem for better UX
-      const firstMissingIdx = (output.decision_matrix || []).findIndex((m: any) => m.subsystem === missing[0]);
+      const firstMissingIdx = (output.decision_matrix || []).findIndex((m) => m.subsystem === missing[0]);
       const target = contentRefs.current[`component-${firstMissingIdx}`] || contentRefs.current['components'];
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -116,7 +116,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">Component Options</h1>
         {output.decision_matrix && (
           <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
-            {output.decision_matrix.map((matrix: any, index: number) => (
+            {output.decision_matrix.map((matrix, index) => (
               <div
                 key={index}
                 ref={(el) => { contentRefs.current[`component-${index}`] = el; }}

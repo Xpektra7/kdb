@@ -4,12 +4,12 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion"
-import AccordionList from "./AccordionList";
+import AccordionList from "./accordion-list";
 import { Badge } from "../ui/badge";
-import type { SubsystemProps } from '@/lib/definitions';
+import type { SubsystemProps, DecisionMatrixOption } from '@/lib/definitions';
 
 export default function Subsystem({ subsystem, onOptionSelect, selectedOption, showError }: SubsystemProps) {
-    const handleOptionChange = (option: any) => {
+    const handleOptionChange = (option: DecisionMatrixOption) => {
         if (onOptionSelect) {
             onOptionSelect(option);
         }
@@ -21,7 +21,7 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption, s
                     {subsystem.subsystem} System
                 </AccordionTrigger>
                 <AccordionContent className="pt-2">
-                    {subsystem.options.map((option: any, index: number) => (
+                    {subsystem.options.map((option, index) => (
                         <label htmlFor={option.name} key={index} className="flex items-center gap-2 mb-4 sm:mb-5 cursor-pointer group">
                             <div className={`w-full flex flex-col gap-3 sm:gap-4 border rounded-lg p-4 sm:p-5 md:p-6 hover:bg-muted/30 transition-colors ${showError ? 'border-destructive/60 ring-1 ring-destructive/30' : 'border-border hover:border-muted-foreground/20'}`}>
                                 <div className="w-full flex flex-row items-center justify-between">
@@ -41,13 +41,12 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption, s
                                 <div className="text-xs sm:text-sm text-muted-foreground">
                                     <p className="line-clamp-none leading-relaxed">{option.why_it_works}</p>
                                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-3">
-                                        <Badge className="text-xs sm:text-sm" variant="secondary">{option.estimated_cost}</Badge>
-                                        <Badge className="text-xs sm:text-sm" variant="outline">{String(option.availability).split(';')[0]}</Badge>
+                                        <Badge className="text-xs sm:text-sm" variant="secondary">{option.name}</Badge>
                                     </div>
                                 </div>
-                                <AccordionList name="Features" list={option.features} />
                                 <AccordionList name="Pros" list={option.pros} />
                                 <AccordionList name="Cons" list={option.cons} />
+                                <AccordionList name="Add-ons" list={option.add_ons} />
 
                                 {showError && (
                                     <p className="text-xs sm:text-sm text-destructive font-medium">Select an option to continue.</p>

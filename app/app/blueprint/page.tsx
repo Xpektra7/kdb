@@ -2,7 +2,7 @@
 import { dummydata } from '@/schema/air-quality-result';
 import { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
-import NavigationSidebar from '@/components/decision-matrix/NavigationSideBar';
+import NavigationSidebar from '@/components/decision-matrix/navigation-sidebar';
 import { Button } from '@/components/ui/button';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon } from '@hugeicons/core-free-icons';

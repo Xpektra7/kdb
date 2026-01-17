@@ -39,10 +39,10 @@ export interface BlockDiagramProps {
 export interface Blueprint {
   project: string;
   problem: { statement: string; constraints: string[] };
-  architecture: { overview: string; block_diagram: string[] };
+  architecture: { overview: string; block_diagram: string[]; data_flow?: string;};
   components: { subsystem: string; chosen_option: string; why_chosen: string; pros: string[]; cons: string[] }[];
   execution_steps: string[];
-  testing: { methods: string[]; success_criteria: string };
+  testing: { methods: string[]; success_criteria: string ; failure_modes?: {issue: string; mitigation: string}[] };
   references: string[];
   extensions: string[];
   cost: string;
@@ -105,15 +105,6 @@ export interface CostProps {
   contentRef?: (el: HTMLDivElement | null) => void;
 }
 
-export interface DataModel {
-  sample_payload: Record<string, any>;
-}
-
-export interface DataModelProps {
-  dataModel: DataModel;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
-
 export interface SubsystemInterface {
   type: string;
   voltage: string;
@@ -149,18 +140,6 @@ export interface ProblemStatementProps {
   contentRef?: (el: HTMLDivElement | null) => void;
 }
 
-export interface PowerBudget {
-  source: string;
-  active_current: string;
-  sleep_current: string;
-  runtime_estimate: string;
-}
-
-export interface PowerBudgetProps {
-  powerBudget: PowerBudget;
-  contentRef?: (el: HTMLDivElement | null) => void;
-}
-
 export interface ComponentCardProps {
   component: Component;
   isExpanded: boolean;
@@ -178,15 +157,44 @@ export interface SkillsProps {
 }
 
 // Decision matrix
+export interface DecisionMatrixOption {
+  name: string;
+  why_it_works: string;
+  pros: string[];
+  cons: string[];
+  add_ons: string[];
+}
+
+export interface DecisionMatrixItem {
+  subsystem: string;
+  options: DecisionMatrixOption[];
+}
+
+export interface Problem {
+  problem: string;
+  suggested_solution: string;
+}
+
+export interface DecisionMatrixOutput {
+  project: string;
+  concept: string;
+  research: string[];
+  problems_overall: Problem[];
+  decision_matrix: DecisionMatrixItem[];
+  block_diagram: BlockData[];
+  cost: string;
+  skills: string;
+}
+
 export interface DecisionMatrixProps {
-  output: any;
+  output: DecisionMatrixOutput;
   contentRefs: MutableRefObject<Record<string, HTMLDivElement | null>>;
 }
 
 export interface SubsystemProps {
-  subsystem: any;
-  onOptionSelect?: (selectedOption: any) => void;
-  selectedOption?: any;
+  subsystem: DecisionMatrixItem;
+  onOptionSelect?: (selectedOption: DecisionMatrixOption) => void;
+  selectedOption?: DecisionMatrixOption;
   showError?: boolean;
 }
 

@@ -1,6 +1,6 @@
 import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, ArrowRight01Icon, Book02Icon } from '@hugeicons/core-free-icons';
-import { ComponentCard } from './ComponentCard';
+import { ComponentCard } from './component-card';
 import type { Component, ComponentsProps } from '@/lib/definitions';
 
 export function Components({ components, isExpanded, onToggle, expandedItems, onItemToggle, contentRef }: ComponentsProps) {

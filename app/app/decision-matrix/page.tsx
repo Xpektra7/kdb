@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import DecisionMatrix from "@/components/decision-matrix/decision-matrix";
 import { Button } from "@/components/ui/button";
 import { useResultStore } from "@/components/providers/result-store";
-import NavigationSidebar from "@/components/decision-matrix/NavigationSideBar";
+import NavigationSidebar from "@/components/decision-matrix/navigation-sidebar";
 import type { NavItem } from '@/lib/definitions';
 import { buildDecisionMatrixNav } from '@/lib/navigation';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -23,7 +23,7 @@ export default function Page() {
   const { result } = useResultStore();
 
   const hasResult = Boolean(result);
-  const output = result as any;
+  const output = result as unknown;
 
   const [activeSection, setActiveSection] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(() => {
