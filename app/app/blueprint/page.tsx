@@ -9,6 +9,7 @@ import { Menu01Icon } from '@hugeicons/core-free-icons';
 import { getDataMode } from '@/lib/data-mode';
 import type { Blueprint, NavItem } from '@/lib/definitions';
 import BlueprintView from '@/components/blueprint/blueprint';
+import { buildBlueprintNav } from '@/lib/navigation';
 
 // Z-index scale for consistent layering
 const Z_INDEX = {
@@ -68,98 +69,11 @@ export default function Page() {
     } finally {
       setIsLoading(false);
     }
+
   }, []);
 
-  // Navigation configuration
-  const NAV_CONFIG = [
-    { 
-      key: 'problem', 
-      id: 'problem', 
-      label: 'Problem Statement' 
-    },
-    {
-      key: 'architecture',
-      id: 'architecture',
-      label: 'Architecture',
-      children: [
-        { id: 'arch-overview', label: 'Overview' },
-        { id: 'block-diagram', label: 'Block Diagram' },
-        { id: 'data-flow', label: 'Data Flow' }
-      ]
-    },
-    {
-      key: 'subsystems',
-      id: 'subsystems',
-      label: 'Subsystems',
-      childrenFn: (data: any) => data.map((s: any, i: number) => ({
-        id: `subsystem-${i}`,
-        label: s.name
-      }))
-    },
-    {
-      key: 'components',
-      id: 'components',
-      label: 'Components',
-      childrenFn: (data: any) => data.map((c: any, i: number) => ({
-        id: `component-${i}`,
-        label: `${c.subsystem} System`
-      }))
-    },
-    { key: 'power_budget', id: 'power', label: 'Power Budget' },
-    { key: 'execution_steps', id: 'execution', label: 'Execution Steps' },
-    { key: 'testing', id: 'testing', label: 'Testing' },
-    { key: 'failure_modes', id: 'failures', label: 'Failure Modes' },
-    { key: 'data_model', id: 'data', label: 'Data Model' },
-    { key: 'skills', id: 'skills', label: 'Skills Required' },
-    { key: 'cost', id: 'cost', label: 'Cost Estimation' },
-  ] as const;
-
-  // Build navigation structure
-  const buildNavStructure = () => {
-    if (!blueprintData) return [];
-    
-    const nav: NavItem[] = [
-      { id: 'overview', label: 'Project Overview', level: 0 }
-    ];
-
-    // Add sections from config
-    NAV_CONFIG.forEach(item => {
-      const value = blueprintData[item.key as keyof Blueprint];
-      if (!value) return;
-
-      let navItem: NavItem = {
-        id: item.id,
-        label: item.label,
-        level: 0
-      };
-
-      // Handle static children
-      if ('children' in item && item.children) {
-        navItem.children = item.children.map(child => ({
-          ...child,
-          level: 1
-        }));
-      }
-      // Handle dynamic children
-      else if ('childrenFn' in item && item.childrenFn) {
-        navItem.children = item.childrenFn(value).map((child: any) => ({
-          ...child,
-          level: 1
-        }));
-      }
-
-      nav.push(navItem);
-    });
-
-    if (blueprintData.extensions || blueprintData.references) {
-      nav.push({ id: 'extras', label: 'Extensions & References', level: 0 });
-    }
-
-    return nav;
-  };
-
-  const navStructure = buildNavStructure();
-
+  // Build navigation structure using centralized utility
+  const navStructure: NavItem[] = blueprintData ? buildBlueprintNav(blueprintData) : [];
   // Scroll to section
   const scrollToSection = (id: string) => {
     const element = contentRefs.current[id];

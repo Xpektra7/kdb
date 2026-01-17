@@ -5,6 +5,8 @@ import DecisionMatrix from "@/components/decision-matrix/decision-matrix";
 import { Button } from "@/components/ui/button";
 import { useResultStore } from "@/components/providers/result-store";
 import NavigationSidebar from "@/components/decision-matrix/NavigationSideBar";
+import type { NavItem } from '@/lib/definitions';
+import { buildDecisionMatrixNav } from '@/lib/navigation';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
 
@@ -30,46 +32,7 @@ export default function Page() {
   });
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const buildNavStructure = () => {
-    if (!output) return [];
-
-    const nav: any[] = [
-      { id: 'overview', label: 'Project Overview', level: 0 }
-    ];
-
-    if (output.research) {
-      nav.push({ id: 'research', label: 'Research', level: 0 });
-    }
-
-    if (output.problems_overall) {
-      nav.push({ id: 'problems', label: 'Problems', level: 0 });
-    }
-
-    if (output.decision_matrix) {
-      nav.push({
-        id: 'components',
-        label: 'Components',
-        level: 0,
-        children: output.decision_matrix.map((m: any, i: number) => ({
-          id: `component-${i}`,
-          label: `${m.subsystem} System`,
-          level: 1
-        }))
-      });
-    }
-
-    if (output.skills) {
-      nav.push({ id: 'skills', label: 'Skills Required', level: 0 });
-    }
-
-    if (output.suggestions) {
-      nav.push({ id: 'suggestions', label: 'Suggestions', level: 0 });
-    }
-
-    return nav;
-  };
-
-  const navStructure = buildNavStructure();
+  const navStructure: NavItem[] = output ? buildDecisionMatrixNav(output) : [];
 
   const scrollToSection = useCallback((id: string) => {
     const element = contentRefs.current[id];
