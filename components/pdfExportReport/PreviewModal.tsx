@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { X, FileText, Maximize2, Minimize2, Download } from 'lucide-react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Cancel01Icon, File01Icon, MaximizeScreenIcon, MinimizeScreenIcon, Download01Icon } from '@hugeicons/core-free-icons';
 import { PreviewModalProps } from './type';
 
 const PreviewModal: React.FC<PreviewModalProps> = ({
@@ -25,7 +26,7 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
         <div className="flex items-center justify-between p-4 sm:p-6 border-b border-gray-200 bg-white rounded-t-2xl">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-white/20 rounded-lg">
-              <FileText className="w-5 h-5 text-black" />
+              <HugeiconsIcon icon={File01Icon} className="w-5 h-5 text-black" />
             </div>
             <div>
               <h2 className="text-lg sm:text-xl font-bold text-white">PDF Preview</h2>
@@ -38,13 +39,13 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
               className="p-2 bg-white/20 hover:bg-white/30 text-black rounded-lg transition-colors"
               title={isFullscreen ? "Exit fullscreen" : "Fullscreen"}
             >
-              {isFullscreen ? <Minimize2 className="w-5 h-5" /> : <Maximize2 className="w-5 h-5" />}
+              {isFullscreen ? <HugeiconsIcon icon={MinimizeScreenIcon} className="w-5 h-5" /> : <HugeiconsIcon icon={MaximizeScreenIcon} className="w-5 h-5" />}
             </button>
             <button
               onClick={onClose}
               className="p-2 bg-white/20 hover:bg-white/30 text-black rounded-lg transition-colors"
             >
-              <X className="w-5 h-5" />
+              <HugeiconsIcon icon={Cancel01Icon} className="w-5 h-5" />
             </button>
           </div>
         </div>
@@ -79,9 +80,9 @@ const PreviewModal: React.FC<PreviewModalProps> = ({
             <button
               onClick={onDownload}
               disabled={isGenerating}
-              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-gradient-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg"
+              className="flex-1 sm:flex-none inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-linear-to-r from-green-600 to-emerald-600 text-white rounded-lg hover:from-green-700 hover:to-emerald-700 disabled:from-gray-400 disabled:to-gray-400 disabled:cursor-not-allowed transition-all duration-200 font-medium shadow-lg"
             >
-              <Download className="w-5 h-5" />
+              <HugeiconsIcon icon={Download01Icon} className="w-5 h-5" />
               <span>{isGenerating ? 'Generating...' : 'Download PDF'}</span>
             </button>
           </div>
