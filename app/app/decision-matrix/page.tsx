@@ -23,7 +23,7 @@ export default function Page() {
   const { result } = useResultStore();
 
   const hasResult = Boolean(result);
-  const output = result as unknown;
+  const output = result as any;
 
   const [activeSection, setActiveSection] = useState('overview');
   const [sidebarOpen, setSidebarOpen] = useState(() => {
