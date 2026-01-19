@@ -9,6 +9,7 @@ import type { NavItem } from '@/lib/definitions';
 import { buildDecisionMatrixNav } from '@/lib/navigation';
 import { HugeiconsIcon } from '@hugeicons/react';
 import { Menu01Icon, Cancel01Icon } from '@hugeicons/core-free-icons';
+import PDFExportButton from '@/components/pdfExportReport/pdfExportButton';
 
 // Z-index scale for consistent layering
 const Z_INDEX = {
@@ -100,6 +101,9 @@ export default function Page() {
 
   return (
     <div className="min-h-screen">
+      <div className="fixed top-4 right-4 z-60">
+        <PDFExportButton targetSelector=".matrix-content" />
+      </div>
       {/* Overlay for mobile when sidebar is open */}
       {hasResult && sidebarOpen && (
         <div
