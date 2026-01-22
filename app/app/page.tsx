@@ -19,7 +19,7 @@ export default function Page() {
     const [user, setUser] = useState<User | null>(null);
     const [projectDescription, setProjectDescription] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<Error>({});
+    const [error, setError] = useState<Error | null>(null);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [useDummyData, setUseDummyData] = useState<boolean>(false);
 
@@ -119,7 +119,7 @@ export default function Page() {
             <div className="flex justify-between items-center w-full border-b border-border p-4 backdrop-blur-sm bg-background/80">
                 <div className="flex items-center gap-0 cursor-pointer">
                     <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
-                    <h1 className="text-2xl font-bold text-foreground">Apollo</h1>
+                    <h1 className="text-2xl font-bold text-foreground">pollo</h1>
                 </div>
                 <div className="flex w-10 h-10 items-center justify-center rounded-full bg-muted border border-border font-semibold text-foreground">
                     {user ? user.name.charAt(0).toUpperCase() : "?"}

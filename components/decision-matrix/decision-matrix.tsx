@@ -7,6 +7,7 @@ import { BlockDiagram } from '../block-diagram/block-diagram';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 import { getDataMode } from '@/lib/data-mode';
+import { BlockDiagramItem } from '@/lib/definitions';
 
 import type { DecisionMatrixProps, DecisionMatrixOption } from '@/lib/definitions';
 
@@ -18,6 +19,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
   const [selectedOptions, setSelectedOptions] = useState<Record<string, DecisionMatrixOption>>({});
   // Track subsystems missing a selection for UX feedback
   const [missingSubs, setMissingSubs] = useState<string[]>([]);
+
 
   // Handle selection change for each subsystem
   const handleOptionSelect = (subsystemName: string, selectedOption: DecisionMatrixOption) => {
@@ -93,8 +95,8 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         ref={(el) => { contentRefs.current['overview'] = el; }}
         className="flex flex-col gap-3 sm:gap-4 scroll-mt-20 pb-6 border-b border-border"
       >
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight">{output.project}</h1>
-        <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">{output.concept}</p>
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] leading-tight">{output.project}</h1>
+        <p className="text-sm sm:text-base leading-relaxed">{output.concept}</p>
       </div>
 
       {/* Research */}
@@ -110,7 +112,11 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
           <ProblemsOverall problems={output.problems_overall} />
         </div>
       )}
-      <BlockDiagram data={output.block_diagram} />
+
+
+      {/* Block Diagram */}
+      <BlockDiagram matrix={output} className=''/>
+      
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
         <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">Component Options</h1>

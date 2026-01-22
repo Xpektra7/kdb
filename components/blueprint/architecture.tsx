@@ -57,7 +57,7 @@ export function Architecture({
                     className="p-3 rounded border border-border bg-muted/30"
                   >
                     <p className="text-sm sm:text-base">{block.block}</p>
-                    {block.to && block.to.length > 0 && (
+                    {block.to && Array.isArray(block.to) && block.to.length > 0 && (
                       <p className="text-xs mt-1">→ {block.to.join(", ")}</p>
                     )}
                   </div>
@@ -66,12 +66,6 @@ export function Architecture({
             </div>
           </div>
 
-          {dataFlow && (
-            <div>
-              <h3 className="mb-2 text-sm sm:text-base">Data Flow</h3>
-              <p className="text-sm sm:text-base">{dataFlow}</p>
-            </div>
-          )}
         </div>
       )}
     </section>
