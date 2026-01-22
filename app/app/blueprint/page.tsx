@@ -18,22 +18,24 @@ const Z_INDEX = {
   HEADER: 30,
 } as const;
 
-
-
 export default function Page() {
   const router = useRouter();
   const [blueprintData, setBlueprintData] = useState<Blueprint | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeSection, setActiveSection] = useState('overview');
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
+  const [activeSection, setActiveSection] = useState("overview");
+ const [expandedSections, setExpandedSections] = useState<
+    Record<string, boolean>  // ✅ Added opening 
+  >({
     architecture: true,
     subsystems: true,
-    components: true
+    components: true,
   });
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
+  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>(
+    {},
+  );
   const [sidebarOpen, setSidebarOpen] = useState(() => {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
     return window.innerWidth >= 768;
   });
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -42,7 +44,7 @@ export default function Page() {
   useEffect(() => {
     try {
       const useDummyData = getDataMode();
-      
+
       if (useDummyData) {
         // Use dummy data when toggle is enabled
         setBlueprintData(dummydata as unknown as Blueprint);
@@ -50,30 +52,36 @@ export default function Page() {
         setError(null);
         return;
       }
-      
-      const storedData = sessionStorage.getItem('blueprintData');
+
+      const storedData = sessionStorage.getItem("blueprintData");
       if (storedData) {
         const parsed = JSON.parse(storedData);
         setBlueprintData(parsed);
         setError(null);
-        sessionStorage.removeItem('blueprintData');
+        sessionStorage.removeItem("blueprintData");
       } else {
         // Show error if no API data and not using dummy data
-        setError('No blueprint data available. Please generate from the decision matrix.');
+        setError(
+          "No blueprint data available. Please generate from the decision matrix.",
+        );
         setBlueprintData(null);
       }
     } catch (err) {
-      console.error('Error loading blueprint data:', err);
-      setError(`Failed to parse blueprint data: ${err instanceof Error ? err.message : 'Unknown error'}`);
+      console.error("Error loading blueprint data:", err);
+      setError(
+        `Failed to parse blueprint data: ${err instanceof Error ? err.message : "Unknown error"}`,
+      );
       setBlueprintData(null);
     } finally {
       setIsLoading(false);
     }
-
   }, []);
 
   // Build navigation structure using centralized utility
-  const navStructure: NavItem[] = blueprintData ? buildBlueprintNav(blueprintData) : [];
+  const navStructure: NavItem[] = blueprintData
+    ? buildBlueprintNav(blueprintData)
+    : [];
+  
   // Scroll to section
   const scrollToSection = (id: string) => {
     const element = contentRefs.current[id];
@@ -84,7 +92,7 @@ export default function Page() {
 
       window.scrollTo({
         top: offsetPosition,
-        behavior: 'smooth'
+        behavior: "smooth",
       });
       setActiveSection(id);
 
@@ -96,12 +104,12 @@ export default function Page() {
 
   // Toggle section expansion
   const toggleSection = (id: string) => {
-    setExpandedSections(prev => ({ ...prev, [id]: !prev[id] }));
+    setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   // Toggle item expansion
   const toggleItem = (id: string) => {
-    setExpandedItems(prev => ({ ...prev, [id]: !prev[id] }));
+    setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   // Intersection observer for active section
@@ -109,16 +117,16 @@ export default function Page() {
     const observers: IntersectionObserver[] = [];
     const options = {
       root: null,
-      rootMargin: '-20% 0px -70% 0px',
-      threshold: 0
+      rootMargin: "-20% 0px -70% 0px",
+      threshold: 0,
     };
 
-    Object.keys(contentRefs.current).forEach(key => {
+    Object.keys(contentRefs.current).forEach((key) => {
       const element = contentRefs.current[key];
       if (!element) return;
 
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
+        entries.forEach((entry) => {
           if (entry.isIntersecting) {
             setActiveSection(key);
           }
@@ -129,7 +137,7 @@ export default function Page() {
       observers.push(observer);
     });
 
-    return () => observers.forEach(observer => observer.disconnect());
+    return () => observers.forEach((observer) => observer.disconnect());
   }, []);
 
   // Handle sidebar on resize
@@ -143,9 +151,17 @@ export default function Page() {
     };
 
     handleResize();
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  const pdfData: PDFExportData | null = blueprintData
+    ? {
+        title: "Blueprint Report",
+        projectName: "System Blueprint",
+        blueprint: JSON.stringify(blueprintData, null, 2),
+      }
+    : null;
 
   return (
     <div className="min-h-screen">
@@ -168,10 +184,15 @@ export default function Page() {
       />
 
       {/* Main Content */}
-      <main className={`transition-all duration-300 scroll-custom ${sidebarOpen ? 'md:ml-72 lg:ml-80' : ''}`}>
+      <main
+        className={`transition-all duration-300 scroll-custom ${sidebarOpen ? "md:ml-72 lg:ml-80" : ""}`}
+      >
         <div className="flex flex-col max-w-6xl mx-auto w-full px-4 py-4 gap-8">
           {/* Header */}
-          <div className="fixed top-0 left-0 right-0 md:relative flex w-full justify-between border-b border-border p-4 md:p-6 bg-background/95 backdrop-blur-sm md:px-0" style={{ zIndex: Z_INDEX.HEADER }}>
+          <div
+            className="fixed top-0 left-0 right-0 md:relative flex w-full justify-between border-b border-border p-4 md:p-6 bg-background/95 backdrop-blur-sm md:px-0"
+            style={{ zIndex: Z_INDEX.HEADER }}
+          >
             <div className="flex gap-3 items-center">
               {!sidebarOpen && (
                 <button
@@ -179,7 +200,11 @@ export default function Page() {
                   className="p-2 bg-muted border border-border rounded-lg hover:bg-muted/70 transition-colors"
                   aria-label="Open navigation menu"
                 >
-                  <HugeiconsIcon icon={Menu01Icon} size={16} className="sm:w-4.5 sm:h-4.5" />
+                  <HugeiconsIcon
+                    icon={Menu01Icon}
+                    size={16}
+                    className="sm:w-4.5 sm:h-4.5"
+                  />
                 </button>
               )}
               <div className="flex items-center gap-2">
@@ -189,20 +214,31 @@ export default function Page() {
                 )}
               </div>
             </div>
-            <Button
-              variant="outline"
-              size="sm"
-              className="px-4"
-              onClick={() => router.push('/app')}
-            >
-              Back
-            </Button>
+            
+            {/* Export Button and Back Button */}
+            <div className="flex gap-2 items-center">
+              {blueprintData && pdfData && (
+                <ExportButton 
+                  data={pdfData}
+                  buttonText="Export PDF"
+                  fileName="blueprint-report.pdf"
+                />
+              )}
+              <Button
+                variant="outline"
+                size="sm"
+                className="px-4"
+                onClick={() => router.push('/app')}
+              >
+                Back
+              </Button>
+            </div>
           </div>
 
           {/* Content */}
           <div className="w-full h-auto flex flex-col gap-6 mt-20 md:mt-8">
             {isLoading ? (
-              <div className="flex items-center justify-center min-h-[400px]">
+              <div className="flex items-center justify-center min-h-100">
                 <div className="flex flex-col items-center gap-4">
                   <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
                   <p className="text-muted-foreground">Loading blueprint...</p>
@@ -211,20 +247,22 @@ export default function Page() {
             ) : error ? (
               <div className="flex flex-col gap-4">
                 <div className="bg-destructive/10 border border-destructive rounded-lg p-6">
-                  <h2 className="text-lg font-semibold text-destructive mb-2">Error Loading Blueprint</h2>
+                  <h2 className="text-lg font-semibold text-destructive mb-2">
+                    Error Loading Blueprint
+                  </h2>
                   <p className="text-sm text-muted-foreground mb-4">{error}</p>
                   <div className="flex gap-2">
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push('/app')}
+                      onClick={() => router.push("/app")}
                     >
                       Go Back
                     </Button>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => router.push('/app/decision-matrix')}
+                      onClick={() => router.push("/app/decision-matrix")}
                     >
                       Back to Decision Matrix
                     </Button>
