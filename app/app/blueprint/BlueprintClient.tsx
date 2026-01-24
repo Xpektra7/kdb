@@ -138,7 +138,7 @@ export default function BlueprintClient({ blueprintData }: BlueprintClientProps)
               {blueprintData && pdfData && (
                 <ExportButton data={pdfData} buttonText="Export PDF" fileName="blueprint-report.pdf" />
               )}
-              <Button variant="outline" size="sm" className="px-4" onClick={() => router.push("/app")}>Back</Button>
+              <Button variant="outline" size="lg" className="py-2 h-fit" onClick={() => router.back()}>Back</Button>
             </div>
           </div>
 

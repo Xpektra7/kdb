@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import type { ExportButtonProps } from '@/lib/pdfGenerator';
 import { HugeiconsIcon } from '@hugeicons/react';
@@ -55,7 +56,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
     <Button
       onClick={handleExport}
       disabled={isGenerating}
-      className="inline-flex items-center justify-center gap-2 px-4 py-2"
+      className="inline-flex items-center justify-center h-fit gap-2 px-4 py-2"
     >
 
       <HugeiconsIcon
@@ -63,7 +64,7 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
         className={`w-5 h-5 ${isGenerating ? 'animate-spin' : ''}`}
       />
       
-      <span className="hidden sm:inline">
+      <span className="hidden sm:inline text-sm">
         {isGenerating ? 'Generating...' : isSuccess ? 'Success!' : buttonText}
       </span>
       <span className="sm:hidden">

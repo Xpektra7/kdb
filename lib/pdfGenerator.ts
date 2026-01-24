@@ -17,7 +17,7 @@ export interface PDFExportData {
 }
 
 export interface ExportButtonProps {
-  data: PDFExportData;
+  data?: PDFExportData;
   buttonText?: string;
   fileName?: string;
 }

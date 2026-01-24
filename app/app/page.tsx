@@ -3,21 +3,17 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
-import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
-import { Spinner } from "@/components/ui/spinner";
+import { ArrowUp } from "@hugeicons/core-free-icons";
 import airQuality from "@/schema/air-quality-result2.json";
 import { getDataMode } from "@/lib/data-mode";
-import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import Navbar from "@/components/navbar";
+import Link from "next/link";
 
 export default function Page() {
     const router = useRouter();
 
     const [user, setUser] = useState<{ name: string; email: string } | null>(null);
     const [projectDescription, setProjectDescription] = useState("");
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState<{ title?: string; message?: string } | null>(null);
-    const [abortController, setAbortController] = useState<AbortController | null>(null);
     const [useDummyData, setUseDummyData] = useState(false);
 
     // Load data mode preference
@@ -42,22 +38,14 @@ export default function Page() {
     }, []);
 
     function handleBuildClick(currentProjectDescription: string) {
-        setLoading(true);
-        setError({});
-
-        const controller = new AbortController();
-        setAbortController(controller);
-
         fetch("/api/generate/decision-matrix", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ project: currentProjectDescription }),
-            signal: controller.signal,
         })
             .then(async (response) => {
                 if (!response.ok) {
                     const errorText = await response.text();
-                    setError({ title: "API Error", message: `${response.status} - ${errorText}` });
                     throw new Error(`API Error: ${response.status} - ${errorText}`);
                 }
                 return response.json();
@@ -78,37 +66,20 @@ export default function Page() {
                         if (!res.ok) throw new Error("Failed to save decision matrix");
                         return res.json();
                     }).then(({ requestId }) => {
-                        setError({});
                         router.push(`/app/decision-matrix?requestId=${requestId}`);
                     });
                 } catch (parseError) {
-                    setError({ 
-                        title: "Parse Error", 
-                        message: "Failed to parse response. Please try again." 
-                    });
                     console.error("JSON Parse Error:", parseError);
                 }
             })
             .catch((err) => {
-                if (err.name === "AbortError") {
-                    console.log("Request aborted");
-                    return;
-                }
                 console.error(err);
-                setError({ title: "Request Failed", message: err?.message || "Unknown error" });
-            })
-            .finally(() => {
-                setLoading(false);
-                setAbortController(null);
             });
 
         console.log("Build clicked with project description:", currentProjectDescription);
     }
 
     function handleDummyBuildClick() {
-        setLoading(true);
-        setError({});
-
         setTimeout(async () => {
             try {
                 const response = await fetch("/api/decision-matrix-requests", {
@@ -122,23 +93,14 @@ export default function Page() {
                 
                 if (response.ok) {
                     const { requestId } = await response.json();
-                    setLoading(false);
                     router.push(`/app/decision-matrix?requestId=${requestId}`);
                 } else {
                     throw new Error("Failed to save dummy decision matrix");
                 }
             } catch (err) {
                 console.error("Error saving dummy DM:", err);
-                setLoading(false);
-                setError({ title: "Error", message: "Failed to load decision matrix" });
             }
         }, 1500);
-    }
-
-    function handleCancel() {
-        if (abortController) {
-            abortController.abort();
-        }
     }
 
     return (
@@ -160,25 +122,6 @@ export default function Page() {
                     </div>
                 </div>
                 <small className="text-sm text-center -mt-4 text-muted-foreground">Try to be as specific as possible to get the best results.</small>
-                {loading && (
-                    <div className="flex items-center justify-between p-5 border border-border rounded-lg w-full bg-muted/30">
-                        <div className="flex items-center gap-3">
-                            <Spinner />
-                            <p className="text-sm text-foreground font-medium">Generating decision matrix...</p>
-                        </div>
-                        <Button variant="ghost" size="sm" onClick={handleCancel} className="text-muted-foreground hover:text-destructive gap-2 h-8 px-3 hover:bg-destructive/10">
-                            <HugeiconsIcon icon={Cancel01Icon} className="w-4 h-4" />
-                            Cancel
-                        </Button>
-                    </div>
-                )}
-                {error && (
-                    <Alert variant="destructive" className="flex items-baseline justify-center py-4 w-full">
-                        <HugeiconsIcon icon={Alert01Icon} className="" />
-                        <AlertTitle>{error.title}</AlertTitle>
-                        <AlertDescription>{error.message}</AlertDescription>
-                    </Alert>
-                )}
 
             </div>
 

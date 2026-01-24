@@ -24,7 +24,7 @@ export default function AccordionList({
         </AccordionTrigger>
         {list && list.length > 0 && (
           <AccordionContent>
-            <ul className="text-xs sm:text-sm gap-1.5 flex flex-col pl-2 border-l-2 border-accent-border">
+            <ul className="text-xs sm:text-sm gap-1.5 flex flex-col pl-2 border-l-2 border-accent-border-border">
               {list.map((item, index) => (
                 <li
                   key={index}

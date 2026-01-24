@@ -7,35 +7,14 @@ const NAV_CONFIG = [
     key: 'architecture',
     id: 'architecture',
     label: 'Architecture',
-    children: [
-      { id: 'arch-overview', label: 'Overview' },
-      { id: 'block-diagram', label: 'Block Diagram' },
-      { id: 'data-flow', label: 'Data Flow' },
-    ],
-  },
-  {
-    key: 'subsystems',
-    id: 'subsystems',
-    label: 'Subsystems',
-    childrenFn: (data: Subsystem[]) => (Array.isArray(data) ? data : []).map((s, i) => ({
-      id: `subsystem-${i}`,
-      label: s?.name ?? `Subsystem ${i + 1}`,
-    })),
   },
   {
     key: 'components',
     id: 'components',
     label: 'Components',
-    childrenFn: (data: Component[]) => (Array.isArray(data) ? data : []).map((c, i) => ({
-      id: `component-${i}`,
-      label: `${c?.subsystem ?? 'Component'} System`,
-    })),
   },
-  { key: 'power_budget', id: 'power', label: 'Power Budget' },
   { key: 'execution_steps', id: 'execution', label: 'Execution Steps' },
   { key: 'testing', id: 'testing', label: 'Testing' },
-  { key: 'failure_modes', id: 'failures', label: 'Failure Modes' },
-  { key: 'data_model', id: 'data', label: 'Data Model' },
   { key: 'skills', id: 'skills', label: 'Skills Required' },
   { key: 'cost', id: 'cost', label: 'Cost Estimation' },
 ] as const;
@@ -50,13 +29,6 @@ export function buildBlueprintNav(blueprintData: Blueprint): NavItem[] {
     if (!value) return;
 
     const base: NavItem = { id: item.id, label: item.label, level: 0 };
-
-    if ('children' in item && item.children) {
-      base.children = item.children.map((child) => ({ ...child, level: 1 }));
-    } else if ('childrenFn' in item && item.childrenFn) {
-      base.children = (item.childrenFn as (data: unknown) => Array<{id: string; label: string}>)(value).map((child) => ({ ...child, level: 1 }));
-    }
-
     nav.push(base);
   });
 

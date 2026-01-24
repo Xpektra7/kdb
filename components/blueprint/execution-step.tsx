@@ -9,7 +9,7 @@ function parseMarkdown(text: string): string {
 
 export function ExecutionSteps({ steps, contentRef }: ExecutionStepsProps) {
   return (
-    <section ref={contentRef} className="rounded-lg shadow-sm border border-border p-4 sm:p-6">
+    <section ref={contentRef} className="rounded-lg shadow-sm bg-muted-foreground/7 p-4 sm:p-6">
       <h2 className="text-xl sm:text-2xl mb-4">Execution Steps</h2>
       <ol className="space-y-3">
         {steps.map((step, i) => (

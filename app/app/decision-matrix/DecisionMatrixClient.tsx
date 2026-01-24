@@ -141,7 +141,7 @@ export default function DecisionMatrixClient({ output }: DecisionMatrixClientPro
                 />
               )}
               <Link href="/app">
-                <Button variant="outline" size="sm" className="px-4">
+                <Button variant="outline" size="lg" className="py-2 h-fit">
                   Back
                 </Button>
               </Link>

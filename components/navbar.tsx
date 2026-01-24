@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { getDataMode, setDataMode } from "@/lib/data-mode";
+import Link from "next/link";
 
 export default function Navbar() {
     const [useDummyData, setUseDummyData] = useState(false);
@@ -26,10 +27,10 @@ export default function Navbar() {
 
     return (
         <div className="flex justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50">
-            <div className="flex items-center gap-0 cursor-pointer">
+            <Link href="/" className="flex items-center gap-0 cursor-pointer">
                 <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
                 <h1 className="text-2xl font-bold text-foreground">pollo</h1>
-            </div>
+            </Link>
             <div className="flex items-center gap-3">
                 <Button 
                     variant="outline" 
@@ -42,7 +43,9 @@ export default function Navbar() {
                     </Badge>
                     <span className="text-xs">Data Mode</span>
                 </Button>
-                <Button variant="default" size="lg" className="py-0">Sign in</Button>
+
+
+                <Button variant="default" size="lg" className="py-2 h-fit">Sign in</Button>
             </div>
         </div>
     );

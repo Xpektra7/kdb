@@ -1,6 +1,5 @@
 import { ProblemStatement } from '@/components/blueprint/problems';
 import { Architecture } from '@/components/blueprint/architecture';
-import { Subsystems } from '@/components/blueprint/subsystem';
 import { Components } from '@/components/blueprint/component';
 import { ExecutionSteps } from '@/components/blueprint/execution-step';
 import { Testing } from '@/components/blueprint/testing';
