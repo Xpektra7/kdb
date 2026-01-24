@@ -198,20 +198,3 @@ export interface SubsystemProps {
   selectedOption?: DecisionMatrixOption;
   showError?: boolean;
 }
-
-// Providers
-export interface ResultContextValue {
-  result: unknown;
-  setResult: (value: unknown) => void;
-}
-
-// App page
-export interface User {
-  name: string;
-  email: string;
-}
-
-export interface Error {
-  title?: string;
-  message?: string;
-}

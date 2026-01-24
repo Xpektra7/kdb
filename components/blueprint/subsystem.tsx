@@ -4,13 +4,13 @@ import type { SubsystemInterface, Subsystem, SubsystemsProps } from '@/lib/defin
 
 export function Subsystems({ subsystems, isExpanded, onToggle, contentRef }: SubsystemsProps) {
   return (
-    <section ref={contentRef} className=" rounded-lg shadow-sm border border-border p-4 sm:p-6">
+    <section ref={contentRef} className="rounded-lg shadow-sm border border-border p-4 sm:p-6">
       <button
         onClick={onToggle}
         className="w-full flex bg-transparent items-center justify-between mb-4"
       >
-        <h2 className="text-lg sm:text-xl flex items-center gap-2">
-          <HugeiconsIcon icon={Book02Icon} className="w-4 h-4 sm:w-5 sm:h-5 shrink-0" />
+        <h2 className="text-xl sm:text-2xl flex items-center gap-2">
+          <HugeiconsIcon icon={Book02Icon} className="w-5 h-5 sm:w-6 sm:h-6 shrink-0" />
           <span>Subsystems</span>
         </h2>
         {isExpanded ? 
@@ -22,8 +22,8 @@ export function Subsystems({ subsystems, isExpanded, onToggle, contentRef }: Sub
       {isExpanded && (
         <div className="space-y-3">
           {subsystems.map((subsystem, i) => (
-            <div key={i} className="border border-border rounded-lg p-3 sm:p-4 ">
-              <h3 className="mb-2 text-sm sm:text-base">{subsystem.name}</h3>
+            <div key={i} className="border border-border rounded-lg p-4 sm:p-6">
+              <h3 className="mb-2 text-base sm:text-lg font-medium">{subsystem.name}</h3>
               <p className="text-xs sm:text-sm mb-3">{subsystem.role}</p>
               <div className="space-y-2">
                 <p className="text-xs">Interfaces:</p>

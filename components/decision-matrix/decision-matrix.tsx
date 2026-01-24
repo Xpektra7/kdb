@@ -78,7 +78,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         ref={(el) => { contentRefs.current['overview'] = el; }}
         className="flex flex-col gap-3 sm:gap-4 scroll-mt-20 pb-6 border-b border-border"
       >
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-[2.5rem] leading-tight">{output.project}</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl leading-tight">{output.project}</h1>
         <p className="text-sm sm:text-base leading-relaxed">{output.concept}</p>
       </div>
 
@@ -102,7 +102,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
       
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
-        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">Component Options</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">Component Options</h1>
         {output.decision_matrix && (
           <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
             {output.decision_matrix.map((matrix, index) => (

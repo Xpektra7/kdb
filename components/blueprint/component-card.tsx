@@ -24,7 +24,7 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
       </button>
       
       {isExpanded && (
-        <div className="p-3 sm:p-4 space-y-3  border-t border-border">
+        <div className="p-4 sm:p-6 space-y-3 border-t border-border">
           <div>
             <p className="text-xs mb-1">Why Chosen</p>
             <p className="text-xs sm:text-sm">{component.why_chosen}</p>

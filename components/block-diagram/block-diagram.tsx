@@ -39,12 +39,12 @@ export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
 
   return (
     <div className={cn("w-full py-4", className)}>
-      <div className="rounded-lg p-3 sm:p-4 border border-border">
+      <div className="rounded-lg p-4 sm:p-6 border border-border">
         <div className="flex flex-col gap-3">
           {blocks.map((block, i) => (
             <div
               key={i}
-              className="p-3 rounded border border-border bg-muted/30"
+              className="p-4 rounded border border-border bg-muted/30"
             >
               <p className="text-sm sm:text-base capitalize font-medium">{block.subsystem}</p>
               {block.to && block.to.length > 0 && (

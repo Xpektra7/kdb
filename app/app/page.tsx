@@ -1,6 +1,5 @@
 "use client";
 import { useEffect, useState } from "react";
-import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
@@ -8,18 +7,18 @@ import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
 import airQuality from "@/schema/air-quality-result2.json";
 import { getDataMode } from "@/lib/data-mode";
-import type { User, Error } from '@/lib/definitions';
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+import Navbar from "@/components/navbar";
 
 export default function Page() {
     const router = useRouter();
 
-    const [user, setUser] = useState<User | null>(null);
-    const [projectDescription, setProjectDescription] = useState<string>("");
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<Error | null>(null);
+    const [user, setUser] = useState<{ name: string; email: string } | null>(null);
+    const [projectDescription, setProjectDescription] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<{ title?: string; message?: string } | null>(null);
     const [abortController, setAbortController] = useState<AbortController | null>(null);
-    const [useDummyData, setUseDummyData] = useState<boolean>(false);
+    const [useDummyData, setUseDummyData] = useState(false);
 
     // Load data mode preference
     useEffect(() => {
@@ -28,8 +27,8 @@ export default function Page() {
 
     useEffect(() => {
         // Simulate fetching user data
-        const fetchUserData = async (): Promise<User> => {
-            return new Promise((resolve) => {
+        const fetchUserData = async () => {
+            return new Promise<{ name: string; email: string }>((resolve) => {
                 setTimeout(() => {
                     resolve({ name: "John Doe", email: "john.doe@example.com" });
                 }, 1000);
@@ -144,16 +143,7 @@ export default function Page() {
 
     return (
         <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-360 py-0 pb-12 mx-auto">
-            <div className="flex justify-between items-center w-full border-b border-border p-4 backdrop-blur-sm bg-background/80">
-                <div className="flex items-center gap-0 cursor-pointer">
-                    <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
-                    <h1 className="text-2xl font-bold text-foreground">pollo</h1>
-                </div>
-                <div className="flex w-10 h-10 items-center justify-center rounded-full bg-muted border border-border font-semibold text-foreground">
-                    {user ? user.name.charAt(0).toUpperCase() : "?"}
-                </div>
-
-            </div>
+            <Navbar />
             <div className="flex flex-col w-full gap-8 justify-center items-center mt-32 max-w-2xl">
                 <div className="flex flex-col w-full gap-3">
                     <p className="text-base">Welcome {user ? user.name.split(" ")[0] : "Guest"}!</p>
