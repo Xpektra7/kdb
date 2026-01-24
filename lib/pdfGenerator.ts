@@ -1,4 +1,5 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
+import type { Blueprint } from '@/lib/definitions';
 
 export interface PageContent {
   type: 'heading' | 'paragraph' | 'list';
@@ -10,7 +11,7 @@ export interface PageContent {
 export interface PDFExportData {
   title: string;
   decisionMatrix?: string;
-  blueprint?: string;
+  blueprint?: string | Blueprint;
   buildGuide?: string;
   author?: string;
   projectName?: string;
@@ -20,6 +21,211 @@ export interface ExportButtonProps {
   data?: PDFExportData;
   buttonText?: string;
   fileName?: string;
+}
+
+// Format Blueprint object into readable text
+function formatBlueprintForPDF(blueprint: Blueprint): string {
+  let content = '';
+
+  // Problem Statement
+  if (blueprint.problem) {
+    content += `# Problem Statement\n`;
+    content += `${blueprint.problem.statement}\n\n`;
+    if (blueprint.problem.constraints?.length) {
+      content += `## Constraints\n`;
+      blueprint.problem.constraints.forEach(c => {
+        content += `- ${c}\n`;
+      });
+      content += '\n';
+    }
+  }
+
+  // Architecture
+  if (blueprint.architecture) {
+    content += `# Architecture\n`;
+    content += `## Overview\n`;
+    content += `${blueprint.architecture.overview}\n\n`;
+    if (blueprint.architecture.block_diagram?.length) {
+      content += `## Block Diagram\n`;
+      blueprint.architecture.block_diagram.forEach((item: any) => {
+        const block = typeof item === 'string' ? item : item.block;
+        content += `- ${block}\n`;
+      });
+      content += '\n';
+    }
+    if (blueprint.architecture.data_flow) {
+      content += `## Data Flow\n`;
+      content += `${blueprint.architecture.data_flow}\n\n`;
+    }
+  }
+
+  // Components
+  if (blueprint.components?.length) {
+    content += `# Components\n`;
+    blueprint.components.forEach((comp, i) => {
+      content += `## ${comp.subsystem} - ${comp.chosen_option}\n`;
+      content += `Why chosen: ${comp.why_chosen}\n\n`;
+      if (comp.pros?.length) {
+        content += `### Pros\n`;
+        comp.pros.forEach(p => {
+          content += `- ${p}\n`;
+        });
+        content += '\n';
+      }
+      if (comp.cons?.length) {
+        content += `### Cons\n`;
+        comp.cons.forEach(c => {
+          content += `- ${c}\n`;
+        });
+        content += '\n';
+      }
+    });
+  }
+
+  // Execution Steps
+  if (blueprint.execution_steps?.length) {
+    content += `# Execution Steps\n`;
+    blueprint.execution_steps.forEach((step, i) => {
+      content += `${i + 1}. ${step}\n`;
+    });
+    content += '\n';
+  }
+
+  // Testing
+  if (blueprint.testing) {
+    content += `# Testing\n`;
+    if (blueprint.testing.methods?.length) {
+      content += `## Methods\n`;
+      blueprint.testing.methods.forEach(m => {
+        content += `- ${m}\n`;
+      });
+      content += '\n';
+    }
+    if (blueprint.testing.success_criteria) {
+      content += `## Success Criteria\n`;
+      content += `${blueprint.testing.success_criteria}\n\n`;
+    }
+  }
+
+  // Skills
+  if (blueprint.skills) {
+    content += `# Skills Required\n`;
+    const skills = typeof blueprint.skills === 'string'
+      ? blueprint.skills.split(',').map(s => s.trim())
+      : blueprint.skills;
+    skills.forEach(skill => {
+      content += `- ${skill}\n`;
+    });
+    content += '\n';
+  }
+
+  // Cost
+  if (blueprint.cost) {
+    content += `# Cost Estimation\n`;
+    content += `${blueprint.cost}\n\n`;
+  }
+
+  // Extensions
+  if (blueprint.extensions?.length) {
+    content += `# Future Extensions\n`;
+    blueprint.extensions.forEach(ext => {
+      content += `- ${ext}\n`;
+    });
+    content += '\n';
+  }
+
+  // References
+  if (blueprint.references?.length) {
+    content += `# References\n`;
+    blueprint.references.forEach(ref => {
+      content += `- ${ref}\n`;
+    });
+    content += '\n';
+  }
+
+  return content;
+}
+
+// Format DecisionMatrix object into readable text
+function formatDecisionMatrixForPDF(dm: any): string {
+  let content = '';
+
+  // Project Overview
+  if (dm.project) {
+    content += `# Project: ${dm.project}\n`;
+  }
+  if (dm.concept) {
+    content += `${dm.concept}\n\n`;
+  }
+
+  // Research
+  if (dm.research?.length) {
+    content += `# Research Insights\n`;
+    dm.research.forEach((item: string) => {
+      content += `- ${item}\n`;
+    });
+    content += '\n';
+  }
+
+  // Problems
+  if (dm.problems_overall?.length) {
+    content += `# Problems & Solutions\n`;
+    dm.problems_overall.forEach((problem: any) => {
+      content += `## Problem: ${problem.problem}\n`;
+      content += `Solution: ${problem.suggested_solution}\n\n`;
+    });
+  }
+
+  // Decision Matrix - Subsystems
+  if (dm.decision_matrix?.length) {
+    content += `# Component Options\n`;
+    dm.decision_matrix.forEach((subsystem: any, idx: number) => {
+      content += `## ${subsystem.subsystem} System\n`;
+      if (subsystem.options?.length) {
+        subsystem.options.forEach((option: any, optIdx: number) => {
+          content += `### Option ${optIdx + 1}: ${option.name}\n`;
+          content += `Why it works: ${option.why_it_works}\n`;
+          if (option.pros?.length) {
+            content += `Pros:\n`;
+            option.pros.forEach((pro: string) => {
+              content += `- ${pro}\n`;
+            });
+          }
+          if (option.cons?.length) {
+            content += `Cons:\n`;
+            option.cons.forEach((con: string) => {
+              content += `- ${con}\n`;
+            });
+          }
+          content += '\n';
+        });
+      }
+    });
+  }
+
+  // Skills
+  if (dm.skills) {
+    content += `# Skills Required\n`;
+    const skillsList = typeof dm.skills === 'string'
+      ? dm.skills.split(',').map((s: string) => s.trim()).filter(Boolean)
+      : Array.isArray(dm.skills) ? dm.skills : [];
+    
+    skillsList.forEach((skill: string) => {
+      content += `- ${skill}\n`;
+    });
+    content += '\n';
+  }
+
+  // Final Architecture
+  if (dm.final_architecture?.length) {
+    content += `# Final Architecture\n`;
+    dm.final_architecture.forEach((item: string) => {
+      content += `- ${item}\n`;
+    });
+    content += '\n';
+  }
+
+  return content;
 }
 
 function parseSectionContent(content: string): PageContent[] {
@@ -59,6 +265,18 @@ function parseSectionContent(content: string): PageContent[] {
 }
 
 export async function generatePDFBuffer(data: any): Promise<Uint8Array> {
+  // Convert Blueprint object to formatted text if needed
+  let blueprintContent = data.blueprint;
+  if (blueprintContent && typeof blueprintContent === 'object') {
+    blueprintContent = formatBlueprintForPDF(blueprintContent);
+  }
+
+  // Convert DecisionMatrix object to formatted text if needed
+  let dmContent = data.decisionMatrix;
+  if (dmContent && typeof dmContent === 'object') {
+    dmContent = formatDecisionMatrixForPDF(dmContent);
+  }
+
   const pdfDoc = await PDFDocument.create();
   const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
   const helveticaBold = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
@@ -69,6 +287,16 @@ export async function generatePDFBuffer(data: any): Promise<Uint8Array> {
   let yPosition = height - 80;
   const margin = 60;
   const maxWidth = width - 2 * margin;
+
+  // Helper function to sanitize text for PDF (remove Unicode characters not supported by WinAnsi)
+  const sanitizeText = (text: string): string => {
+    return text
+      .replace(/→/g, '->') // Arrow
+      .replace(/←/g, '<-') // Left arrow
+      .replace(/↓/g, 'v')  // Down arrow
+      .replace(/↑/g, '^')  // Up arrow
+      .replace(/[^\x00-\x7F]/g, '?'); // Replace other non-ASCII chars with ?
+  };
 
   // Helper function to add new page if needed
   const checkPageBreak = (requiredSpace: number) => {
@@ -89,7 +317,8 @@ export async function generatePDFBuffer(data: any): Promise<Uint8Array> {
     indent = 0,
     align: 'left' | 'center' = 'left'
   ) => {
-    const words = text.split(' ');
+    const cleanText = sanitizeText(text);
+    const words = cleanText.split(' ');
     let line = '';
     const lineHeight = fontSize * 1.5;
     const lines: string[] = [];
@@ -161,8 +390,8 @@ export async function generatePDFBuffer(data: any): Promise<Uint8Array> {
 
   // ========== SECTIONS ==========
   const sections = [
-    { title: 'Decision Matrix', content: data.decisionMatrix },
-    { title: 'Blueprint', content: data.blueprint },
+    { title: 'Decision Matrix', content: dmContent },
+    { title: 'Blueprint', content: blueprintContent },
     { title: 'Build Guide', content: data.buildGuide }
   ];
 

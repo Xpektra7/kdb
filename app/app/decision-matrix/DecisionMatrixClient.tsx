@@ -88,7 +88,7 @@ export default function DecisionMatrixClient({ output }: DecisionMatrixClientPro
   const pdfData: PDFExportData = {
     title: "Decision Matrix Report",
     projectName: output.project || "Project Analysis",
-    decisionMatrix: JSON.stringify(output, null, 2),
+    decisionMatrix: output,
   };
 
   return (

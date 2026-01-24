@@ -91,8 +91,8 @@ export default function BlueprintClient({ blueprintData }: BlueprintClientProps)
 
   const pdfData: PDFExportData = {
     title: "Blueprint Report",
-    projectName: "System Blueprint",
-    blueprint: JSON.stringify(blueprintData, null, 2),
+    projectName: blueprintData.project,
+    blueprint: blueprintData,
   };
 
   return (

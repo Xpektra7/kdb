@@ -12,7 +12,7 @@ export default function Loading() {
                 >
                     <div className="flex gap-3 items-center">
                         <div className="flex items-center gap-2">
-                            <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Blueprint</h1>
+                            <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Decision Matrix</h1>
                         </div>
                     </div>
 
