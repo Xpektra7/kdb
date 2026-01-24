@@ -6,8 +6,6 @@ import Subsystem from "./subsystem";
 import { BlockDiagram } from '../block-diagram/block-diagram';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-import { getDataMode } from '@/lib/data-mode';
-import { BlockDiagramItem } from '@/lib/definitions';
 
 import type { DecisionMatrixProps, DecisionMatrixOption } from '@/lib/definitions';
 
@@ -31,7 +29,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
     setMissingSubs((prev) => prev.filter((name) => name !== subsystemName));
   };
 
-  // Send selected options to blueprint API and navigate
+  // Send selected options to Blueprint API and navigate with requestId
   const handleProceedToBlueprint = async () => {
     // Validate all subsystems have a selection
     const missing = (output.decision_matrix || [])
@@ -49,41 +47,26 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
       return;
     }
 
-    const useDummyData = getDataMode();
-    
-    if (useDummyData) {
-      // Skip API call and go directly to blueprint with dummy data
-      router.push('/app/blueprint');
-      return;
-    }
-    
     try {
-      const response = await fetch('/api/generate/blueprint', {
+      // Save blueprint request and get short ID
+      const response = await fetch('/api/blueprint-requests', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           project: output.project,
           selectedOptions,
         }),
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Blueprint data:', data);
-        
-        // Parse the output if it's a string
-        const blueprintData = typeof data.output === 'string' 
-          ? JSON.parse(data.output) 
-          : data.output;
-        
-        // Store blueprint data in sessionStorage for the blueprint page
-        sessionStorage.setItem('blueprintData', JSON.stringify(blueprintData));
+
+      if (!response.ok) {
+        throw new Error('Failed to save blueprint request');
       }
-      router.push('/app/blueprint');
+
+      const { requestId } = await response.json();
+      router.push(`/app/blueprint?requestId=${requestId}`);
     } catch (error) {
-      console.error('Error sending selected options:', error);
+      console.error('Error saving blueprint request:', error);
+      // Fallback: still navigate but without data
       router.push('/app/blueprint');
     }
   };

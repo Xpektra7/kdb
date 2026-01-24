@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
-import type { ExportButtonProps } from './types';
-import { ButtonIcon } from './ButtonIcon';
+import type { ExportButtonProps } from '@/lib/pdfGenerator';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Download, Loader, CheckCircle } from '@hugeicons/core-free-icons';
+import { Button } from '../ui/button';
 
 export const ExportButton: React.FC<ExportButtonProps> = ({
   data,
@@ -50,18 +52,23 @@ export const ExportButton: React.FC<ExportButtonProps> = ({
   };
 
   return (
-    <button
+    <Button
       onClick={handleExport}
       disabled={isGenerating}
-      className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-linear-to-r bg-black border border-white hover:bg-white hover:text-black disabled:from-gray-400 disabled:to-gray-400 text-white font-semibold rounded-lg transition-all transform hover:scale-105 disabled:hover:scale-100 shadow-lg text-sm"
+      className="inline-flex items-center justify-center gap-2 px-4 py-2"
     >
-      <ButtonIcon isGenerating={isGenerating} isSuccess={isSuccess} />
+
+      <HugeiconsIcon
+        icon={isGenerating ? Loader : isSuccess ? CheckCircle : Download}
+        className={`w-5 h-5 ${isGenerating ? 'animate-spin' : ''}`}
+      />
+      
       <span className="hidden sm:inline">
         {isGenerating ? 'Generating...' : isSuccess ? 'Success!' : buttonText}
       </span>
       <span className="sm:hidden">
         {isGenerating ? '...' : isSuccess ? '✓' : 'PDF'}
       </span>
-    </button>
+    </Button>
   );
 };

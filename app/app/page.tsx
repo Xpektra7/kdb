@@ -6,7 +6,6 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUp, Alert01Icon, Cancel01Icon } from "@hugeicons/core-free-icons";
 import { Spinner } from "@/components/ui/spinner";
-import { useResultStore } from "@/components/providers/result-store";
 import airQuality from "@/schema/air-quality-result2.json";
 import { getDataMode } from "@/lib/data-mode";
 import type { User, Error } from '@/lib/definitions';
@@ -14,7 +13,6 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
 export default function Page() {
     const router = useRouter();
-    const { setResult } = useResultStore();
 
     const [user, setUser] = useState<User | null>(null);
     const [projectDescription, setProjectDescription] = useState<string>("");
@@ -45,7 +43,6 @@ export default function Page() {
     }, []);
 
     function handleBuildClick(currentProjectDescription: string) {
-        setResult(null);
         setLoading(true);
         setError({});
 
@@ -69,9 +66,22 @@ export default function Page() {
             .then((data) => {
                 try {
                     const parsedData = JSON.parse(data.output);
-                    setResult(parsedData);
-                    setError({});
-                    router.push("/app/decision-matrix");
+                    
+                    // Save DM result to API and get requestId
+                    return fetch("/api/decision-matrix-requests", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            project: currentProjectDescription,
+                            decisionMatrixOutput: parsedData,
+                        }),
+                    }).then((res) => {
+                        if (!res.ok) throw new Error("Failed to save decision matrix");
+                        return res.json();
+                    }).then(({ requestId }) => {
+                        setError({});
+                        router.push(`/app/decision-matrix?requestId=${requestId}`);
+                    });
                 } catch (parseError) {
                     setError({ 
                         title: "Parse Error", 
@@ -97,14 +107,32 @@ export default function Page() {
     }
 
     function handleDummyBuildClick() {
-        setResult(null);
         setLoading(true);
         setError({});
 
-        setTimeout(() => {
-            setResult(airQuality.output);
-            setLoading(false);
-            router.push("/app/decision-matrix");
+        setTimeout(async () => {
+            try {
+                const response = await fetch("/api/decision-matrix-requests", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        project: "Air Quality Monitoring (Dummy)",
+                        decisionMatrixOutput: airQuality.output,
+                    }),
+                });
+                
+                if (response.ok) {
+                    const { requestId } = await response.json();
+                    setLoading(false);
+                    router.push(`/app/decision-matrix?requestId=${requestId}`);
+                } else {
+                    throw new Error("Failed to save dummy decision matrix");
+                }
+            } catch (err) {
+                console.error("Error saving dummy DM:", err);
+                setLoading(false);
+                setError({ title: "Error", message: "Failed to load decision matrix" });
+            }
         }, 1500);
     }
 
