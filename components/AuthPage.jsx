@@ -32,20 +32,14 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      {/* Floating orbs background effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-purple-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-      </div>
-
       {/* Auth Card */}
-      <div className="relative bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 transform transition-all duration-500">
+      <div className="relative border border-white bg-black backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 transform transition-all duration-500">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold bg-black bg-clip-text text-transparent mb-2">
             {isLogin ? 'Welcome Back' : 'Get Started'}
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-white">
             {isLogin ? 'Login to your account' : 'Create your account today'}
           </p>
         </div>
@@ -97,11 +91,11 @@ export default function AuthPage() {
           )}
 
           <div className="relative">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-white mb-2">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="email"
                 name="email"
@@ -115,24 +109,24 @@ export default function AuthPage() {
           </div>
 
           <div className="relative">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-white mb-2">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4 sm:w-5 sm:h-5" />
+              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
                 onKeyPress={handleKeyPress}
-                className="w-full pl-10 sm:pl-11 pr-10 sm:pr-12 py-2.5 sm:py-3 text-sm text-black sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 sm:pl-11 pr-10 sm:pr-12 py-2.5 sm:py-3 text-sm text-white sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white bg-black hover:text-gray-600 transition-colors"
               >
                 {showPassword ? <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> : <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
@@ -172,7 +166,7 @@ export default function AuthPage() {
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-500 hover:text-black font-semibold"
+            className="text-white hover:text-blue-500 font-semibold bg-black"
           >
             {isLogin ? 'Sign up' : 'Login'}
           </button>
