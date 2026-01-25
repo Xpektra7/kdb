@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Figtree, Inter } from "next/font/google";
 import "./globals.css";
-import { ResultProvider } from "@/components/providers/result-store";
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
 
@@ -22,7 +21,7 @@ export default function RootLayout({
       <body
         className={`${figtree.variable} ${inter.variable} antialiased bg-background dark text-muted-foreground `}
       >
-        <ResultProvider>{children}</ResultProvider>
+        {children}
       </body>
     </html>
   );

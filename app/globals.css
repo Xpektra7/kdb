@@ -185,25 +185,5 @@
     font-size: 0.925rem;
     line-height: 1.5;
   }
-  
-  /* Accent highlights */
-  .accent-border-left {
-    @apply border-l-2 border-accent pl-4;
-  }
-  
-  .accent-glow {
-    box-shadow: 0 0 20px -5px hsl(var(--accent) / 0.05);
-  }
-  
-  .accent-gradient {
-    background: linear-gradient(135deg, hsl(var(--accent) / 0.01) 0%, transparent 100%);
-  }
-}
-
-@layer utilities {
-  .bg-gradient-radial {
-    background-image: radial-gradient(var(--tw-gradient-stops));
-  }
-  
 }
 

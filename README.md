@@ -171,46 +171,42 @@ This is stored as **JSON**, not text.
 * Backend API route is functional
 * Frontend can fetch and parse results
 * Loading and error states exist
+* Turning JSON into readable UI blocks
+* Blueprint schema
+* Option selection UI
 
 ### What Is Being Worked On
 
 * Prisma + Supabase integration
 * Stable caching logic
 * Prompt refinement (simplicity > features)
-* Turning JSON into readable UI blocks
+* Saving results as PDF
+* Homepage
 
 ### What Comes Next
 
-* Blueprint schema
-* Option selection UI
 * Build Guide generation
 * Authentication & saved projects
-* Block diagram creation and visualization
-* Flowchart generation
-
+* Make Block diagram diagramattic 
 
 ## How Teammates Can Contribute
 
 ### Backend
 
+* User management system : signin, login, authenticate, prompt rate control
 * Improve caching logic
-* Handle OpenAI rate limits gracefully
+* Handle Gemini rate limits gracefully
 * Validate AI output against schema
 
 ### Frontend
-
-* Build reusable components for:
-
-  * Subsystems
-  * Options
-  * Pros / Cons
+* Improve Block diagram
 * Improve loading and error UX
 
 ### Product
 
 * Stress-test decision logic
 * Identify missing subsystems
-* Ensure outputs feel *engineering-realistic*
+* Ensure outputs feels *engineering-realistic*
 
 
 
