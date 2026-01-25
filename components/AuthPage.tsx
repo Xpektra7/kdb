@@ -1,7 +1,7 @@
 'use client'
-
-import React, { useState } from 'react';
-import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from 'lucide-react';
+import { ChangeEvent, useState } from 'react';
+import { HugeiconsIcon } from '@hugeicons/react';
+import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from '@hugeicons/core-free-icons';
 
 export default function AuthPage() {
   const [isLogin, setIsLogin] = useState(true);
@@ -17,14 +17,14 @@ export default function AuthPage() {
     alert(isLogin ? 'Login successful!' : 'Account created successfully!');
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e : ChangeEvent<HTMLInputElement>) => {
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value
     });
   };
-
-  const handleKeyPress = (e) => {
+  
+  const handleKeyPress = (e : KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSubmit();
     }
@@ -32,11 +32,6 @@ export default function AuthPage() {
 
   return (
     <div className="min-h-screen bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8">
-      {/* Floating orbs background effect */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute top-1/4 left-1/4 w-32 h-32 sm:w-64 sm:h-64 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-48 h-48 sm:w-96 sm:h-96 bg-purple-300/20 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
-      </div>
 
       {/* Auth Card */}
       <div className="relative bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 transform transition-all duration-500">
@@ -82,13 +77,12 @@ export default function AuthPage() {
                 Full Name
               </label>
               <div className="relative">
-                <User className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+                <HugeiconsIcon icon={User} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
                 <input
                   type="text"
                   name="name"
                   value={formData.name}
                   onChange={handleChange}
-                  onKeyPress={handleKeyPress}
                   className="w-full pl-10 sm:pl-11 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                   placeholder="John Doe"
                 />
@@ -101,13 +95,12 @@ export default function AuthPage() {
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
+              <HugeiconsIcon icon={Mail} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type="email"
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                onKeyPress={handleKeyPress}
                 className="w-full pl-10 sm:pl-11 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 placeholder="you@example.com"
               />
@@ -119,13 +112,12 @@ export default function AuthPage() {
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4 sm:w-5 sm:h-5" />
+              <HugeiconsIcon icon={Lock} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                onKeyPress={handleKeyPress}
                 className="w-full pl-10 sm:pl-11 pr-10 sm:pr-12 py-2.5 sm:py-3 text-sm text-black sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                 placeholder="••••••••"
               />
@@ -134,7 +126,7 @@ export default function AuthPage() {
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black hover:text-gray-600 transition-colors"
               >
-                {showPassword ? <Eye className="w-4 h-4 sm:w-5 sm:h-5" /> : <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />}
+                {showPassword ? <HugeiconsIcon icon={Eye} className="w-4 h-4 sm:w-5 sm:h-5" /> : <HugeiconsIcon icon={EyeOff} className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
             </div>
           </div>
@@ -156,7 +148,7 @@ export default function AuthPage() {
             className="w-full bg-black text-white py-2.5 sm:py-3 text-sm sm:text-base rounded-xl font-semibold hover:shadow-lg transform hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 flex items-center justify-center gap-2 group"
           >
             {isLogin ? 'Login' : 'Create Account'}
-            <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
+            <HugeiconsIcon icon={ArrowRight} className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
           </button>
         </div>
 

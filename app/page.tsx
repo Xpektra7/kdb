@@ -10,7 +10,6 @@ export default function HomePage() {
       <Navbar />
       <Hero />
       <GettingStarted />
-      <Marquee />
     </main>
   );
 }

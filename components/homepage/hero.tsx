@@ -12,11 +12,11 @@ export default function Hero() {
         Apollo is a mission-driven platform for building smarter projects.
       </h1>
       <p className="z-20 text-base max-w-2xl leading-relaxed">Next stop? The Moon—launch your ideas, track progress, and reach new heights.</p>
-      <Link href="/app">
+      <Link href="/app" className="z-20">
         <Button
           size="lg"
           variant="default"
-          className="z-20 mt-8 w-fit"
+          className="z-90 mt-8 w-fit"
         >
           Start Building
         </Button>
