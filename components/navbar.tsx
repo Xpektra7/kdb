@@ -43,9 +43,7 @@ export default function Navbar() {
                     </Badge>
                     <span className="text-xs">Data Mode</span>
                 </Button>
-
-
-                <Button variant="default" size="lg" className="py-2 h-fit">Sign in</Button>
+                <Link href="/login" className="py-0 text-black border border-white bg-white rounded-sm p-4">Sign In</Link>
             </div>
         </div>
     );
