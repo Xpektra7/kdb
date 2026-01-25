@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { getDataMode, setDataMode } from "@/lib/data-mode";
+import Link from "next/link";
 
 export default function Navbar() {
     const [useDummyData, setUseDummyData] = useState(false);
@@ -42,7 +43,7 @@ export default function Navbar() {
                     </Badge>
                     <span className="text-xs">Data Mode</span>
                 </Button>
-                <Button variant="default" size="lg" className="py-0">Sign in</Button>
+                <Link href="/login" className="py-0 text-black border border-white bg-white rounded-sm p-4">Sign In</Link>
             </div>
         </div>
     );

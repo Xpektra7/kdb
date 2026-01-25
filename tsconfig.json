@@ -29,6 +29,6 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts"
-, "app/api/generate/decision-matrix/route.ts"  ],
+, "app/api/generate/decision-matrix/route.ts", "components/loginPage.jsx"  ],
   "exclude": ["node_modules"]
 }
