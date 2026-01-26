@@ -14,15 +14,14 @@ if (!apiKey) {
 export async function POST(request: Request) {
     console.log("Reached POST");
     const { project } = await request.json();
-const input = `You are an engineering project planner. Return ONLY valid minified JSON (no whitespace, no newlines), No prose, markdown, or extra text.
+const input = `You are an engineering project planner. Return ONLY valid minified JSON (no newlines), No prose, markdown, or extra text.
 SCHEMA:
 {
   "project":"string",
   "concept":"string",
   "research":["string"],
   "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-  "block_diagram":[{"block":"string","from":"string|string[]|null","to":"string|string[]|null"}],
-  "decision_matrix":[{"subsystem":"string","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":["string"],"availability":"string"}]}],
+  "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":["string"],"availability":"string"}]}],
   "skills":"string",
 }
 RULES:
@@ -44,7 +43,7 @@ Nigeria
     const ai = new GoogleGenAI({apiKey});
 
     const result = await ai.models.generateContent({
-        model: "gemini-2.-flash", // Note: gemini-2.5-flash might not be public yet, falling back to 2.0 or use user's string if preferred
+        model: "gemini-2.5-flash", // Note: gemini-2.5-flash might not be public yet, falling back to 2.0 or use user's string if preferred
         contents: input,
     });
 

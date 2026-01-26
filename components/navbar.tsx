@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
 import { getDataMode, setDataMode } from "@/lib/data-mode";
+import Link from "next/link";
 
 export default function Navbar() {
     const [useDummyData, setUseDummyData] = useState(false);
@@ -18,7 +19,7 @@ export default function Navbar() {
         const newValue = !useDummyData;
         setUseDummyData(newValue);
         setDataMode(newValue);
-        
+
         // Notify user
         const message = newValue ? "Using Dummy Data" : "Using API Data";
         console.log(message);
@@ -26,13 +27,13 @@ export default function Navbar() {
 
     return (
         <div className="flex justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50">
-            <div className="flex items-center gap-0 cursor-pointer">
+            <Link href="/" className="flex items-center gap-0 cursor-pointer">
                 <Image src="/logo-text.svg" alt="Apollo Logo" width={70} height={70} />
-            </div>
+            </Link>
             <div className="flex items-center gap-3">
-                <Button 
-                    variant="outline" 
-                    size="sm" 
+                <Button
+                    variant="outline"
+                    size="sm"
                     onClick={toggleDataMode}
                     className="flex items-center gap-2"
                 >
@@ -41,7 +42,9 @@ export default function Navbar() {
                     </Badge>
                     <span className="text-xs">Data Mode</span>
                 </Button>
-                <Button variant="default" size="lg" className="py-0">Sign in</Button>
+                <Link href="/login" >
+                    <Button variant="default" size="lg" className="py-2 h-fit">Sign in</Button>
+                </Link>
             </div>
         </div>
     );

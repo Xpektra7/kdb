@@ -31,7 +31,7 @@ export interface Edge {
 }
 
 export interface BlockDiagramProps {
-  data: BlockData[];
+  matrix: DecisionMatrixOutput;
   className?: string;
 }
 
@@ -51,8 +51,8 @@ export interface Blueprint {
 
 export interface BlockDiagramItem {
   block: string;
-  from?: string[];
-  to?: string[];
+  from?: string | string[] | null;
+  to?: string | string[] | null;
 }
 
 export interface ArchitectureProps {
@@ -167,6 +167,8 @@ export interface DecisionMatrixOption {
 
 export interface DecisionMatrixItem {
   subsystem: string;
+  from?: string | string[] | null;
+  to?: string | string[] | null;
   options: DecisionMatrixOption[];
 }
 
@@ -181,7 +183,6 @@ export interface DecisionMatrixOutput {
   research: string[];
   problems_overall: Problem[];
   decision_matrix: DecisionMatrixItem[];
-  block_diagram: BlockData[];
   cost: string;
   skills: string;
 }
@@ -196,21 +197,4 @@ export interface SubsystemProps {
   onOptionSelect?: (selectedOption: DecisionMatrixOption) => void;
   selectedOption?: DecisionMatrixOption;
   showError?: boolean;
-}
-
-// Providers
-export interface ResultContextValue {
-  result: unknown;
-  setResult: (value: unknown) => void;
-}
-
-// App page
-export interface User {
-  name: string;
-  email: string;
-}
-
-export interface Error {
-  title?: string;
-  message?: string;
 }

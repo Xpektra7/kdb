@@ -6,7 +6,6 @@ import Subsystem from "./subsystem";
 import { BlockDiagram } from '../block-diagram/block-diagram';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
-import { getDataMode } from '@/lib/data-mode';
 
 import type { DecisionMatrixProps, DecisionMatrixOption } from '@/lib/definitions';
 
@@ -19,6 +18,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
   // Track subsystems missing a selection for UX feedback
   const [missingSubs, setMissingSubs] = useState<string[]>([]);
 
+
   // Handle selection change for each subsystem
   const handleOptionSelect = (subsystemName: string, selectedOption: DecisionMatrixOption) => {
     setSelectedOptions((prev) => ({
@@ -29,7 +29,7 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
     setMissingSubs((prev) => prev.filter((name) => name !== subsystemName));
   };
 
-  // Send selected options to blueprint API and navigate
+  // Send selected options to Blueprint API and navigate with requestId
   const handleProceedToBlueprint = async () => {
     // Validate all subsystems have a selection
     const missing = (output.decision_matrix || [])
@@ -47,41 +47,26 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
       return;
     }
 
-    const useDummyData = getDataMode();
-    
-    if (useDummyData) {
-      // Skip API call and go directly to blueprint with dummy data
-      router.push('/app/blueprint');
-      return;
-    }
-    
     try {
-      const response = await fetch('/api/generate/blueprint', {
+      // Save blueprint request and get short ID
+      const response = await fetch('/api/blueprint-requests', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           project: output.project,
           selectedOptions,
         }),
       });
-      
-      if (response.ok) {
-        const data = await response.json();
-        console.log('Blueprint data:', data);
-        
-        // Parse the output if it's a string
-        const blueprintData = typeof data.output === 'string' 
-          ? JSON.parse(data.output) 
-          : data.output;
-        
-        // Store blueprint data in sessionStorage for the blueprint page
-        sessionStorage.setItem('blueprintData', JSON.stringify(blueprintData));
+
+      if (!response.ok) {
+        throw new Error('Failed to save blueprint request');
       }
-      router.push('/app/blueprint');
+
+      const { requestId } = await response.json();
+      router.push(`/app/blueprint?requestId=${requestId}`);
     } catch (error) {
-      console.error('Error sending selected options:', error);
+      console.error('Error saving blueprint request:', error);
+      // Fallback: still navigate but without data
       router.push('/app/blueprint');
     }
   };
@@ -93,8 +78,8 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
         ref={(el) => { contentRefs.current['overview'] = el; }}
         className="flex flex-col gap-3 sm:gap-4 scroll-mt-20 pb-6 border-b border-border"
       >
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold leading-tight">{output.project}</h1>
-        <p className="text-sm sm:text-base md:text-lg text-muted-foreground leading-relaxed">{output.concept}</p>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl leading-tight">{output.project}</h1>
+        <p className="text-sm sm:text-base leading-relaxed">{output.concept}</p>
       </div>
 
       {/* Research */}
@@ -110,10 +95,14 @@ export default function DecisionMatrix({ output, contentRefs }: DecisionMatrixPr
           <ProblemsOverall problems={output.problems_overall} />
         </div>
       )}
-      <BlockDiagram data={output.block_diagram} />
+
+
+      {/* Block Diagram */}
+      <BlockDiagram matrix={output} className=''/>
+      
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
-        <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-semibold mb-6 sm:mb-8">Component Options</h1>
+        <h1 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">Component Options</h1>
         {output.decision_matrix && (
           <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
             {output.decision_matrix.map((matrix, index) => (
