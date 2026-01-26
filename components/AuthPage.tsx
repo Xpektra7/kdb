@@ -11,17 +11,84 @@ export default function AuthPage() {
     email: '',
     password: ''
   });
+  const [errors, setErrors] = useState({
+    name: '',
+    email: '',
+    password: ''
+  });
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
+
+  const validatePassword = (password: string) => {
+    if (isLogin) {
+      return password.length >= 6;
+    } else {
+      // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+      const hasUpperCase = /[A-Z]/.test(password);
+      const hasLowerCase = /[a-z]/.test(password);
+      const hasNumber = /[0-9]/.test(password);
+      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+      const isLongEnough = password.length >= 8;
+      
+      return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough;
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors = {
+      name: '',
+      email: '',
+      password: ''
+    };
+
+    // Validate name for signup
+    if (!isLogin && formData.name.trim().length < 5) {
+      newErrors.name = 'Name must be at least 5 characters';
+    }
+
+    // Validate email
+    if (!formData.email) {
+      newErrors.email = 'Email is required';
+    } else if (!validateEmail(formData.email)) {
+      newErrors.email = 'Please enter a valid email address';
+    }
+
+    // Validate password
+    if (!formData.password) {
+      newErrors.password = 'Password is required';
+    } else if (isLogin && formData.password.length < 6) {
+      newErrors.password = 'Password must be at least 6 characters';
+    } else if (!isLogin && !validatePassword(formData.password)) {
+      newErrors.password = 'Password must be at least 6 characters and include uppercase, lowercase, number, and special character';
+    }
+
+    setErrors(newErrors);
+    return !newErrors.name && !newErrors.email && !newErrors.password;
+  };
 
   const handleSubmit = () => {
-    console.log('Form submitted:', formData);
-    alert(isLogin ? 'Login successful!' : 'Account created successfully!');
+    if (validateForm()) {
+      console.log('Form submitted:', formData);
+      alert(isLogin ? 'Login successful!' : 'Account created successfully!');
+    }
   };
 
   const handleChange = (e : ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target as HTMLInputElement;
     setFormData({
       ...formData,
-      [(e.target as HTMLInputElement).name]: (e.target as HTMLInputElement).value
+      [name]: value
     });
+    // Clear error when user starts typing
+    if (errors[name as keyof typeof errors]) {
+      setErrors({
+        ...errors,
+        [name]: ''
+      });
+    }
   };
   
   const handleKeyPress = (e : KeyboardEvent) => {
@@ -34,13 +101,13 @@ export default function AuthPage() {
     <div className="min-h-screen bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8">
 
       {/* Auth Card */}
-      <div className="relative bg-white/95 backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 transform transition-all duration-500">
+      <div className="relative border border-white bg-black backdrop-blur-lg rounded-2xl sm:rounded-3xl shadow-2xl w-full max-w-md p-6 sm:p-8 transform transition-all duration-500">
         {/* Header */}
         <div className="text-center mb-6 sm:mb-8">
           <h1 className="text-3xl sm:text-4xl font-bold bg-black bg-clip-text text-transparent mb-2">
             {isLogin ? 'Welcome Back' : 'Get Started'}
           </h1>
-          <p className="text-sm sm:text-base text-gray-600">
+          <p className="text-sm sm:text-base text-white">
             {isLogin ? 'Login to your account' : 'Create your account today'}
           </p>
         </div>
@@ -48,7 +115,10 @@ export default function AuthPage() {
         {/* Toggle Tabs */}
         <div className="flex gap-2 mb-6 sm:mb-8 bg-gray-100 p-1 rounded-full">
           <button
-            onClick={() => setIsLogin(true)}
+            onClick={() => {
+              setIsLogin(true);
+              setErrors({ name: '', email: '', password: '' });
+            }}
             className={`flex-1 py-2 sm:py-2.5 text-sm sm:text-base rounded-full font-medium transition-all duration-300 ${
               isLogin
                 ? 'bg-black text-white shadow-lg'
@@ -58,7 +128,10 @@ export default function AuthPage() {
             Login
           </button>
           <button
-            onClick={() => setIsLogin(false)}
+            onClick={() => {
+              setIsLogin(false);
+              setErrors({ name: '', email: '', password: '' });
+            }}
             className={`flex-1 py-2 sm:py-2.5 text-sm sm:text-base rounded-full font-medium transition-all duration-300 ${
               !isLogin
                 ? 'bg-black text-white shadow-lg'
@@ -87,11 +160,14 @@ export default function AuthPage() {
                   placeholder="John Doe"
                 />
               </div>
+              {errors.name && (
+                <p className="mt-1 text-xs sm:text-sm text-red-300">{errors.name}</p>
+              )}
             </div>
           )}
 
           <div className="relative">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-white mb-2">
               Email Address
             </label>
             <div className="relative">
@@ -101,34 +177,40 @@ export default function AuthPage() {
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                className="w-full pl-10 sm:pl-11 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 sm:pl-11 pr-4 py-2.5 sm:py-3 text-sm sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
                 placeholder="you@example.com"
               />
             </div>
+            {errors.email && (
+              <p className="mt-1 text-xs sm:text-sm text-red-300">{errors.email}</p>
+            )}
           </div>
 
           <div className="relative">
-            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-2">
+            <label className="block text-xs sm:text-sm font-medium text-white mb-2">
               Password
             </label>
             <div className="relative">
-              <HugeiconsIcon icon={Lock} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-black w-4 h-4 sm:w-5 sm:h-5" />
+              <HugeiconsIcon icon={Lock} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white w-4 h-4 sm:w-5 sm:h-5" />
               <input
                 type={showPassword ? 'text' : 'password'}
                 name="password"
                 value={formData.password}
                 onChange={handleChange}
-                className="w-full pl-10 sm:pl-11 pr-10 sm:pr-12 py-2.5 sm:py-3 text-sm text-black sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                className="w-full pl-10 sm:pl-11 pr-10 sm:pr-12 py-2.5 sm:py-3 text-sm text-white sm:text-base border border-gray-300 rounded-xl focus:ring-2 focus:ring-white focus:border-transparent outline-none transition-all"
                 placeholder="••••••••"
               />
               <button
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-black hover:text-gray-600 transition-colors"
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white bg-black hover:text-gray-600 transition-colors"
               >
                 {showPassword ? <HugeiconsIcon icon={Eye} className="w-4 h-4 sm:w-5 sm:h-5" /> : <HugeiconsIcon icon={EyeOff} className="w-4 h-4 sm:w-5 sm:h-5" />}
               </button>
             </div>
+            {errors.password && (
+              <p className="mt-1 text-xs sm:text-sm text-red-300">{errors.password}</p>
+            )}
           </div>
 
           {isLogin && (
@@ -164,7 +246,7 @@ export default function AuthPage() {
           {isLogin ? "Don't have an account? " : "Already have an account? "}
           <button
             onClick={() => setIsLogin(!isLogin)}
-            className="text-blue-500 hover:text-black font-semibold"
+            className="text-white hover:text-blue-500 font-semibold bg-black"
           >
             {isLogin ? 'Sign up' : 'Login'}
           </button>
