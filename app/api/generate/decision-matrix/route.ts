@@ -14,7 +14,7 @@ if (!apiKey) {
 export async function POST(request: Request) {
     console.log("Reached POST");
     const { project } = await request.json();
-const input = `You are an engineering project planner. Return ONLY valid minified JSON (no whitespace, no newlines), No prose, markdown, or extra text.
+const input = `You are an engineering project planner. Return ONLY valid minified JSON (no newlines), No prose, markdown, or extra text.
 SCHEMA:
 {
   "project":"string",

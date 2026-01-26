@@ -19,7 +19,7 @@ export default function Navbar() {
         const newValue = !useDummyData;
         setUseDummyData(newValue);
         setDataMode(newValue);
-        
+
         // Notify user
         const message = newValue ? "Using Dummy Data" : "Using API Data";
         console.log(message);
@@ -28,13 +28,12 @@ export default function Navbar() {
     return (
         <div className="flex justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50">
             <Link href="/" className="flex items-center gap-0 cursor-pointer">
-                <Image src="/vercel.svg" alt="Apollo Logo" width={20} height={20} />
-                <h1 className="text-2xl font-bold text-foreground">pollo</h1>
+                <Image src="/logo-text.svg" alt="Apollo Logo" width={70} height={70} />
             </Link>
             <div className="flex items-center gap-3">
-                <Button 
-                    variant="outline" 
-                    size="sm" 
+                <Button
+                    variant="outline"
+                    size="sm"
                     onClick={toggleDataMode}
                     className="flex items-center gap-2"
                 >
@@ -43,7 +42,9 @@ export default function Navbar() {
                     </Badge>
                     <span className="text-xs">Data Mode</span>
                 </Button>
-                <Link href="/login" className="py-0 text-black border border-white bg-white rounded-sm p-4">Sign In</Link>
+                <Link href="/login" >
+                    <Button variant="default" size="lg" className="py-2 h-fit">Sign in</Button>
+                </Link>
             </div>
         </div>
     );
