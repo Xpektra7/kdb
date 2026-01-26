@@ -1,0 +1,323 @@
+{
+  "project": "Air Quality Monitoring (Dummy)",
+  "decisionMatrixOutput": {
+    "project": "IoT-based Outdoor Air Quality Monitoring System for Smart Cities",
+    "concept": "Deploy low-power edge nodes with PM2.5 and VOC sensing, solar powered where feasible, communicating via cellular/WiFi/LoRa to a cloud dashboard for real-time air quality analytics across Nigerian urban areas.",
+    "research": [
+      "World Health Organization. WHO Global Air Quality Guidelines.",
+      "U.S. Environmental Protection Agency. The Air Sensor Toolbox.",
+      "Castell N, et al. Can commercial low-cost sensors deliver reliable data? Environment International, 2017.",
+      "Snyder JC, et al. The Air Sensor Toolbox: A practical approach to low-cost sensors. J Air Waste Manag Assoc, 2016."
+    ],
+    "problems_overall": [
+      {
+        "problem": "Harsh outdoor environment causing sensor drift and enclosure ingress.",
+        "suggested_solution": "Use IP65+ enclosure, desiccants, and environmental shielding; apply routine calibration checks and weatherproof cabling."
+      },
+      {
+        "problem": "Power reliability for remote/urban deployments with outages.",
+        "suggested_solution": "Adopt solar+primary battery with low-power duty cycling; include a small mains backup option where grid power is available."
+      },
+      {
+        "problem": "Connectivity variability impacting data reliability.",
+        "suggested_solution": "Design with multi-network options (cellular, LoRaWAN, WiFi) and onboard buffering for offline periods."
+      },
+      {
+        "problem": "Calibration and data quality across diverse sensors.",
+        "suggested_solution": "Implement periodic co-location with a reference monitor and in-field drift correction using cross-sensor data fusion."
+      }
+    ],
+    "decision_matrix": [
+      {
+        "subsystem": "Sensing",
+        "from": "Power",
+        "to": "Control",
+        "options": [
+          {
+            "name": "Plantower PMS5003 PM2.5 sensor",
+            "why_it_works": "Low-cost, widely used for outdoor PM monitoring.",
+            "features": [
+              "PM2.5/PM10 measurements",
+              "UART interface",
+              "I2C compatibility via bridge"
+            ],
+            "pros": [
+              "Very cheap",
+              "Easy integration",
+              "Good for scaling"
+            ],
+            "cons": [
+              "No gas sensing",
+              "Humidity sensitivity without drying"
+            ],
+            "estimated_cost": "NGN 6,000–9,000",
+            "availability": "Widely available from local distributors; 1–2 weeks supply"
+          },
+          {
+            "name": "Sensirion SPS30 PM sensor",
+            "why_it_works": "Higher accuracy and stability than basic PM sensors.",
+            "features": [
+              "PM1.0/2.5/10",
+              "I2C/SPI",
+              "Low drift"
+            ],
+            "pros": [
+              "Better data quality",
+              "Longer calibration interval"
+            ],
+            "cons": [
+              "Higher cost",
+              "Requires careful handling/shielding"
+            ],
+            "estimated_cost": "NGN 40,000–60,000",
+            "availability": "Imported; 2–4 weeks with local distributors"
+          },
+          {
+            "name": "BME680 (gas + temp/humidity)",
+            "why_it_works": "Provides VOC/air quality proxy with environmental context.",
+            "features": [
+              "TVOC/CO2 estimate",
+              "Temp/Humidity/Pressure",
+              "I2C"
+            ],
+            "pros": [
+              "Compact, low power",
+              "Helps contextualize data"
+            ],
+            "cons": [
+              "No PM measurement; must be paired with PM sensor"
+            ],
+            "estimated_cost": "NGN 4,000–9,000",
+            "availability": "Widely available from electronics suppliers"
+          },
+          {
+            "name": "CCS811 gas sensor",
+            "why_it_works": "Low-cost VOC/eCO2 estimation for indoor/outdoor use.",
+            "features": [
+              "TVOC/eCO2 estimation",
+              "I2C"
+            ],
+            "pros": [
+              "Low power",
+              "Cheaper than multi-sensor packs"
+            ],
+            "cons": [
+              "Limited accuracy; requires calibration/offsets"
+            ],
+            "estimated_cost": "NGN 3,000–5,000",
+            "availability": "Common in Nigeria via distributors"
+          }
+        ]
+      },
+      {
+        "subsystem": "Control",
+        "from": "Sensing",
+        "to": "Communication",
+        "options": [
+          {
+            "name": "ESP32-WROOM-32D",
+            "why_it_works": "Low-power, built-in WiFi/Bluetooth, robust ecosystem.",
+            "features": [
+              "Dual-core MCU",
+              "WiFi/Bluetooth",
+              "Easy OTA"
+            ],
+            "pros": [
+              "Low cost",
+              "Large community",
+              "Good for edge processing"
+            ],
+            "cons": [
+              "Limited real-time performance compared to SBCs"
+            ],
+            "estimated_cost": "NGN 4,000–9,000",
+            "availability": "Widely available locally"
+          },
+          {
+            "name": "Raspberry Pi 4 Model B (2GB/4GB)",
+            "why_it_works": "Full Linux environment for advanced processing and analytics.",
+            "features": [
+              "Linux OS",
+              "USB/HDMI",
+              "GPIO expansion"
+            ],
+            "pros": [
+              "Flexible software stack",
+              "Strong support"
+            ],
+            "cons": [
+              "Higher power, needs cooling",
+              "More expensive"
+            ],
+            "estimated_cost": "NGN 35,000–60,000",
+            "availability": "Widely available; 1–3 weeks lead time"
+          },
+          {
+            "name": "Raspberry Pi Zero 2 W",
+            "why_it_works": "Compact edge device with adequate compute for lightweight tasks.",
+            "features": [
+              "Quad-core Arm Cortex-A53",
+              "WiFi"
+            ],
+            "pros": [
+              "Low cost",
+              "Small form factor"
+            ],
+            "cons": [
+              "Less RAM, limited I/O",
+              "Not ideal for heavy processing"
+            ],
+            "estimated_cost": "NGN 12,000–20,000",
+            "availability": "Common; 1–2 weeks from distributors"
+          }
+        ]
+      },
+      {
+        "subsystem": "Power",
+        "from": null,
+        "to": [
+          "Sensing",
+          "Control",
+          "Communication"
+        ],
+        "options": [
+          {
+            "name": "Solar panel + Li-ion battery pack",
+            "why_it_works": "Off-grid, suitable for outdoor deployments with sun exposure.",
+            "features": [
+              "6–10W panel",
+              "3.7V Li-ion cell or pack",
+              "Charge controller"
+            ],
+            "pros": [
+              "Green power, scalable",
+              "Low operating cost"
+            ],
+            "cons": [
+              "Variable output by weather",
+              "Initial setup complexity"
+            ],
+            "estimated_cost": "NGN 25,000–45,000",
+            "availability": "Widely available; 2–4 weeks lead time"
+          },
+          {
+            "name": "Mains adapter + UPS backup",
+            "why_it_works": "Reliable urban deployments with grid access.",
+            "features": [
+              "230V AC input",
+              "DC regulator output",
+              "USB/5V rail"
+            ],
+            "pros": [
+              "Stable power",
+              "Simple maintenance"
+            ],
+            "cons": [
+              "Requires grid access",
+              "No outage resilience without UPS"
+            ],
+            "estimated_cost": "NGN 5,000–15,000",
+            "availability": "Common; readily available"
+          },
+          {
+            "name": "USB power bank with regulator",
+            "why_it_works": "Low-cost portable solution for temporary deployments.",
+            "features": [
+              "5V/1A–2A output",
+              "Charge via USB-C"
+            ],
+            "pros": [
+              "Very cheap",
+              "Easy replacement"
+            ],
+            "cons": [
+              "Limited life in outdoor use",
+              "Needs frequent recharging"
+            ],
+            "estimated_cost": "NGN 3,000–8,000",
+            "availability": "Widely available"
+          }
+        ]
+      },
+      {
+        "subsystem": "Communication",
+        "from": "Control",
+        "to": null,
+        "options": [
+          {
+            "name": "LTE-M / NB-IoT cellular module (e.g., BG95-M3)",
+            "why_it_works": "Broad coverage in Nigeria with low power for remote sensors.",
+            "features": [
+              "Cellular IoT",
+              "Low power modes",
+              "SIM-based"
+            ],
+            "pros": [
+              "Good rural/urban reach",
+              "Managed connectivity"
+            ],
+            "cons": [
+              "SIM data costs",
+              "Network availability varies"
+            ],
+            "estimated_cost": "NGN 9,000–25,000",
+            "availability": "Moderate; import often required"
+          },
+          {
+            "name": "WiFi direct to local gateway (ESP32-based)",
+            "why_it_works": "Low-cost, high-bandwidth if local network exists.",
+            "features": [
+              "WiFi",
+              "Easy OTA",
+              "Local network"
+            ],
+            "pros": [
+              "Very cheap",
+              "Simple deployment in campuses/neighborhoods"
+            ],
+            "cons": [
+              "Depends on local network reliability",
+              "Limited rural coverage"
+            ],
+            "estimated_cost": "NGN 1,500–6,000",
+            "availability": "Widely available"
+          },
+          {
+            "name": "LoRaWAN module with gateway",
+            "why_it_works": "Long-range, low-power comms suitable for city-scale deployments.",
+            "features": [
+              "LoRa transceiver",
+              "Low data rate",
+              "Long range"
+            ],
+            "pros": [
+              "Excellent for wide-area coverage",
+              "Low power"
+            ],
+            "cons": [
+              "Requires LoRaWAN gateway coverage",
+              "Data rate limits"
+            ],
+            "estimated_cost": "NGN 3,000–7,000",
+            "availability": "Moderate; gateways available through distributors"
+          }
+        ]
+      }
+    ],
+    "skills": "IoT hardware integration, embedded software (C/Python), edge data processing, sensor calibration, cloud data ingestion, dashboard development (Grafana/Power BI).",
+    "suggestions": [
+      "Use IP65/IP66-rated enclosures with passive cooling for outdoor sensors.",
+      "Implement duty cycling and data buffering to handle connectivity gaps.",
+      "Plan for sensor co-location trials to calibrate PM and gas sensors against a reference monitor.",
+      "Deploy a scalable cloud architecture with secure APIs and role-based access.",
+      "Develop a maintenance plan including sensor replacement schedules and enclosure cleaning."
+    ],
+    "research_papers": [
+      "World Health Organization. WHO Global Air Quality Guidelines.",
+      "U.S. EPA. The Air Sensor Toolbox.",
+      "Castell N, et al. Can commercial low-cost sensors deliver reliable data? Environment International, 2017.",
+      "Snyder JC, Watkins TJ, Kilaru VJ, et al. The Air Sensor Toolbox: A practical approach to low-cost sensors. J Air Waste Manag Assoc, 2016."
+    ]
+  },
+  "createdAt": 1769346553797
+}
