@@ -1,8 +1,10 @@
 import Hero from "@/components/homepage/hero";
 import Navbar from "@/components/navbar";
-import GettingStarted from "@/components/homepage/getting-started";
+import About from "@/components/homepage/about";
 import Marquee from "@/components/homepage/marquee";
 import Footer from "@/components/footer";
+import { TimelineDemo } from "@/components/homepage/timeline";
+import WhyApollo from "@/components/homepage/why-apollo";
 
 
 export default function HomePage() {
@@ -10,8 +12,9 @@ export default function HomePage() {
     <main className="relative flex h-auto flex-col items-center justify-center max-w-1080 mx-auto">
       <Navbar />
       <Hero />
-      <GettingStarted />
-      <Marquee />
+      <About />
+      <TimelineDemo />
+      <WhyApollo />
       <Footer />
     </main>
   );

@@ -25,7 +25,7 @@ export default function Footer() {
                     {/* Brand Section */}
                     <div className="lg:col-span-2">
                         <div className="flex items-center gap-0 mb-4">
-                            <Image src="/logo-text.svg" alt="Apollo Logo" width={70} height={70} />
+                            <Image src="/logo.svg" alt="Apollo Logo" width={20} height={20} />
                         </div>
                         <p className="text-sm text-muted-foreground max-w-sm leading-relaxed mb-6">
                             A structured engineering project planning system. Turn project ideas into clear, buildable plans through decision-driven engineering.

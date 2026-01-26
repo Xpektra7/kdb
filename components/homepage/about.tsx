@@ -1,6 +1,6 @@
 import { Features } from "./feature-list";
 
-export default function GettingStarted() {  
+export default function About() {  
     return (
         <section className="w-full mt-72 flex-col gap-6 p-page z-20">
             <div className="flex flex-col gap-4 md:max-w-3/4 mb-12">
