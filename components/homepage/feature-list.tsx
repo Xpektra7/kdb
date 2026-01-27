@@ -1,49 +1,49 @@
 import { cn } from "@/lib/utils";
-import { IconAi, IconArtboard, IconBrandCitymapper, IconChecklist, IconHexagon, IconNote, IconPlaneDeparture} from "@tabler/icons-react";
-
+import { HugeiconsIcon } from "@hugeicons/react";
+import { Ai, Artboard, CheckListIcon, Hexagon, MapPin, Note01Icon, PlaneTakeoff } from '@hugeicons/core-free-icons'
 export function Features() {
     const features = [
         {
             title: "Engineering-first",
             description:
                 "Designed specifically for engineering projects—IoT, embedded systems, and real hardware constraints.",
-            icon: <IconArtboard />,
+            icon: <HugeiconsIcon icon={Artboard} />,
         },
         {
             title: "Decision-driven planning",
             description:
                 "Compare subsystems, components, and tradeoffs before you build anything.",
-            icon: <IconChecklist />,
+            icon: <HugeiconsIcon icon={CheckListIcon} />,
         },
         {
             title: "Execution-ready blueprints",
             description:
                 "Get structured project blueprints: architecture, components, steps, testing, and extensions.",
-            icon: <IconBrandCitymapper />,
+            icon: <HugeiconsIcon icon={MapPin} />,
         },
         {
             title: "Context-locked AI",
             description:
                 "AI that works inside your project context—no generic chat, no hallucinated advice.",
-            icon: <IconAi />,
+            icon: <HugeiconsIcon icon={Ai} />,
         },
         {
             title: "Theory, only when it matters",
             description:
                 "Engineering theory explained exactly where it applies in your project—not as lectures.",
-            icon: <IconNote />,
+            icon: <HugeiconsIcon icon={Note01Icon} />,
         },
         {
             title: "Built to ship projects",
             description:
                 "From idea → decisions → blueprint → build guide. No inspiration dumps, just execution.",
-            icon: <IconPlaneDeparture />,
+            icon: <HugeiconsIcon icon={PlaneTakeoff} />,
         },
         {
             title: "Modular by design",
             description:
                 "Subsystem-based structure lets you swap sensors, MCUs, power, and comms without chaos.",
-            icon: <IconHexagon />,
+            icon: <HugeiconsIcon icon={Hexagon} />,
         },
     ];
     return (

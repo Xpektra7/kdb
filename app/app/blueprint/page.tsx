@@ -34,7 +34,7 @@ async function generateBlueprint(project: string, selectedOptions: Record<string
   return typeof output === "string" ? JSON.parse(output) : output;
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ requestId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ requestId: string }> }) {
   try {
     const params = await searchParams;
     const useDummyData = await getDataModeServer();
@@ -56,6 +56,5 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ r
     return <BlueprintClient blueprintData={blueprintData} />;
   } catch (err) {
     console.error("Blueprint page error:", err);
-    redirect("/app/decision-matrix");
   }
 }
