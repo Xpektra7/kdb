@@ -165,11 +165,11 @@
   h3,
   h4,
   h5,
-  h6, Button{
+  h6, Button:not(Button.link-btn) {
     @apply font-sans text-foreground;
     line-height: 1.2;
   }
-  Button{
+  Button:not(Button.link-btn) {
     @apply font-bold bg-primary/90 cursor-pointer hover:bg-primary transition-all duration-200;
   }
   .p-page {
