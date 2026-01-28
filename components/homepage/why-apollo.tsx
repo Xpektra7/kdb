@@ -22,8 +22,8 @@ export default function WhyApollo() {
 
     return (
         <section className="relative w-full p-page py-18">
-            <div className="absolute inset-0 -z-10 bg-gradient-to-br from-background via-background to-background/80" />
-            <div className="absolute -inset-x-10 top-20 h-48 blur-[120px] bg-gradient-to-r from-accent/20 via-primary/10 to-transparent -z-10" />
+            <div className="absolute inset-0 -z-10 bg-linear-to-br from-background via-background to-background/80" />
+            <div className="absolute -inset-x-10 top-20 h-48 blur-[120px] bg-linear-to-r from-accent/20 via-primary/10 to-transparent -z-10" />
 
             <div className="max-w-6xl mx-auto space-y-8">
                 <div className="flex items-baseline justify-between flex-wrap gap-3">

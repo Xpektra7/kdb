@@ -16,19 +16,19 @@ export function TimelineDemo() {
           </p>
           <ul className="space-y-2">
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">List realistic options for each subsystem</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">See tradeoffs: cost vs complexity vs availability</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Understand why each option works</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Catch incompatible choices early</span>
             </li>
           </ul>
@@ -46,19 +46,19 @@ export function TimelineDemo() {
           </p>
           <ul className="space-y-2">
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">System architecture diagram and component mapping</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Cost estimation and bill of materials</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Skills and time requirements</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Risks, constraints, and failure modes</span>
             </li>
           </ul>
@@ -76,19 +76,19 @@ export function TimelineDemo() {
           </p>
           <ul className="space-y-2">
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Wiring, pin mappings, and physical assembly</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Code structure and configuration steps</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Calibration, testing, and validation procedures</span>
             </li>
             <li className="flex items-start gap-3">
-              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 flex-shrink-0" />
+              <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Common failure points and how to debug them</span>
             </li>
           </ul>

@@ -4,14 +4,15 @@ import { Button } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowRight01Icon, Rocket01Icon } from "@hugeicons/core-free-icons";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function CTA() {
     const router = useRouter();
 
     return (
         <section className="relative w-full p-page py-20">
-            <div className="absolute inset-0 -z-10 bg-gradient-to-b from-background via-accent/5 to-background" />
-            <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+            <div className="absolute inset-0 -z-10 bg-linear-to-b from-background via-accent/5 to-background" />
+            <div className="absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-border to-transparent" />
             
             <div className="max-w-4xl mx-auto text-center space-y-8">
                 <div className="inline-flex items-center justify-center p-3 rounded-full bg-accent/10 border border-accent/20 mb-4">
@@ -32,7 +33,7 @@ export default function CTA() {
                         size="lg" 
                         variant="default"
                         onClick={() => router.push('/app')}
-                        className="group px-8 h-12 text-base font-semibold"
+                        className="group"
                     >
                         Start Your Project
                         <HugeiconsIcon 
@@ -41,19 +42,17 @@ export default function CTA() {
                         />
                     </Button>
                     
-                    <Button 
-                        size="lg" 
-                        variant="outline"
-                        onClick={() => router.push('/getting-started')}
-                        className="px-8 h-12 text-base font-semibold"
-                    >
-                        Learn More
-                    </Button>
+                    <Link href="/getting-started">
+                        <Button 
+                            size="lg" 
+                            variant="link"
+                            className="link-btn"
+                        >
+                            Learn More
+                        </Button>
+                    </Link>
                 </div>
 
-                <p className="text-sm text-muted-foreground pt-4">
-                    No credit card required. No signup needed to explore.
-                </p>
             </div>
         </section>
     );

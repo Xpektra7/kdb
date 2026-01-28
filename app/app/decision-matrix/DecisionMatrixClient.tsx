@@ -1,8 +1,7 @@
 "use client";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
-import { useRouter } from "next/navigation";
 import DecisionMatrix from "@/components/decision-matrix/decision-matrix";
-import { Button } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import NavigationSidebar from "@/components/decision-matrix/navigation-sidebar";
 import type { NavItem } from "@/lib/definitions";
 import { buildDecisionMatrixNav } from "@/lib/navigation";
@@ -20,10 +19,10 @@ const Z_INDEX = {
 
 interface DecisionMatrixClientProps {
   output: any;
+  dummy?: boolean;
 }
 
-export default function DecisionMatrixClient({ output }: DecisionMatrixClientProps) {
-  const router = useRouter();
+export default function DecisionMatrixClient({ output , dummy }: DecisionMatrixClientProps) {
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -140,11 +139,11 @@ export default function DecisionMatrixClient({ output }: DecisionMatrixClientPro
                   fileName="decision-matrix-report.pdf"
                 />
               )}
-              <Link href="/app">
-                <Button variant="outline" size="lg" className="py-2 h-fit">
+             { dummy ? null : (  
+                <Link href="/.." className={buttonVariants({variant: "outline", size: "lg" , className: "py-2 h-fit"})}>
                   Back
-                </Button>
-              </Link>
+                </Link>
+              )}
             </div>
           </div>
 

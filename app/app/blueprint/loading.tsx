@@ -1,4 +1,3 @@
-import Navbar from "@/components/navbar";
 import { ExportButton } from "@/components/pdf-export/ExportButton";
 import { Button } from "@/components/ui/button";
 

@@ -2,7 +2,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavigationSidebar from "@/components/decision-matrix/navigation-sidebar";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
 import BlueprintView from "@/components/blueprint/blueprint";
@@ -10,6 +10,7 @@ import { buildBlueprintNav } from "@/lib/navigation";
 import type { Blueprint, NavItem } from "@/lib/definitions";
 import { ExportButton } from "@/components/pdf-export/ExportButton";
 import type { PDFExportData } from "@/lib/pdfGenerator";
+import Link from "next/link";
 
 const Z_INDEX = {
   OVERLAY: 40,
@@ -19,9 +20,10 @@ const Z_INDEX = {
 
 interface BlueprintClientProps {
   blueprintData: Blueprint;
+  dummy?: boolean;
 }
 
-export default function BlueprintClient({ blueprintData }: BlueprintClientProps) {
+export default function BlueprintClient({ blueprintData, dummy }: BlueprintClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("overview");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -138,7 +140,11 @@ export default function BlueprintClient({ blueprintData }: BlueprintClientProps)
               {blueprintData && pdfData && (
                 <ExportButton data={pdfData} buttonText="Export PDF" fileName="blueprint-report.pdf" />
               )}
-              <Button variant="outline" size="lg" className="py-2 h-fit" onClick={() => router.back()}>Back</Button>
+              { dummy ? null : (
+                <Link href="/.." className={buttonVariants({variant: "outline", size: "lg" , className: "py-2 h-fit"})}>
+                  Back
+                </Link>
+              )}
             </div>
           </div>
 

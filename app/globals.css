@@ -170,7 +170,7 @@
     line-height: 1.2;
   }
   Button:not(Button.link-btn) {
-    @apply font-bold bg-primary/90 cursor-pointer hover:bg-primary transition-all duration-200;
+    @apply font-bold bg-primary/90 cursor-pointer hover:bg-accent transition-all duration-200;
   }
   .p-page {
     @apply py-6 px-6 md:px-16 lg:px-32;
