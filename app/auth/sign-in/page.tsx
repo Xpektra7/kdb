@@ -4,10 +4,13 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default function AuthPage() {
     const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -71,10 +74,28 @@ export default function AuthPage() {
         return !newErrors.name && !newErrors.email && !newErrors.password;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
-            console.log('Form submitted:', formData);
-            alert(isLogin ? 'Login successful!' : 'Account created successfully!');
+            setLoading(true);
+
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                setErrorMessage(errorData.error || 'An error occurred');
+            } else {
+                setErrorMessage('');
+                redirect('/auth/login');
+            }
+            setLoading(false);
+            // console.log('Form submitted:', formData);
+            // alert(isLogin ? 'Login successful!' : 'Account created successfully!');
         }
     };
 
@@ -109,6 +130,9 @@ export default function AuthPage() {
                     </p>
                 </div>
 
+                {errorMessage && (
+                    <p className="mb-4 text-center text-sm sm:text-base text-red-300">{errorMessage}</p>
+                )}
 
                 {/* Input Fields */}
                 <div className="space-y-4 sm:space-y-5 w-full  ">
@@ -187,6 +211,7 @@ export default function AuthPage() {
                         variant="default"
                         onClick={handleSubmit}
                         className='w-full hover:bg-accent/90 group'
+                        disabled={loading}
                     >
                         Create Account
                         <HugeiconsIcon icon={ArrowRight} className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
