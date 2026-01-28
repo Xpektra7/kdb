@@ -4,10 +4,13 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import { redirect } from 'next/navigation';
 
 export default function AuthPage() {
-    const [isLogin, setIsLogin] = useState(true);
+    // const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
     const [formData, setFormData] = useState({
         name: '',
         email: '',
@@ -25,10 +28,10 @@ export default function AuthPage() {
     };
 
     const validatePassword = (password: string) => {
-        if (isLogin) {
-            return password.length >= 6;
-        } else {
-            // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+        // if (isLogin) {
+        //     return password.length >= 6;
+        // } else {
+        //     // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
             const hasUpperCase = /[A-Z]/.test(password);
             const hasLowerCase = /[a-z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
@@ -36,7 +39,7 @@ export default function AuthPage() {
             const isLongEnough = password.length >= 8;
 
             return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough;
-        }
+        // }
     };
 
     const validateForm = () => {
@@ -47,7 +50,7 @@ export default function AuthPage() {
         };
 
         // Validate name for signup
-        if (!isLogin && formData.name.trim().length < 5) {
+        if ( formData.name.trim().length < 5) {
             newErrors.name = 'Name must be at least 5 characters';
         }
 
@@ -61,9 +64,9 @@ export default function AuthPage() {
         // Validate password
         if (!formData.password) {
             newErrors.password = 'Password is required';
-        } else if (isLogin && formData.password.length < 6) {
+        } else if ( formData.password.length < 6) {
             newErrors.password = 'Password must be at least 6 characters';
-        } else if (!isLogin && !validatePassword(formData.password)) {
+        } else if ( !validatePassword(formData.password)) {
             newErrors.password = 'Password must be at least 6 characters and include uppercase, lowercase, number, and special character';
         }
 
@@ -71,10 +74,28 @@ export default function AuthPage() {
         return !newErrors.name && !newErrors.email && !newErrors.password;
     };
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         if (validateForm()) {
-            console.log('Form submitted:', formData);
-            alert(isLogin ? 'Login successful!' : 'Account created successfully!');
+            setLoading(true);
+
+            const res = await fetch('/api/auth/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!res.ok) {
+                const errorData = await res.json();
+                setErrorMessage(errorData.error || 'An error occurred');
+            } else {
+                setErrorMessage('');
+                redirect('/auth/login');
+            }
+            setLoading(false);
+            // console.log('Form submitted:', formData);
+            // alert(isLogin ? 'Login successful!' : 'Account created successfully!');
         }
     };
 
@@ -109,6 +130,9 @@ export default function AuthPage() {
                     </p>
                 </div>
 
+                {errorMessage && (
+                    <p className="mb-4 text-center text-sm sm:text-base text-red-300">{errorMessage}</p>
+                )}
 
                 {/* Input Fields */}
                 <div className="space-y-4 sm:space-y-5 w-full  ">
@@ -187,6 +211,7 @@ export default function AuthPage() {
                         variant="default"
                         onClick={handleSubmit}
                         className='w-full hover:bg-accent/90 group'
+                        disabled={loading}
                     >
                         Create Account
                         <HugeiconsIcon icon={ArrowRight} className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />

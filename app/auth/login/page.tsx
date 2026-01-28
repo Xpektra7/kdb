@@ -4,10 +4,14 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
+import {handleSignIn} from '../api';
+// import { signIn } from '@/auth';
 
 export default function AuthPage() {
-  const [isLogin, setIsLogin] = useState(true);
+  // const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -24,20 +28,20 @@ export default function AuthPage() {
     return emailRegex.test(email);
   };
 
-  const validatePassword = (password: string) => {
-    if (isLogin) {
-      return password.length >= 6;
-    } else {
-      // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
-      const hasUpperCase = /[A-Z]/.test(password);
-      const hasLowerCase = /[a-z]/.test(password);
-      const hasNumber = /[0-9]/.test(password);
-      const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
-      const isLongEnough = password.length >= 8;
+  // const validatePassword = (password: string) => {
+  //   if (isLogin) {
+  //     return password.length >= 6;
+  //   } else {
+  //     // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+  //     const hasUpperCase = /[A-Z]/.test(password);
+  //     const hasLowerCase = /[a-z]/.test(password);
+  //     const hasNumber = /[0-9]/.test(password);
+  //     const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  //     const isLongEnough = password.length >= 8;
 
-      return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough;
-    }
-  };
+  //     return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough;
+  //   }
+  // };
 
   const validateForm = () => {
     const newErrors = {
@@ -47,9 +51,9 @@ export default function AuthPage() {
     };
 
     // Validate name for signup
-    if (!isLogin && formData.name.trim().length < 5) {
-      newErrors.name = 'Name must be at least 5 characters';
-    }
+    // if (!isLogin && formData.name.trim().length < 5) {
+    //   newErrors.name = 'Name must be at least 5 characters';
+    // }
 
     // Validate email
     if (!formData.email) {
@@ -59,26 +63,37 @@ export default function AuthPage() {
     }
 
     // Validate password
-    if (!formData.password) {
-      newErrors.password = 'Password is required';
-    } else if (isLogin && formData.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
-    } else if (!isLogin && !validatePassword(formData.password)) {
-      newErrors.password = 'Password must be at least 6 characters and include uppercase, lowercase, number, and special character';
-    }
+    // if (!formData.password) {
+    //   newErrors.password = 'Password is required';
+    // } else if (isLogin && formData.password.length < 6) {
+    //   newErrors.password = 'Password must be at least 6 characters';
+    // } else if (!isLogin && !validatePassword(formData.password)) {
+    //   newErrors.password = 'Password must be at least 6 characters and include uppercase, lowercase, number, and special character';
+    // }
 
     setErrors(newErrors);
     return !newErrors.name && !newErrors.email && !newErrors.password;
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
+
+    // "use server"
     if (validateForm()) {
-      console.log('Form submitted:', formData);
-      alert('Login successful!');
+      setLoading(true);
+      const result = await handleSignIn(formData.email, formData.password);
+      setLoading(false);
+      if (result?.error) {
+        setErrorMessage(result.error);
+      } else {
+        setErrorMessage('');
+      }
+      // console.log('Form submitted:', formData);
+      // alert('Login successful!');
     }
   };
 
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setErrorMessage('');
     const { name, value } = e.target as HTMLInputElement;
     setFormData({
       ...formData,
@@ -116,6 +131,10 @@ export default function AuthPage() {
 
 
         {/* Input Fields */}
+
+        {errorMessage && (
+          <p className="mb-4 text-center text-sm sm:text-base text-red-300">{errorMessage}</p>
+        )}
         <div className="space-y-4 sm:space-y-5">
 
           <div className="relative">
@@ -182,6 +201,7 @@ export default function AuthPage() {
             variant="default"
             onClick={handleSubmit}
             className='w-full hover:bg-accent/90 group'
+            disabled={loading}
           >
             Login
             <HugeiconsIcon icon={ArrowRight} className="w-4 h-4 sm:w-5 sm:h-5 group-hover:translate-x-1 transition-transform" />
