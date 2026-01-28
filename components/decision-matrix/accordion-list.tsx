@@ -34,7 +34,7 @@ export default function AccordionList({
                 </li>
               ))}
             </ul>
-          </AccordionContent>
+          </AccordionContent> 
         )}
       </AccordionItem>
     </Accordion>
