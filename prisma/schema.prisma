@@ -114,9 +114,156 @@ model Usage {
   createdAt DateTime @default(now())
 }
 
+enum ProjectStage {
+  IDEATION
+  DECISION_MATRIX
+  DECISION_MATRIX_COMPLETE
+  BLUEPRINT
+  BLUEPRINT_COMPLETE
+  BUILDING
+  COMPLETED
+}
+
 model Project {
-  id        Int      @id @default(autoincrement())
-  user      User     @relation(fields: [userId], references: [id])
-  userId    Int
-  createdAt DateTime @default(now())
+  id          Int           @id @default(autoincrement())
+  userId      Int
+  
+  title       String
+  description String?
+  stage       ProjectStage  @default(IDEATION)
+  
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subsystems        Subsystem[]
+  decisions         ProjectDecision[]
+  decisionMatrix    DecisionMatrixResult?
+  blueprint         BlueprintResult?
+  buildGuide        BuildGuide?
+
+  @@index([userId])
+  @@map("projects")
+}
+
+model Subsystem {
+  id          Int     @id @default(autoincrement())
+  projectId   Int
+  
+  name        String
+  description String?
+  order       Int     @default(0)
+  
+  createdAt   DateTime @default(now())
+
+  project     Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  options     SubsystemOption[]
+  decisions   ProjectDecision[]
+
+  @@index([projectId])
+  @@map("subsystems")
+}
+
+model SubsystemOption {
+  id              Int       @id @default(autoincrement())
+  subsystemId     Int
+  
+  name            String
+  description     String    @db.Text
+  whyItWorks      String    @db.Text
+  
+  pros            String[]
+  cons            String[]
+  estimatedCost   String
+  availability    String
+  
+  imageUrl        String?
+  datasheet       String?
+  
+  createdAt       DateTime  @default(now())
+
+  subsystem       Subsystem        @relation(fields: [subsystemId], references: [id], onDelete: Cascade)
+  decisions       ProjectDecision[]
+
+  @@index([subsystemId])
+  @@map("subsystem_options")
+}
+
+model ProjectDecision {
+  id                Int       @id @default(autoincrement())
+  projectId         Int
+  subsystemId       Int
+  selectedOptionId  Int
+  
+  decidedAt         DateTime  @default(now())
+
+  project         Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  subsystem       Subsystem       @relation(fields: [subsystemId], references: [id], onDelete: Cascade)
+  selectedOption  SubsystemOption @relation(fields: [selectedOptionId], references: [id], onDelete: Cascade)
+
+  @@unique([projectId, subsystemId])
+  @@index([projectId])
+  @@map("project_decisions")
+}
+
+model DecisionMatrixResult {
+  id              Int       @id @default(autoincrement())
+  projectId       Int       @unique
+  
+  aiOutput        Json
+  projectTitle    String?
+  concept         String?
+  problemsOverall Json?
+  skillsRequired  String?
+  
+  generatedAt     DateTime  @default(now())
+  expiresAt       DateTime  @default(dbgenerated("now() + INTERVAL '30 days'"))
+
+  project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("decision_matrix_results")
+}
+
+model BlueprintResult {
+  id                  Int       @id @default(autoincrement())
+  projectId           Int       @unique
+  
+  aiOutput            Json
+  architecture        String?
+  blockDiagram        Json?
+  estimatedTotalCost  String?
+  requiredSkills      String[]
+  executionSteps      String[]
+  
+  generatedAt         DateTime  @default(now())
+  expiresAt           DateTime  @default(dbgenerated("now() + INTERVAL '90 days'"))
+
+  project             Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  buildGuides         BuildGuide[]
+
+  @@index([projectId])
+  @@map("blueprint_results")
+}
+
+model BuildGuide {
+  id                  Int       @id @default(autoincrement())
+  projectId           Int       @unique
+  blueprintId         Int
+  
+  aiOutput            Json
+  wiringInstructions  String    @db.Text
+  codeStructure       String    @db.Text
+  calibrationSteps    String[]
+  testingProcedures   String[]
+  commonFailureModes  String[]
+  
+  generatedAt         DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
+
+  project             Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  blueprint           BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+
+  @@index([projectId])
+  @@map("build_guides")
 }
