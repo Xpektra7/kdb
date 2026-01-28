@@ -1,10 +1,10 @@
 import Hero from "@/components/homepage/hero";
 import Navbar from "@/components/navbar";
 import About from "@/components/homepage/about";
-import Marquee from "@/components/homepage/marquee";
 import Footer from "@/components/footer";
 import { TimelineDemo } from "@/components/homepage/timeline";
 import WhyApollo from "@/components/homepage/why-apollo";
+import CTA from "@/components/homepage/cta";
 
 
 export default function HomePage() {
@@ -15,6 +15,7 @@ export default function HomePage() {
       <About />
       <TimelineDemo />
       <WhyApollo />
+      <CTA />
       <Footer />
     </main>
   );

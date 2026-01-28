@@ -1,7 +1,6 @@
 "use client";
 import Link from "next/link";
 import { Button } from "../ui/button";
-import { useRouter } from "next/navigation";
 export default function Hero() {
   const router = useRouter();
   return (

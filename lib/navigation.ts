@@ -1,4 +1,4 @@
-import type { NavItem, Blueprint, DecisionMatrixOutput, Subsystem, Component } from '@/lib/definitions';
+import type { NavItem, Blueprint, DecisionMatrixOutput } from '@/lib/definitions';
 
 // Config-driven navigation sections for blueprint view
 const NAV_CONFIG = [
