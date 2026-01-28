@@ -7,7 +7,7 @@ import Link from 'next/link';
 import { redirect } from 'next/navigation';
 
 export default function AuthPage() {
-    const [isLogin, setIsLogin] = useState(true);
+    // const [isLogin, setIsLogin] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
@@ -28,10 +28,10 @@ export default function AuthPage() {
     };
 
     const validatePassword = (password: string) => {
-        if (isLogin) {
-            return password.length >= 6;
-        } else {
-            // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
+        // if (isLogin) {
+        //     return password.length >= 6;
+        // } else {
+        //     // For signup: at least 8 chars, 1 uppercase, 1 lowercase, 1 number, 1 special char
             const hasUpperCase = /[A-Z]/.test(password);
             const hasLowerCase = /[a-z]/.test(password);
             const hasNumber = /[0-9]/.test(password);
@@ -39,7 +39,7 @@ export default function AuthPage() {
             const isLongEnough = password.length >= 8;
 
             return hasUpperCase && hasLowerCase && hasNumber && hasSpecialChar && isLongEnough;
-        }
+        // }
     };
 
     const validateForm = () => {
@@ -50,7 +50,7 @@ export default function AuthPage() {
         };
 
         // Validate name for signup
-        if (!isLogin && formData.name.trim().length < 5) {
+        if ( formData.name.trim().length < 5) {
             newErrors.name = 'Name must be at least 5 characters';
         }
 
@@ -64,9 +64,9 @@ export default function AuthPage() {
         // Validate password
         if (!formData.password) {
             newErrors.password = 'Password is required';
-        } else if (isLogin && formData.password.length < 6) {
+        } else if ( formData.password.length < 6) {
             newErrors.password = 'Password must be at least 6 characters';
-        } else if (!isLogin && !validatePassword(formData.password)) {
+        } else if ( !validatePassword(formData.password)) {
             newErrors.password = 'Password must be at least 6 characters and include uppercase, lowercase, number, and special character';
         }
 
