@@ -1,0 +1,58 @@
+import { NextRequest, NextResponse } from "next/server";
+import prisma from "@/lib/prisma";
+
+/**
+ * GET /api/projects/[id]/blueprint
+ * 
+ * Get cached blueprint result
+ * Returns from cache if available and not expired
+ * 
+ * Response: {
+ *   id, architecture, blockDiagram, estimatedTotalCost,
+ *   requiredSkills, executionSteps,
+ *   aiOutput: {...}, generatedAt, expiresAt
+ * }
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const projectId = parseInt(id);
+
+    if (isNaN(projectId)) {
+      return NextResponse.json(
+        { error: "Invalid project ID" },
+        { status: 400 }
+      );
+    }
+
+    const result = await prisma.blueprintResult.findUnique({
+      where: { projectId }
+    });
+
+    if (!result) {
+      return NextResponse.json(
+        { error: "Blueprint not yet generated for this project" },
+        { status: 404 }
+      );
+    }
+
+    // Check if expired
+    if (new Date() > result.expiresAt) {
+      return NextResponse.json(
+        { error: "Blueprint has expired. Please regenerate." },
+        { status: 410 }
+      );
+    }
+
+    return NextResponse.json(result, { status: 200 });
+  } catch (error) {
+    console.error("[GET /api/projects/[id]/blueprint] Error:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch blueprint" },
+      { status: 500 }
+    );
+  }
+}
