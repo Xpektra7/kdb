@@ -7,10 +7,13 @@ import { ArrowUp } from "@hugeicons/core-free-icons";
 import airQuality from "@/schema/air-quality-result2.json";
 import { getDataMode } from "@/lib/data-mode";
 import Navbar from "@/components/navbar";
+
 import Link from "next/link";
+import { useSession } from "next-auth/react";
 
 export default function Page() {
     const router = useRouter();
+    const { data: session,status } = useSession();
 
     const [user, setUser] = useState<{ name: string; email: string } | null>(null);
     const [projectDescription, setProjectDescription] = useState("");
@@ -103,12 +106,18 @@ export default function Page() {
         }, 1500);
     }
 
+    // if (status === "loading") {
+    //     return <div className="flex items-center justify-center h-screen">
+    //         <p className="text-muted-foreground">Loading...</p>
+    //     </div>;
+    // }
+    
     return (
         <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-360 py-0 pb-12 mx-auto">
             <Navbar />
             <div className="flex flex-col w-full gap-8 justify-center items-center mt-32 max-w-2xl">
                 <div className="flex flex-col w-full gap-3">
-                    <p className="text-base">Welcome {user ? user.name.split(" ")[0] : "Guest"}!</p>
+                    <p className="text-base">Welcome {session?.user?.name ? session.user.name.split(" ")[0] : "Guest"}!</p>
                     <h1 className="text-4xl font-semibold text-foreground leading-tight">What are we forging today?</h1>
                 </div>
                 <div className="flex flex-col w-full bg-muted/50 cursor-pointer p-5 gap-3 h-auto rounded-xl border border-border hover:border-muted-foreground/30 transition-colors">
