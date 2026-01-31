@@ -42,5 +42,4 @@ yarn-error.log*
 next-env.d.ts
 
 /lib/generated/prisma
-docker-compose.yml
 prisma/migrations
