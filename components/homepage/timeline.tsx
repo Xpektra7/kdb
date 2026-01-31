@@ -6,6 +6,7 @@ import { Target, Note01Icon, Hammer, CheckCircle } from "@hugeicons/core-free-ic
 export function TimelineDemo() {
   const data = [
     {
+      id: "decision-matrix",
       title: "Decision Matrix",
       subtitle: '"What systems does this project need?"',
       icon: <HugeiconsIcon icon={Target} className="w-5 h-5" />,
@@ -36,6 +37,7 @@ export function TimelineDemo() {
       ),
     },
     {
+      id: "blueprint",
       title: "Blueprint",
       subtitle: '"Given these choices, what does the project look like?"',
       icon: <HugeiconsIcon icon={Note01Icon} className="w-5 h-5" />,
@@ -66,6 +68,7 @@ export function TimelineDemo() {
       ),
     },
     {
+      id: "build-guide",
       title: "Build Guide",
       subtitle: '"How do I actually build this?"',
       icon: <HugeiconsIcon icon={Hammer} className="w-5 h-5" />,
