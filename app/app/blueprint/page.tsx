@@ -40,7 +40,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ r
     const useDummyData = await getDataModeServer();
 
     if (useDummyData) {
-      return <BlueprintClient blueprintData={dummydata as unknown as Blueprint} />;
+      return <BlueprintClient blueprintData={dummydata as unknown as Blueprint} dummy />;
     }
 
     if (!params.requestId) {

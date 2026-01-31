@@ -9,7 +9,7 @@ import { useSession } from "next-auth/react";
 export default function Navbar() {
     const [useDummyData, setUseDummyData] = useState(false);
 
-    const { data: session,status } = useSession();
+    const { data: session, status } = useSession();
 
     // Load preference from localStorage on mount
     useEffect(() => {
@@ -26,20 +26,18 @@ export default function Navbar() {
         const message = newValue ? "Using Dummy Data" : "Using API Data";
         console.log(message);
     };
-    if (status === "loading") {
-        return <div className="flex items-center justify-center h-screen">
-            <p className="text-muted-foreground">Loading...</p>
-        </div>;
-    }
+
     return (
         <div className="flex justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50">
             <Link href="/" className="flex items-center gap-0 cursor-pointer">
                 <Image src="/logo-text.svg" alt="Apollo Logo" width={70} height={70} />
             </Link>
-
-            {session?.user?.name ? (<div className="flex items-center gap-3">{session.user.name}</div>) : (
-                <div>
-
+            {status === "loading" ? (
+                <p>...</p>
+            ) : session?.user?.name ? (
+                <div className="flex items-center gap-3">{session.user.name}</div>
+            ) : (
+                <div className="flex items-center gap-4">
                     <Button
                         variant="outline"
                         size="sm"
@@ -54,7 +52,8 @@ export default function Navbar() {
                     <Link href="/auth/login" >
                         <Button variant="default" size="lg" className="py-2 h-fit">Sign in</Button>
                     </Link>
-                </div>)}
+                </div>
+            )}
         </div>
     );
 }

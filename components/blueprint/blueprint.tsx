@@ -1,3 +1,5 @@
+"use client";
+
 import { ProblemStatement } from '@/components/blueprint/problems';
 import { Architecture } from '@/components/blueprint/architecture';
 import { Components } from '@/components/blueprint/component';
@@ -8,6 +10,24 @@ import { Skills } from '@/components/blueprint/skills';
 import { Cost } from '@/components/blueprint/cost';
 import { ExtensionsAndReferences } from '@/components/blueprint/extension-and-ref';
 import type { Blueprint } from '@/lib/definitions';
+import { Button } from '../ui/button';
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+
+/**
+ * Compresses the full blueprint into a minimal format for build guide generation
+ */
+function compressBlueprintForBuildGuide(blueprint: Blueprint) {
+  return {
+    project: blueprint.project,
+    location: "Nigeria", // Default location, could be made dynamic
+    systems: blueprint.components.map((comp) => ({
+      subsystem: comp.subsystem,
+      choice: comp.chosen_option,
+    })),
+    constraints: blueprint.problem?.constraints || [],
+  };
+}
 
 
 interface BlueprintProps {
@@ -17,6 +37,7 @@ interface BlueprintProps {
   expandedItems: Record<string, boolean>;
   toggleSection: (id: string) => void;
   toggleItem: (id: string) => void;
+  dummy?: boolean;
 }
 
 export default function Blueprint({
@@ -26,7 +47,75 @@ export default function Blueprint({
   expandedItems,
   toggleSection,
   toggleItem,
+  dummy,
 }: BlueprintProps) {
+  const router = useRouter();
+  const [isGenerating, setIsGenerating] = useState(false);
+
+  const handleProceedToBuildGuide = async () => {
+    // In dummy mode, just navigate directly to the build guide page
+    if (dummy) {
+      router.push('/app/build-guide');
+      return;
+    }
+    
+    setIsGenerating(true);
+    
+    try {
+      // Compress blueprint to minimal format
+      const compressedBlueprint = compressBlueprintForBuildGuide(blueprintData);
+      
+      // Generate the build guide
+      const generateResponse = await fetch('/api/generate/build-guide', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project: compressedBlueprint.project,
+          blueprint: compressedBlueprint,
+        }),
+      });
+
+      if (!generateResponse.ok) {
+        const errorData = await generateResponse.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to generate build guide');
+      }
+
+      const { output, error } = await generateResponse.json();
+      
+      if (error) {
+        throw new Error(error);
+      }
+      
+      // Output is already parsed from the API
+      const buildGuideOutput = output;
+      
+      // Store the build guide and get the request ID
+      const storeResponse = await fetch('/api/build-guide-requests', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          project: compressedBlueprint.project,
+          buildGuideOutput,
+        }),
+      });
+
+      if (!storeResponse.ok) {
+        throw new Error('Failed to store build guide');
+      }
+
+      const { requestId } = await storeResponse.json();
+      
+      // Navigate to build guide page
+      router.push(`/app/build-guide?requestId=${requestId}`);
+      
+    } catch (error) {
+      console.error('Error generating build guide:', error);
+      // TODO: Show error toast/notification to user
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <>
       <div className="bg-muted/30 p-4 rounded-lg border-l-2 border-border">
@@ -125,6 +214,14 @@ export default function Blueprint({
           references={blueprintData.references}
         />
       )}
+      <Button 
+        variant="default" 
+        className="w-full sm:w-auto mt-6" 
+        onClick={handleProceedToBuildGuide}
+        disabled={isGenerating}
+      >
+        {isGenerating ? 'Generating Build Guide...' : 'Proceed to Build Guide'}
+      </Button>
     </>
   );
 }
