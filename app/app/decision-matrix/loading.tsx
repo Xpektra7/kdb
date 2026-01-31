@@ -15,15 +15,11 @@ export default function Loading() {
                         </div>
                     </div>
 
-                    <div className="flex gap-2 items-center">
-                        <ExportButton buttonText="Export PDF" fileName="blueprint-report.pdf" />
-                        <Button variant="outline" size="lg" className="py-2 h-fit">Back</Button>
-                    </div>
                 </div>
             </div>
             <div className="flex flex-col items-center justify-center h-[80dvh] py-20">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-primary mb-4"></div>
-                <p className="text-lg text-muted-foreground">Generating Blueprint...</p>
+                <p className="text-lg text-muted-foreground">Generating Decision-Matrix...</p>
             </div>
         </main>
     );
