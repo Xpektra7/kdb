@@ -46,7 +46,6 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption, s
                                 </div>
                                 <AccordionList name="Pros" list={option.pros} />
                                 <AccordionList name="Cons" list={option.cons} />
-                                <AccordionList name="Add-ons" list={option.add_ons} />
 
                                 {showError && (
                                     <p className="text-xs sm:text-sm text-destructive font-medium">Select an option to continue.</p>
