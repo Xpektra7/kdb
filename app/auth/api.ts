@@ -5,7 +5,7 @@ import { AuthError } from 'next-auth'
 
 export async function handleSignIn(email: string, password: string) {
     try {
-        return await signIn('credentials', { email, password, redirect: true, redirectTo: '/' });
+        return await signIn('credentials', { email, password, redirect: true, redirectTo: '/app' });
     } catch (error) {
         if (error instanceof AuthError) {
             switch (error.type) {

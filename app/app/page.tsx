@@ -6,7 +6,6 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUp } from "@hugeicons/core-free-icons";
 import airQuality from "@/schema/air-quality-result2.json";
 import { getDataMode } from "@/lib/data-mode";
-import Navbar from "@/components/navbar";
 
 import Link from "next/link";
 import { useSession } from "next-auth/react";
@@ -114,7 +113,6 @@ export default function Page() {
     
     return (
         <main className="relative p-page-lg flex h-auto flex-col items-center justify-center max-w-360 py-0 pb-12 mx-auto">
-            <Navbar />
             <div className="flex flex-col w-full gap-8 justify-center items-center mt-32 max-w-2xl">
                 <div className="flex flex-col w-full gap-3">
                     <p className="text-base">Welcome {session?.user?.name ? session.user.name.split(" ")[0] : "Guest"}!</p>
