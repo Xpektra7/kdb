@@ -198,3 +198,50 @@ export interface SubsystemProps {
   selectedOption?: DecisionMatrixOption;
   showError?: boolean;
 }
+
+// Build Guide
+export interface BuildGuidePrerequisites {
+  tools: string[];
+  materials: string[];
+}
+
+export interface BuildGuideWiring {
+  description: string;
+  connections: string[];
+}
+
+export interface BuildGuideFirmware {
+  language: string;
+  structure: string[];
+  key_logic: string[];
+}
+
+export interface BuildGuideTesting {
+  unit: string[];
+  integration: string[];
+  acceptance: string[];
+}
+
+export interface BuildGuideFailure {
+  issue: string;
+  cause: string;
+  fix: string;
+}
+
+export interface BuildGuide {
+  project: string;
+  build_overview: string;
+  prerequisites: BuildGuidePrerequisites;
+  wiring: BuildGuideWiring;
+  firmware: BuildGuideFirmware;
+  calibration: string[];
+  testing: BuildGuideTesting;
+  common_failures: BuildGuideFailure[];
+  safety: string[];
+  next_steps: string[];
+}
+
+export interface BuildGuideProps {
+  buildGuideData: BuildGuide;
+  contentRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
+}

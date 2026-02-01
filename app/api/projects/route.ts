@@ -26,6 +26,25 @@ export async function POST(request: NextRequest) {
     // TODO: Get userId from auth session
     const userId = 1; // Placeholder - replace with actual auth
 
+
+    // check if user has a project that has not been completed (stage != COMPLETED)
+
+    const uncompletedProject = await prisma.project.findFirst({
+      where: {
+        userId,
+        NOT: {
+          stage: "COMPLETED"
+        }
+      }
+    });
+
+    if (uncompletedProject) {
+      return NextResponse.json(
+        { error: "You have an uncompleted project. Please complete it before creating a new one." },
+        { status: 400 }
+      );
+    }
+
     const project = await prisma.project.create({
       data: {
         title: title.trim(),
@@ -60,32 +79,32 @@ export async function POST(request: NextRequest) {
  * 
  * Response: { projects: Project[] }
  */
-export async function GET(request: NextRequest) {
-  try {
-    // TODO: Get userId from auth session
-    const userId = 1; // Placeholder
+// export async function GET(request: NextRequest) {
+//   try {
+//     // TODO: Get userId from auth session
+//     const userId = 1; // Placeholder
 
-    const projects = await prisma.project.findMany({
-      where: { userId },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        stage: true,
-        createdAt: true,
-        updatedAt: true,
-        subsystems: { select: { id: true } },
-        decisions: { select: { id: true } }
-      },
-      orderBy: { updatedAt: "desc" }
-    });
+//     const projects = await prisma.project.findMany({
+//       where: { userId },
+//       select: {
+//         id: true,
+//         title: true,
+//         description: true,
+//         stage: true,
+//         createdAt: true,
+//         updatedAt: true,
+//         subsystems: { select: { id: true } },
+//         decisions: { select: { id: true } }
+//       },
+//       orderBy: { updatedAt: "desc" }
+//     });
 
-    return NextResponse.json({ projects }, { status: 200 });
-  } catch (error) {
-    console.error("[GET /api/projects] Error:", error);
-    return NextResponse.json(
-      { error: "Failed to fetch projects" },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json({ projects }, { status: 200 });
+//   } catch (error) {
+//     console.error("[GET /api/projects] Error:", error);
+//     return NextResponse.json(
+//       { error: "Failed to fetch projects" },
+//       { status: 500 }
+//     );
+//   }
+// }

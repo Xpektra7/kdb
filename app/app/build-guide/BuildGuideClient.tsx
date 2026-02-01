@@ -2,14 +2,12 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import NavigationSidebar from "@/components/decision-matrix/navigation-sidebar";
-import { Button, buttonVariants } from "@/components/ui/button";
+import { buttonVariants } from "@/components/ui/button";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
-import BlueprintView from "@/components/blueprint/blueprint";
-import { buildBlueprintNav } from "@/lib/navigation";
-import type { Blueprint, NavItem } from "@/lib/definitions";
-import { ExportButton } from "@/components/pdf-export/ExportButton";
-import type { PDFExportData } from "@/lib/pdfGenerator";
+import BuildGuideView from "@/components/build-guide/build-guide";
+import { buildBuildGuideNav } from "@/lib/navigation";
+import type { BuildGuide, NavItem } from "@/lib/definitions";
 import Link from "next/link";
 
 const Z_INDEX = {
@@ -18,24 +16,18 @@ const Z_INDEX = {
   HEADER: 30,
 } as const;
 
-interface BlueprintClientProps {
-  blueprintData: Blueprint;
+interface BuildGuideClientProps {
+  buildGuideData: BuildGuide;
   dummy?: boolean;
 }
 
-export default function BlueprintClient({ blueprintData, dummy }: BlueprintClientProps) {
+export default function BuildGuideClient({ buildGuideData, dummy }: BuildGuideClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("overview");
-  const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
-    architecture: true,
-    subsystems: true,
-    components: true,
-  });
-  const [expandedItems, setExpandedItems] = useState<Record<string, boolean>>({});
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
-  const navStructure: NavItem[] = useMemo(() => buildBlueprintNav(blueprintData), [blueprintData]);
+  const navStructure: NavItem[] = useMemo(() => buildBuildGuideNav(buildGuideData), [buildGuideData]);
 
   const scrollToSection = (id: string) => {
     const element = contentRefs.current[id];
@@ -51,14 +43,6 @@ export default function BlueprintClient({ blueprintData, dummy }: BlueprintClien
     if (window.innerWidth < 768) {
       setSidebarOpen(false);
     }
-  };
-
-  const toggleSection = (id: string) => {
-    setExpandedSections((prev) => ({ ...prev, [id]: !prev[id] }));
-  };
-
-  const toggleItem = (id: string) => {
-    setExpandedItems((prev) => ({ ...prev, [id]: !prev[id] }));
   };
 
   // Highlight active section while scrolling
@@ -90,12 +74,6 @@ export default function BlueprintClient({ blueprintData, dummy }: BlueprintClien
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const pdfData: PDFExportData = {
-    title: "Blueprint Report",
-    projectName: blueprintData.project,
-    blueprint: blueprintData,
-  };
 
   return (
     <div className="min-h-screen">
@@ -132,15 +110,12 @@ export default function BlueprintClient({ blueprintData, dummy }: BlueprintClien
                 </button>
               )}
               <div className="flex items-center gap-2">
-                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Blueprint</h1>
+                <h1 className="text-lg md:text-xl lg:text-2xl font-bold">Build Guide</h1>
               </div>
             </div>
 
             <div className="flex gap-2 items-center">
-              {blueprintData && pdfData && (
-                <ExportButton data={pdfData} buttonText="Export PDF" fileName="blueprint-report.pdf" />
-              )}
-              { dummy ? null : (
+              {dummy ? null : (
                 <Link href="" onClick={() => router.back()} className={buttonVariants({variant: "outline", size: "lg" , className: "py-2 h-fit"})}>
                   Back
                 </Link>
@@ -149,14 +124,9 @@ export default function BlueprintClient({ blueprintData, dummy }: BlueprintClien
           </div>
 
           <div className="w-full h-auto flex flex-col gap-6 mt-20 md:mt-8">
-            <BlueprintView
-              blueprintData={blueprintData}
+            <BuildGuideView
+              buildGuideData={buildGuideData}
               contentRefs={contentRefs}
-              expandedSections={expandedSections}
-              expandedItems={expandedItems}
-              toggleSection={toggleSection}
-              toggleItem={toggleItem}
-              dummy={dummy}
             />
           </div>
         </div>

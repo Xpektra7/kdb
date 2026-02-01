@@ -4,11 +4,13 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { Eye, EyeOff, Mail, Lock, User, ArrowRight } from '@hugeicons/core-free-icons';
 import { Button } from '@/components/ui/button';
 import Link from 'next/link';
-import {handleSignIn} from '../api';
-// import { signIn } from '@/auth';
+import { signIn } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+// import {handleSignIn} from '../api';
 
 export default function AuthPage() {
   // const [isLogin, setIsLogin] = useState(true);
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
@@ -80,15 +82,19 @@ export default function AuthPage() {
     // "use server"
     if (validateForm()) {
       setLoading(true);
-      const result = await handleSignIn(formData.email, formData.password);
+      const result = await signIn('credentials', {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
       setLoading(false);
       if (result?.error) {
-        setErrorMessage(result.error);
-      } else {
-        setErrorMessage('');
+        setErrorMessage('Invalid email or password');
+        return;
       }
-      // console.log('Form submitted:', formData);
-      // alert('Login successful!');
+      setErrorMessage('');
+      router.push('/app');
+      router.refresh();
     }
   };
 
