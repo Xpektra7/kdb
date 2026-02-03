@@ -1,4 +1,4 @@
-import { NextResponse } from "next/server";
+ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import { auth } from "./auth";
 
@@ -37,9 +37,9 @@ const handler = auth((req: NextRequest) => {
   }
 
   if (!isAuthenticated) {
-    if (isProtectedApi(pathname)) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
+    // if (isProtectedApi(pathname)) {
+    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    // }
 
     if (isProtectedPage(pathname)) {
       const url = req.nextUrl.clone();

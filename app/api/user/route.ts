@@ -40,19 +40,19 @@ export async function GET(req: NextRequest) {
     }
 }
 
-// export async function DELETE(req: NextRequest) {
-//     try {
+export async function DELETE(req: NextRequest) {
+    try {
 
-//         await prisma.user.deleteMany();
-//         return NextResponse.json({ message: "All users deleted" }, { status: 200 });
-//     } catch (err) {
-//         console.error("API route error:", err);
-//         return new NextResponse(
-//             JSON.stringify({ error: "Failed to delete users", details: String(err) }),
-//             {
-//                 status: 500,
-//                 headers: { "Content-Type": "application/json" }
-//             }
-//         );
-//     }
-// }
+        await prisma.user.deleteMany();
+        return NextResponse.json({ message: "All users deleted" }, { status: 200 });
+    } catch (err) {
+        console.error("API route error:", err);
+        return new NextResponse(
+            JSON.stringify({ error: "Failed to delete users", details: String(err) }),
+            {
+                status: 500,
+                headers: { "Content-Type": "application/json" }
+            }
+        );
+    }
+}

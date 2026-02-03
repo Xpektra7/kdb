@@ -5,7 +5,7 @@ import prisma from "@/lib/prisma";
 export async function GET(req: NextRequest,ctx:RouteContext<'/api/user/[id]'>) {
     const { id } = await ctx.params;
     try {
-        const user = await prisma.user.findUnique({where:{id:Number(id)}});
+        const user = await prisma.user.findUnique({where:{id}});
         return NextResponse.json({ user }, { status: 200 });
     } catch (err) {
         console.error("API route error:", err);

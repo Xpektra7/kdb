@@ -12,9 +12,12 @@ import prisma from "@/lib/prisma";
  *     project: string,
  *     concept: string,
  *     research: string[],
+ *     goals: string[],
  *     problems_overall: [{problem: string, suggested_solution: string}],
  *     decision_matrix: [{
  *       subsystem: string,
+ *       from: string|string[]|null,
+ *       to: string|string[]|null,
  *       options: [{name, why_it_works, features, pros, cons, estimated_cost, availability}]
  *     }],
  *     skills: string
@@ -70,73 +73,108 @@ export async function POST(
 
     // Create subsystems and options
     const subsystemsData = aiOutput.decision_matrix;
-    const createdSubsystems = [];
+    const createdSubsystems = await prisma.$transaction(async (tx) => {
+      const created = [];
 
-    for (let i = 0; i < subsystemsData.length; i++) {
-      const subsysData = subsystemsData[i];
+      for (let i = 0; i < subsystemsData.length; i++) {
+        const subsysData = subsystemsData[i];
+        
+        const inputFrom = subsysData.from 
+          ? (Array.isArray(subsysData.from) ? subsysData.from : [subsysData.from])
+          : [];
+        const outputTo = subsysData.to
+          ? (Array.isArray(subsysData.to) ? subsysData.to : [subsysData.to])
+          : [];
 
-      // Create subsystem
-      const subsystem = await prisma.subsystem.create({
-        data: {
-          projectId,
-          name: subsysData.subsystem,
-          description: null,
-          order: i
+        // Create subsystem
+        const subsystem = await tx.subsystem.create({
+          data: {
+            projectId,
+            name: subsysData.subsystem,
+            description: null,
+            order: i,
+            inputFrom,
+            outputTo
+          }
+        });
+
+        // Create options for this subsystem
+        const optionsData = subsysData.options || [];
+        const createdOptions = [];
+
+        for (const optionData of optionsData) {
+          const option = await tx.subsystemOption.create({
+            data: {
+              subsystemId: subsystem.id,
+              name: optionData.name,
+              description: optionData.why_it_works || "",
+              whyItWorks: optionData.why_it_works || "",
+              features: optionData.features || [],
+              pros: optionData.pros || [],
+              cons: optionData.cons || [],
+              estimatedCost: optionData.estimated_cost || "N/A",
+              availability: optionData.availability || "Unknown"
+            }
+          });
+          createdOptions.push(option);
+        }
+
+        created.push({
+          id: subsystem.id,
+          name: subsystem.name,
+          optionCount: createdOptions.length
+        });
+      }
+
+      // Get userId from project
+      const projectData = await tx.project.findUnique({
+        where: { id: projectId },
+        select: { userId: true }
+      });
+      const userId = projectData?.userId || "";
+
+      // Save decision matrix result
+      await tx.decisionMatrixResult.upsert({
+        where: { projectId },
+        update: {
+          generatedAt: new Date()
+        },
+        create: {
+          projectId
+        }
+      });
+      
+      // Save research sources
+      if (aiOutput.research && aiOutput.research.length > 0) {
+        await tx.projectResearch.createMany({
+          data: aiOutput.research.map((source: string) => ({
+            projectId,
+            source,
+            stage: "DECISION_MATRIX"
+          }))
+        });
+      }
+
+      // Update project with goals and stage
+      await tx.project.update({
+        where: { id: projectId },
+        data: { 
+          stage: "DECISION_MATRIX",
+          goals: aiOutput.goals || []
         }
       });
 
-      // Create options for this subsystem
-      const optionsData = subsysData.options || [];
-      const createdOptions = [];
-
-      for (const optionData of optionsData) {
-        const option = await prisma.subsystemOption.create({
-          data: {
-            subsystemId: subsystem.id,
-            name: optionData.name,
-            description: optionData.why_it_works || "",
-            whyItWorks: optionData.why_it_works || "",
-            pros: optionData.pros || [],
-            cons: optionData.cons || [],
-            estimatedCost: optionData.estimated_cost || "N/A",
-            availability: optionData.availability || "Unknown"
-          }
-        });
-        createdOptions.push(option);
-      }
-
-      createdSubsystems.push({
-        id: subsystem.id,
-        name: subsystem.name,
-        optionCount: createdOptions.length
+      // Track AI generation
+      await tx.aIGeneration.create({
+        data: {
+          projectId,
+          userId,
+          stage: "DECISION_MATRIX",
+          status: "SUCCESS"
+        }
       });
-    }
 
-    // Save decision matrix result to cache
-    await prisma.decisionMatrixResult.upsert({
-      where: { projectId },
-      update: {
-        aiOutput: aiOutput,
-        projectTitle: aiOutput.project,
-        concept: aiOutput.concept,
-        problemsOverall: aiOutput.problems_overall,
-        skillsRequired: aiOutput.skills,
-        generatedAt: new Date()
-      },
-      create: {
-        projectId,
-        aiOutput: aiOutput,
-        projectTitle: aiOutput.project,
-        concept: aiOutput.concept,
-        problemsOverall: aiOutput.problems_overall,
-        skillsRequired: aiOutput.skills
-      }
-    });
-
-    // Update project stage
-    await prisma.project.update({
-      where: { id: projectId },
-      data: { stage: "DECISION_MATRIX" }
+      return created;
     });
 
     return NextResponse.json(
