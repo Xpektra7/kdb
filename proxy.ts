@@ -25,7 +25,7 @@ function isProtectedApi(pathname: string) {
   );
 }
 
-const handler = auth((req: NextRequest) => {
+const handler = auth((req) => {
   const { pathname } = req.nextUrl;
   const isAuthenticated = !!req.auth;
 
@@ -37,9 +37,9 @@ const handler = auth((req: NextRequest) => {
   }
 
   if (!isAuthenticated) {
-    // if (isProtectedApi(pathname)) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+    if (isProtectedApi(pathname)) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
 
     if (isProtectedPage(pathname)) {
       const url = req.nextUrl.clone();

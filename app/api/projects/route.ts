@@ -7,7 +7,7 @@ import { retryWithBackoff } from "@/lib/utils/retry";
 
 // Temporary userId for demonstration purposes
 
-const userId = "cml54po810000f4uwbqqsrie3";
+// const userId = "cml54po810000f4uwbqqsrie3";
 
 const validateInput = {
   title: z.string().min(1),
@@ -68,14 +68,14 @@ export async function POST(request: NextRequest) {
 
     const { title, description, location } = parsed.data;
 
-    // const session = await auth();
-    // const userId = session?.user?.id;
-    // if (!userId) {
-    //   return NextResponse.json(
-    //     { error: "Unauthorized - no active session" },
-    //     { status: 401 }
-    //   );
-    // }
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - no active session" },
+        { status: 401 }
+      );
+    }
 
     const uncompletedProject = await prisma.project.findFirst({
       where: {
@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
       
       aiOutput = result;
     } catch (aiError) {
-      await prisma.aiGeneration.create({
+      await prisma.aIGeneration.create({
         data: {
           projectId: project.id,
           userId,
@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
           }
         });
         
-        await tx.aiGeneration.create({
+        await tx.aIGeneration.create({
           data: {
             projectId,
             userId,
@@ -335,6 +335,15 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - no active session" },
+        { status: 401 }
+      );
+    }
 
     // get each project with full details
     const projects = await prisma.project.findMany({
