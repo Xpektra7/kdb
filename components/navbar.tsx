@@ -91,7 +91,7 @@ export default function Navbar() {
                         <button
                             type="button"
                             onClick={() => setIsUserMenuOpen((open) => !open)}
-                            className="flex items-center gap-2 rounded-full border border-border px-2 py-1.5 text-sm"
+                            className="flex items-center gap-2 rounded-full border border-white bg-black px-2 py-1.5 text-sm"
                             aria-haspopup="menu"
                             aria-expanded={isUserMenuOpen}
                         >
@@ -103,18 +103,18 @@ export default function Navbar() {
                         {isUserMenuOpen ? (
                             <div
                                 role="menu"
-                                className="absolute right-0 mt-2 w-44 rounded-md border border-white shadow-md"
+                                className="absolute right-0 mt-2 w-44 rounded-md border bg-black shadow-md"
                             >
                                 <Link
                                     href="/auth"
-                                    className="block px-4 py-2 text-sm hover:bg-muted text-white"
+                                    className="block px-4 py-2 text-sm hover:bg-muted"
                                     onClick={() => setIsUserMenuOpen(false)}
                                 >
                                     Account
                                 </Link>
                                 <button
                                     type="button"
-                                    className="block w-full px-4 py-2 text-left text-sm hover:bg-muted text-white"
+                                    className="block w-full px-4 py-2 text-left text-sm hover:bg-black hover:text-white text-black"
                                     onClick={() => signOut({ callbackUrl: "/" })}
                                 >
                                     Sign out
