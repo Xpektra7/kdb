@@ -11,7 +11,7 @@ export function TimelineDemo() {
       subtitle: '"What systems does this project need?"',
       icon: <HugeiconsIcon icon={Target} className="w-5 h-5" />,
       content: (
-        <div>
+        <div key="decision-matrix-content">
           <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Apollo breaks your project into <span className="text-foreground font-semibold">subsystems</span> (sensing, control, power, communication) and forces you to make deliberate choices before building anything.
           </p>
@@ -42,7 +42,7 @@ export function TimelineDemo() {
       subtitle: '"Given these choices, what does the project look like?"',
       icon: <HugeiconsIcon icon={Note01Icon} className="w-5 h-5" />,
       content: (
-        <div>
+        <div key="blueprint-content">
           <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Once your decisions are locked in, Apollo generates a <span className="text-foreground font-semibold">coherent system architecture</span> that shows exactly how everything fits together.
           </p>
@@ -73,7 +73,7 @@ export function TimelineDemo() {
       subtitle: '"How do I actually build this?"',
       icon: <HugeiconsIcon icon={Hammer} className="w-5 h-5" />,
       content: (
-        <div>
+        <div key="build-guide-content">
           <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Only after you've locked in the blueprint, Apollo gives you the <span className="text-foreground font-semibold">execution plan</span>—everything you need to actually build and test.
           </p>

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 export default function Navbar() {
+
     const [useDummyData, setUseDummyData] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -50,8 +51,10 @@ export default function Navbar() {
         .slice(0, 2)
         .toUpperCase();
 
+
+
     return (
-        <div className="flex justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50">
+        <div className={`${isActive('/auth') ? 'hidden' : 'flex'} justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50`}>
             <div className="flex items-center gap-6">
                 <Link href="/" className="flex items-center gap-0 cursor-pointer">
                 <Image src="/logo-text.svg" alt="Apollo Logo" width={70} height={70} />

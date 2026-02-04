@@ -24,7 +24,7 @@ export const GoogleGeminiEffect = ({
   return (
     <div className={cn("sticky top-40 ", className)}>
       <motion.h1 
-        className="text-3xl md:text-5xl lg:text-6xl text-center bg-clip-text text-transparent bg-gradient-to-b from-white via-neutral-200 to-neutral-400 font-medium tracking-tighter leading-tight max-w-5xl mx-auto"
+        className="text-3xl md:text-5xl lg:text-6xl text-center bg-clip-text text-transparent bg-linear-to-b from-white via-neutral-200 to-neutral-400 font-medium tracking-tighter leading-tight max-w-5xl mx-auto"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
@@ -42,12 +42,12 @@ export const GoogleGeminiEffect = ({
         works!`}
       </motion.p>
       <motion.div 
-        className="w-full h-[890px] -top-60 md:-top-40 flex items-center justify-center absolute pointer-events-none"
+        className="w-full z-60 h-[890px] -top-60 md:-top-41 flex items-center justify-center absolute"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.6 }}
       >
-        <Link href="/app" className={buttonVariants({variant: 'default', size: 'lg', className: 'cursor-pointer! mt-20 z-90 opacity-100 bg-foreground! py-3!' })}>
+        <Link href="/app" className={buttonVariants({variant: 'default', size: 'lg', className: 'cursor-pointer! mt-20 z-90 opacity-100 bg-foreground! px-6! py-6!' })}>
             Start Building
         </Link>
       </motion.div>
