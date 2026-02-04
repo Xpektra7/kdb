@@ -174,20 +174,20 @@ This is stored as **JSON**, not text.
 * Turning JSON into readable UI blocks
 * Blueprint schema
 * Option selection UI
+* Build Guide generation
+* Saving results as PDF
+* Homepage
 
 ### What Is Being Worked On
 
 * Prisma + Supabase integration
 * Stable caching logic
 * Prompt refinement (simplicity > features)
-* Saving results as PDF
-* Homepage
 
 ### What Comes Next
 
-* Build Guide generation
 * Authentication & saved projects
-* Make Block diagram diagramattic 
+
 
 ## How Teammates Can Contribute
 

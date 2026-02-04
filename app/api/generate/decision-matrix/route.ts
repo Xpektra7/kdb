@@ -20,6 +20,7 @@ SCHEMA:
   "project":"string",
   "concept":"string",
   "research":["string"],
+  "goals":["string"],
   "problems_overall":[{"problem":"string","suggested_solution":"string"}],
   "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":["string"],"availability":"string"}]}],
   "skills":"string",
