@@ -103,18 +103,18 @@ export default function Navbar() {
                         {isUserMenuOpen ? (
                             <div
                                 role="menu"
-                                className="absolute right-0 mt-2 w-44 rounded-md border border-border bg-background shadow-md"
+                                className="absolute right-0 mt-2 w-44 rounded-md border border-white shadow-md"
                             >
                                 <Link
                                     href="/auth"
-                                    className="block px-4 py-2 text-sm hover:bg-muted"
+                                    className="block px-4 py-2 text-sm hover:bg-muted text-white"
                                     onClick={() => setIsUserMenuOpen(false)}
                                 >
                                     Account
                                 </Link>
                                 <button
                                     type="button"
-                                    className="block w-full px-4 py-2 text-left text-sm hover:bg-muted"
+                                    className="block w-full px-4 py-2 text-left text-sm hover:bg-muted text-white"
                                     onClick={() => signOut({ callbackUrl: "/" })}
                                 >
                                     Sign out
