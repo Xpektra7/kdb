@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
       
       aiOutput = result;
     } catch (aiError) {
-      await prisma.aiGeneration.create({
+      await prisma.aIGeneration.create({
         data: {
           projectId: project.id,
           userId,
@@ -270,7 +270,7 @@ export async function POST(request: NextRequest) {
           }
         });
         
-        await tx.aiGeneration.create({
+        await tx.aIGeneration.create({
           data: {
             projectId,
             userId,
