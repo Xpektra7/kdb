@@ -7,7 +7,7 @@ import { retryWithBackoff } from "@/lib/utils/retry";
 
 // Temporary userId for demonstration purposes
 
-// const userId = 1;
+// const userId = "cml54po810000f4uwbqqsrie3";
 
 const validateInput = {
   title: z.string().min(1),
@@ -168,6 +168,16 @@ export async function POST(request: NextRequest) {
       
       aiOutput = result;
     } catch (aiError) {
+      await prisma.aIGeneration.create({
+        data: {
+          projectId: project.id,
+          userId,
+          stage: "DECISION_MATRIX",
+          status: "FAILED",
+          tokensUsed,
+          errorMessage: aiError instanceof Error ? aiError.message : String(aiError)
+        }
+      });
       await prisma.project.delete({ where: { id: project.id } });
       console.error("[POST /api/projects] AI generation failed:", aiError);
       return NextResponse.json(
@@ -255,7 +265,18 @@ export async function POST(request: NextRequest) {
         await tx.project.update({
           where: { id: projectId },
           data: { 
-            stage: "DECISION_MATRIX"
+            stage: "DECISION_MATRIX",
+            goals: validation.data.goals || []
+          }
+        });
+        
+        await tx.aIGeneration.create({
+          data: {
+            projectId,
+            userId,
+            stage: "DECISION_MATRIX",
+            status: "SUCCESS",
+            tokensUsed
           }
         });
 
@@ -304,6 +325,15 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
+
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - no active session" },
+        { status: 401 }
+      );
+    }
 
     // get each project with full details
 
