@@ -134,15 +134,15 @@ export async function POST(
       const userId = projectData?.userId || "";
 
       // Save decision matrix result
-      await tx.decisionMatrixResult.upsert({
-        where: { projectId },
-        update: {
-          generatedAt: new Date()
-        },
-        create: {
-          projectId
-        }
-      });
+      // await tx.decisionMatrixResult.upsert({
+      //   where: { projectId },
+      //   update: {
+      //     generatedAt: new Date()
+      //   },
+      //   create: {
+      //     projectId
+      //   }
+      // });
       
       // Save research sources
       if (aiOutput.research && aiOutput.research.length > 0) {

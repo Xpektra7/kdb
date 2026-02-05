@@ -77,21 +77,21 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const uncompletedProject = await prisma.project.findFirst({
-      where: {
-        userId,
-        NOT: {
-          stage: "COMPLETED"
-        }
-      }
-    });
+    // const uncompletedProject = await prisma.project.findFirst({
+    //   where: {
+    //     userId,
+    //     NOT: {
+    //       stage: "COMPLETED"
+    //     }
+    //   }
+    // });
 
-    if (uncompletedProject) {
-      return NextResponse.json(
-        { error: "You have an uncompleted project. Please complete it before creating a new one." },
-        { status: 400 }
-      );
-    }
+    // if (uncompletedProject) {
+    //   return NextResponse.json(
+    //     { error: "You have an uncompleted project. Please complete it before creating a new one." },
+    //     { status: 400 }
+    //   );
+    // }
 
     const project = await prisma.project.create({
       data: {
@@ -187,6 +187,7 @@ export async function POST(request: NextRequest) {
     }
 
     const validation = aiOutputSchema.safeParse(aiOutput);
+    console.log("AI Output Validation Result:", validation);
     if (!validation.success) {
       await prisma.project.delete({ where: { id: project.id } });
       console.error("[POST /api/projects] AI output validation failed:", validation.error);
@@ -325,15 +326,6 @@ export async function POST(request: NextRequest) {
  */
 export async function GET(request: NextRequest) {
   try {
-
-    const session = await auth();
-    const userId = session?.user?.id;
-    if (!userId) {
-      return NextResponse.json(
-        { error: "Unauthorized - no active session" },
-        { status: 401 }
-      );
-    }
 
     // get each project with full details
 
