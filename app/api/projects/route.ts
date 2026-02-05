@@ -7,7 +7,7 @@ import { retryWithBackoff } from "@/lib/utils/retry";
 
 // Temporary userId for demonstration purposes
 
-const userId = 1;
+// const userId = 1;
 
 const validateInput = {
   title: z.string().min(1),
@@ -68,14 +68,14 @@ export async function POST(request: NextRequest) {
 
     const { title, description, location } = parsed.data;
 
-    // const session = await auth();
-    // const userId = session?.user?.id;
-    // if (!userId) {
-    //   return NextResponse.json(
-    //     { error: "Unauthorized - no active session" },
-    //     { status: 401 }
-    //   );
-    // }
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - no active session" },
+        { status: 401 }
+      );
+    }
 
     const uncompletedProject = await prisma.project.findFirst({
       where: {
@@ -306,6 +306,15 @@ export async function GET(request: NextRequest) {
   try {
 
     // get each project with full details
+
+    const session = await auth();
+    const userId = session?.user?.id;
+    if (!userId) {
+      return NextResponse.json(
+        { error: "Unauthorized - No authenticated user found" },
+        { status: 401 }
+      );
+    }
     const projects = await prisma.project.findMany({
       where: { userId },
       include:{
