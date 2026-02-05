@@ -28,7 +28,22 @@ export const authConfig: NextAuthConfig = {
         }
       },
     }),
-  ], pages: {
+  ],
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user?.id) {
+        token.id = user.id;
+      }
+      return token;
+    },
+    async session({ session, token }) {
+      if (session.user && token.id) {
+        session.user.id = token.id as string;
+      }
+      return session;
+    }
+  },
+  pages: {
     signIn: '/auth/login',
   }
 }
