@@ -1,33 +1,62 @@
 import { redirect } from "next/navigation";
 import DecisionMatrixClient from "./DecisionMatrixClient";
+import type { DecisionMatrixOutput } from "@/lib/definitions";
 
-async function fetchDecisionMatrixRequest(requestId: string): Promise<{ project: string; decisionMatrixOutput: unknown }> {
+// Transform database project format to DecisionMatrixOutput format
+function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOutput {
+  return {
+    project: project.title,
+    concept: project.decisionMatrix?.concept || project.description || "",
+    research: [], // Research is stored separately in ProjectResearch table
+    problems_overall: [], // Problems are stored separately
+    decision_matrix: project.subsystems.map((subsystem: any) => ({
+      subsystem: subsystem.name,
+      from: subsystem.inputFrom || null,
+      to: subsystem.outputTo || null,
+      options: subsystem.options.map((option: any) => ({
+        name: option.name,
+        why_it_works: option.whyItWorks || option.description,
+        features: option.features || [],
+        pros: option.pros || [],
+        cons: option.cons || [],
+        estimated_cost: option.estimatedCost ? [option.estimatedCost] : [],
+        availability: option.availability || "Unknown"
+      }))
+    })),
+    cost: "",
+    skills: project.decisionMatrix?.skillsRequired || ""
+  };
+}
+
+async function fetchProject(projectId: string): Promise<{ project: any; decisionMatrixOutput: DecisionMatrixOutput }> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/decision-matrix-requests/${requestId}`, {
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}`, {
     cache: "no-store",
   });
 
   if (!response.ok) {
-    throw new Error(`Decision matrix request not found: ${response.status}`);
+    throw new Error(`Project not found: ${response.status}`);
   }
 
-  return response.json();
+  const project = await response.json();
+  const decisionMatrixOutput = transformProjectToDecisionMatrixOutput(project);
+  
+  return { project, decisionMatrixOutput };
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ requestId?: string }> }) {
+
+export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string; requestId?: string }> }) {
   try {
     const params = await searchParams;
     
-    if (!params.requestId) {
-      throw new Error("Missing decision matrix requestId");
+    // New flow: Use projectId from persistent storage
+    if (params.projectId) {
+      const { project, decisionMatrixOutput } = await fetchProject(params.projectId);
+      return <DecisionMatrixClient output={decisionMatrixOutput} projectId={parseInt(params.projectId)} />;
     }
 
-    // Fetch the stored decision matrix
-    const { decisionMatrixOutput } = await fetchDecisionMatrixRequest(params.requestId);
-
-    return <DecisionMatrixClient output={decisionMatrixOutput} />;
+    throw new Error("Missing projectId");
   } catch (err) {
     console.error("Decision matrix page error:", err);
-    redirect("/app");
   }
 }

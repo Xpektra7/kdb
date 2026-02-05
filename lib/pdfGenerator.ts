@@ -1,5 +1,5 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import type { Blueprint } from '@/lib/definitions';
+import type { Blueprint, BuildGuide, DecisionMatrixOutput } from '@/lib/definitions';
 
 export interface PageContent {
   type: 'heading' | 'paragraph' | 'list';
@@ -10,9 +10,9 @@ export interface PageContent {
 
 export interface PDFExportData {
   title: string;
-  decisionMatrix?: string;
+  decisionMatrix?: string | DecisionMatrixOutput;
   blueprint?: string | Blueprint;
-  buildGuide?: string;
+  buildGuide?: string | BuildGuide;
   author?: string;
   projectName?: string;
 }
@@ -228,6 +228,143 @@ function formatDecisionMatrixForPDF(dm: any): string {
   return content;
 }
 
+// Format BuildGuide object into readable text
+function formatBuildGuideForPDF(bg: any): string {
+  let content = '';
+
+  // Project
+  if (bg.project) {
+    content += `# Project: ${bg.project}\n\n`;
+  }
+
+  // Build Overview
+  if (bg.build_overview) {
+    content += `# Build Overview\n`;
+    content += `${bg.build_overview}\n\n`;
+  }
+
+  // Prerequisites
+  if (bg.prerequisites) {
+    content += `# Prerequisites\n`;
+    if (bg.prerequisites.tools?.length) {
+      content += `## Tools Required\n`;
+      bg.prerequisites.tools.forEach((tool: string) => {
+        content += `- ${tool}\n`;
+      });
+      content += '\n';
+    }
+    if (bg.prerequisites.materials?.length) {
+      content += `## Materials Required\n`;
+      bg.prerequisites.materials.forEach((material: string) => {
+        content += `- ${material}\n`;
+      });
+      content += '\n';
+    }
+  }
+
+  // Wiring
+  if (bg.wiring) {
+    content += `# Wiring\n`;
+    if (bg.wiring.description) {
+      content += `${bg.wiring.description}\n\n`;
+    }
+    if (bg.wiring.connections?.length) {
+      content += `## Connections\n`;
+      bg.wiring.connections.forEach((conn: string, idx: number) => {
+        content += `- ${conn}\n`;
+      });
+      content += '\n';
+    }
+  }
+
+  // Firmware
+  if (bg.firmware) {
+    content += `# Firmware\n`;
+    if (bg.firmware.language) {
+      content += `Language: ${bg.firmware.language}\n\n`;
+    }
+    if (bg.firmware.structure?.length) {
+      content += `## Code Structure\n`;
+      bg.firmware.structure.forEach((item: string) => {
+        content += `- ${item}\n`;
+      });
+      content += '\n';
+    }
+    if (bg.firmware.key_logic?.length) {
+      content += `## Key Logic\n`;
+      bg.firmware.key_logic.forEach((logic: string, idx: number) => {
+        content += `- ${logic}\n`;
+      });
+      content += '\n';
+    }
+  }
+
+  // Calibration
+  if (bg.calibration?.length) {
+    content += `# Calibration Steps\n`;
+    bg.calibration.forEach((step: string, idx: number) => {
+      content += `- Step ${idx + 1}: ${step}\n`;
+    });
+    content += '\n';
+  }
+
+  // Testing
+  if (bg.testing) {
+    content += `# Testing\n`;
+    if (bg.testing.unit?.length) {
+      content += `## Unit Tests\n`;
+      bg.testing.unit.forEach((test: string) => {
+        content += `- ${test}\n`;
+      });
+      content += '\n';
+    }
+    if (bg.testing.integration?.length) {
+      content += `## Integration Tests\n`;
+      bg.testing.integration.forEach((test: string) => {
+        content += `- ${test}\n`;
+      });
+      content += '\n';
+    }
+    if (bg.testing.acceptance?.length) {
+      content += `## Acceptance Tests\n`;
+      bg.testing.acceptance.forEach((test: string) => {
+        content += `- ${test}\n`;
+      });
+      content += '\n';
+    }
+  }
+
+  // Common Failures
+  if (bg.common_failures?.length) {
+    content += `# Common Failures\n`;
+    bg.common_failures.forEach((failure: any) => {
+      content += `## Issue: ${failure.issue}\n`;
+      content += `Cause: ${failure.cause}\n`;
+      content += `Fix: ${failure.fix}\n\n`;
+    });
+  }
+
+  // Safety
+  if (bg.safety?.length) {
+    content += `# Safety Guidelines\n`;
+    bg.safety.forEach((item: string) => {
+      content += `- ${item}\n`;
+    });
+    content += '\n';
+  }
+
+  // Next Steps
+  if (bg.next_steps?.length) {
+    content += `# Next Steps\n`;
+    bg.next_steps.forEach((step: string, idx: number) => {
+      content += `- ${step}\n`;
+    });
+    content += '\n';
+  }
+
+  return content;
+}
+
 function parseSectionContent(content: string): PageContent[] {
   const pages: PageContent[] = [];
   const lines = content.split('\n').filter(line => line.trim());
@@ -275,6 +412,12 @@ export async function generatePDFBuffer(data: any): Promise<Uint8Array> {
   let dmContent = data.decisionMatrix;
   if (dmContent && typeof dmContent === 'object') {
     dmContent = formatDecisionMatrixForPDF(dmContent);
+  }
+
+  // Convert BuildGuide object to formatted text if needed
+  let buildGuideContent = data.buildGuide;
+  if (buildGuideContent && typeof buildGuideContent === 'object') {
+    buildGuideContent = formatBuildGuideForPDF(buildGuideContent);
   }
 
   const pdfDoc = await PDFDocument.create();
@@ -392,7 +535,7 @@ export async function generatePDFBuffer(data: any): Promise<Uint8Array> {
   const sections = [
     { title: 'Decision Matrix', content: dmContent },
     { title: 'Blueprint', content: blueprintContent },
-    { title: 'Build Guide', content: data.buildGuide }
+    { title: 'Build Guide', content: buildGuideContent }
   ];
 
   for (const section of sections) {

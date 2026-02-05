@@ -3,7 +3,7 @@ import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import DecisionMatrix from "@/components/decision-matrix/decision-matrix";
 import { buttonVariants } from "@/components/ui/button";
 import NavigationSidebar from "@/components/decision-matrix/navigation-sidebar";
-import type { NavItem } from "@/lib/definitions";
+import type { DecisionMatrixOutput, NavItem } from "@/lib/definitions";
 import { buildDecisionMatrixNav } from "@/lib/navigation";
 import { HugeiconsIcon } from "@hugeicons/react";
 import { Menu01Icon } from "@hugeicons/core-free-icons";
@@ -18,11 +18,12 @@ const Z_INDEX = {
 } as const;
 
 interface DecisionMatrixClientProps {
-  output: any;
+  output: DecisionMatrixOutput;
+  projectId?: number;
   dummy?: boolean;
 }
 
-export default function DecisionMatrixClient({ output , dummy }: DecisionMatrixClientProps) {
+export default function DecisionMatrixClient({ output, projectId, dummy }: DecisionMatrixClientProps) {
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
@@ -153,7 +154,7 @@ export default function DecisionMatrixClient({ output , dummy }: DecisionMatrixC
                 Analyze and compare different options based on multiple criteria to make informed decisions.
               </p>
             </div>
-            <DecisionMatrix output={output} contentRefs={contentRefs} />
+            <DecisionMatrix output={output} contentRefs={contentRefs} projectId={projectId} />
           </div>
         </div>
       </main>
