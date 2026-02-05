@@ -24,7 +24,7 @@ enum Role {
 
 model Account {
   id                 String  @id @default(cuid())
-  userId             String     @map("user_id")
+  userId             Int     @map("user_id")
   type               String
   provider           String
   providerAccountId  String  @map("provider_account_id")
@@ -45,7 +45,7 @@ model Account {
 model Session {
   id           String   @id @default(cuid())
   sessionToken String   @unique @map("session_token")
-  userId       String      @map("user_id")
+  userId       Int      @map("user_id")
   expires      DateTime
   user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
  
@@ -73,7 +73,7 @@ model VerificationToken {
 
 
 model User {
-  id        String      @id @default(cuid())
+  id        Int      @id @default(autoincrement())
   email     String   @unique
   password  String
   name      String?
@@ -88,20 +88,19 @@ model User {
   sessions      Session[]
   usages    Usage[]
   projects  Project[]
-  aiGenerations AIGeneration[]
 }
 
 model Profile {
-  id     String    @id @default(cuid())
+  id     Int    @id @default(autoincrement())
   bio    String?
   user   User   @relation(fields: [userId], references: [id])
-  userId String    @unique
+  userId Int    @unique
 }
 
 model Credit {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
-  userId    String      @unique
+  userId    Int      @unique
   balance   Int      @default(0)
   updatedAt DateTime @updatedAt
 }
@@ -109,7 +108,7 @@ model Credit {
 model Usage {
   id        Int      @id @default(autoincrement())
   user      User     @relation(fields: [userId], references: [id])
-  userId    String
+  userId    Int
   action    String   // "AI_PROMPT"
   cost      Int
   createdAt DateTime @default(now())
@@ -127,16 +126,14 @@ enum ProjectStage {
 
 model Project {
   id          Int           @id @default(autoincrement())
-  userId      String
+  userId      Int
   
   title       String
   description String?
-  goals       String[]
   stage       ProjectStage  @default(IDEATION)
   
   createdAt   DateTime      @default(now())
   updatedAt   DateTime      @updatedAt
-  deletedAt   DateTime?
 
   user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
   subsystems        Subsystem[]
@@ -144,12 +141,8 @@ model Project {
   decisionMatrix    DecisionMatrixResult?
   blueprint         BlueprintResult?
   buildGuide        BuildGuide?
-  research          ProjectResearch[]
-  aiGenerations     AIGeneration[]
 
   @@index([userId])
-  @@index([userId, stage])
-  @@index([userId, deletedAt])
   @@map("projects")
 }
 
@@ -160,8 +153,6 @@ model Subsystem {
   name        String
   description String?
   order       Int     @default(0)
-  inputFrom   String[]
-  outputTo    String[]
   
   createdAt   DateTime @default(now())
 
@@ -178,7 +169,6 @@ model SubsystemOption {
   subsystemId     Int
   
   name            String
-  features        String[]
   description     String    @db.Text
   whyItWorks      String    @db.Text
   
@@ -220,6 +210,12 @@ model DecisionMatrixResult {
   id              Int       @id @default(autoincrement())
   projectId       Int       @unique
   
+  aiOutput        Json
+  projectTitle    String?
+  concept         String?
+  problemsOverall Json?
+  skillsRequired  String?
+  
   generatedAt     DateTime  @default(now())
   expiresAt       DateTime  @default(dbgenerated("now() + INTERVAL '30 days'"))
 
@@ -233,12 +229,18 @@ model BlueprintResult {
   id                  Int       @id @default(autoincrement())
   projectId           Int       @unique
   
+  aiOutput            Json
+  architecture        String?
+  blockDiagram        Json?
+  estimatedTotalCost  String?
+  requiredSkills      String[]
+  executionSteps      String[]
+  
   generatedAt         DateTime  @default(now())
   expiresAt           DateTime  @default(dbgenerated("now() + INTERVAL '90 days'"))
 
-  project             Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  project             Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   buildGuides         BuildGuide[]
-  blockDiagramNodes   BlockDiagramNode[]
 
   @@index([projectId])
   @@map("blueprint_results")
@@ -249,20 +251,12 @@ model BuildGuide {
   projectId           Int       @unique
   blueprintId         Int
   
-  buildOverview       String    @db.Text
-  prerequisites       Json      // {tools: [], materials: []}
-  wiringDescription   String    @db.Text
-  wiringConnections   String[]  @db.Text
-  firmwareLanguage    String
-  firmwareStructure   String[]  @db.Text
-  firmwareKeyLogic    String[]  @db.Text
-  calibrationSteps    String[]  @db.Text
-  testingUnit         String[]  @db.Text
-  testingIntegration  String[]  @db.Text
-  testingAcceptance   String[]  @db.Text
-  commonFailures      Json      // [{issue, cause, fix}]
-  safety              String[]  @db.Text
-  nextSteps           String[]  @db.Text
+  aiOutput            Json
+  wiringInstructions  String    @db.Text
+  codeStructure       String    @db.Text
+  calibrationSteps    String[]
+  testingProcedures   String[]
+  commonFailureModes  String[]
   
   generatedAt         DateTime  @default(now())
   updatedAt           DateTime  @updatedAt
@@ -272,48 +266,4 @@ model BuildGuide {
 
   @@index([projectId])
   @@map("build_guides")
-}
-
-model ProjectResearch {
-  id          Int      @id @default(autoincrement())
-  projectId   Int
-  source      String   @db.Text
-  stage       String
-  createdAt   DateTime @default(now())
-  
-  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  
-  @@index([projectId])
-  @@map("project_research")
-}
-
-model AIGeneration {
-  id              Int      @id @default(autoincrement())
-  projectId       Int
-  userId          String
-  stage           String
-  status          String
-  tokensUsed      Int?
-  cost            Int?
-  errorMessage    String?  @db.Text
-  generatedAt     DateTime @default(now())
-  
-  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@index([projectId, stage])
-  @@index([userId, generatedAt])
-  @@map("ai_generations")
-}
-
-model BlockDiagramNode {
-  id          Int      @id @default(autoincrement())
-  blueprintId Int
-  name        String
-  order       Int
-  
-  blueprint   BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
-  
-  @@index([blueprintId])
-  @@map("block_diagram_nodes")
 }

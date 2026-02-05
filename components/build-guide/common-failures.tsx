@@ -3,8 +3,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from '@/components/ui/accordion';
-import type { BuildGuideFailure } from '@/lib/definitions';
+} from '@/components/ui/accordion';import { parseMarkdown } from '@/lib/utils/markdown';import type { BuildGuideFailure } from '@/lib/definitions';
 
 interface CommonFailuresProps {
   failures: BuildGuideFailure[];
@@ -23,15 +22,15 @@ export function CommonFailures({ failures, contentRef }: CommonFailuresProps) {
             <div className="space-y-3 sm:space-y-4">
               {failures.map((failure, i) => (
                 <div key={i} className="bg-muted/20 rounded-lg p-4 sm:p-6 border border-border">
-                  <p className="font-medium text-sm sm:text-base mb-2">{failure.issue}</p>
+                  <p className="font-medium text-sm sm:text-base mb-2">{parseMarkdown(failure.issue)}</p>
                   <div className="text-sm sm:text-base space-y-1 leading-relaxed">
                     <p>
                       <span className="text-muted-foreground">Cause:</span>{' '}
-                      <span>{failure.cause}</span>
+                      <span>{parseMarkdown(failure.cause)}</span>
                     </p>
                     <p>
                       <span className="text-green-500 font-medium">Fix:</span>{' '}
-                      <span>{failure.fix}</span>
+                      <span>{parseMarkdown(failure.fix)}</span>
                     </p>
                   </div>
                 </div>

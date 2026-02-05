@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 import type { BuildGuidePrerequisites } from '@/lib/definitions';
 
 interface PrerequisitesProps {
@@ -33,7 +34,7 @@ export function Prerequisites({ prerequisites, contentRef }: PrerequisitesProps)
                   {prerequisites.tools.map((tool, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                       <span className="text-muted-foreground">•</span>
-                      <span>{tool}</span>
+                      <span>{parseMarkdown(tool)}</span>
                     </li>
                   ))}
                 </ul>
@@ -49,7 +50,7 @@ export function Prerequisites({ prerequisites, contentRef }: PrerequisitesProps)
                   {prerequisites.materials.map((material, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                       <span className="text-muted-foreground">•</span>
-                      <span>{material}</span>
+                      <span>{parseMarkdown(material)}</span>
                     </li>
                   ))}
                 </ul>

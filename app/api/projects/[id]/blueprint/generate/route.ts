@@ -81,45 +81,26 @@ export async function POST(
     }
 
     // Save blueprint result
-    const blueprint = await prisma.$transaction(async (tx) => {
-      const result = await tx.blueprintResult.upsert({
-        where: { projectId },
-        update: {
-          generatedAt: new Date()
-        },
-        create: {
-          projectId
-        }
-      });
-      
-      // Delete existing block diagram nodes and recreate
-      await tx.blockDiagramNode.deleteMany({
-        where: { blueprintId: result.id }
-      });
-      
-      // Save block diagram nodes
-      if (aiOutput.architecture?.block_diagram && Array.isArray(aiOutput.architecture.block_diagram)) {
-        await tx.blockDiagramNode.createMany({
-          data: aiOutput.architecture.block_diagram.map((nodeName: string, index: number) => ({
-            blueprintId: result.id,
-            name: nodeName,
-            order: index
-          }))
-        });
+    const blueprint = await prisma.blueprintResult.upsert({
+      where: { projectId },
+      update: {
+        aiOutput: aiOutput,
+        architecture: aiOutput.architecture?.overview || null,
+        blockDiagram: aiOutput.architecture?.block_diagram || null,
+        estimatedTotalCost: aiOutput.cost || null,
+        requiredSkills: aiOutput.skills ? [aiOutput.skills] : [],
+        executionSteps: aiOutput.execution_steps || [],
+        generatedAt: new Date()
+      },
+      create: {
+        projectId,
+        aiOutput: aiOutput,
+        architecture: aiOutput.architecture?.overview || null,
+        blockDiagram: aiOutput.architecture?.block_diagram || null,
+        estimatedTotalCost: aiOutput.cost || null,
+        requiredSkills: aiOutput.skills ? [aiOutput.skills] : [],
+        executionSteps: aiOutput.execution_steps || []
       }
-      
-      // Save references as research
-      if (aiOutput.references && Array.isArray(aiOutput.references) && aiOutput.references.length > 0) {
-        await tx.projectResearch.createMany({
-          data: aiOutput.references.map((source: string) => ({
-            projectId,
-            source,
-            stage: "BLUEPRINT"
-          }))
-        });
-      }
-      
-      return result;
     });
 
     // Update project stage

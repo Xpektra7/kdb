@@ -8,6 +8,7 @@ import Link from "next/link";
 import { signOut, useSession } from "next-auth/react";
 import { usePathname } from "next/navigation";
 export default function Navbar() {
+
     const [useDummyData, setUseDummyData] = useState(false);
     const [isMobileOpen, setIsMobileOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -50,8 +51,10 @@ export default function Navbar() {
         .slice(0, 2)
         .toUpperCase();
 
+
+
     return (
-        <div className="flex justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50">
+        <div className={`${isActive('/auth') || isActive('/app/') ? 'hidden' : 'flex'} justify-between items-center w-full p-page border-b border-border backdrop-blur-sm bg-background/80 sticky top-0 z-50`}>
             <div className="flex items-center gap-6">
                 <Link href="/" className="flex items-center gap-0 cursor-pointer">
                 <Image src="/logo-text.svg" alt="Apollo Logo" width={70} height={70} />
@@ -91,7 +94,7 @@ export default function Navbar() {
                         <button
                             type="button"
                             onClick={() => setIsUserMenuOpen((open) => !open)}
-                            className="flex items-center gap-2 rounded-full border border-border px-2 py-1.5 text-sm"
+                            className="flex items-center gap-2 rounded-full border border-white bg-black px-2 py-1.5 text-sm"
                             aria-haspopup="menu"
                             aria-expanded={isUserMenuOpen}
                         >
@@ -103,7 +106,7 @@ export default function Navbar() {
                         {isUserMenuOpen ? (
                             <div
                                 role="menu"
-                                className="absolute right-0 mt-2 w-44 rounded-md border border-border bg-background shadow-md"
+                                className="absolute right-0 mt-2 w-44 rounded-md border bg-black shadow-md"
                             >
                                 <Link
                                     href="/auth"
@@ -114,7 +117,7 @@ export default function Navbar() {
                                 </Link>
                                 <button
                                     type="button"
-                                    className="block w-full px-4 py-2 text-left text-sm hover:bg-muted"
+                                    className="block w-full px-4 py-2 text-left text-sm hover:bg-black hover:text-white text-black"
                                     onClick={() => signOut({ callbackUrl: "/" })}
                                 >
                                     Sign out

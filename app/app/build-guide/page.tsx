@@ -4,20 +4,29 @@ import { getDataModeServer } from "@/lib/data-mode.server";
 import { buildGuideDummyData } from "@/schema/build-guide-dummy";
 import BuildGuideClient from "./BuildGuideClient";
 
-async function fetchBuildGuideRequest(requestId: string): Promise<{ project: string; buildGuideOutput: BuildGuide }> {
+async function fetchBuildGuideFromProject(projectId: string): Promise<BuildGuide> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/build-guide-requests/${requestId}`, {
+  
+  // Fetch project with build guide data
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}`, {
     cache: "no-store",
   });
 
   if (!response.ok) {
-    throw new Error(`Build guide request not found: ${response.status}`);
+    throw new Error(`Project not found: ${response.status}`);
   }
 
-  return response.json();
+  const project = await response.json();
+  
+  if (!project.buildGuide) {
+    throw new Error("Build guide not found for this project");
+  }
+
+  // Transform the database build guide to the expected format
+  return project.buildGuide.aiOutput as BuildGuide;
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ requestId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string; requestId?: string }> }) {
   
   try {
     const params = await searchParams;
@@ -27,16 +36,15 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ r
       return <BuildGuideClient buildGuideData={buildGuideDummyData} dummy />;
     }
 
-    if (!params.requestId) {
-      throw new Error("Missing build guide requestId");
+    // New flow: Use projectId from persistent storage
+    if (params.projectId) {
+      const buildGuideData = await fetchBuildGuideFromProject(params.projectId);
+      return <BuildGuideClient buildGuideData={buildGuideData} projectId={parseInt(params.projectId)} />;
     }
 
-    // Fetch the stored build guide
-    const { buildGuideOutput } = await fetchBuildGuideRequest(params.requestId);
 
-    return <BuildGuideClient buildGuideData={buildGuideOutput} />;
+    throw new Error("Missing projectId or requestId");
   } catch (err) {
     console.error("Build guide page error:", err);
-    redirect("/app");
   }
 }

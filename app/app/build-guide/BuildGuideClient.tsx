@@ -9,6 +9,8 @@ import BuildGuideView from "@/components/build-guide/build-guide";
 import { buildBuildGuideNav } from "@/lib/navigation";
 import type { BuildGuide, NavItem } from "@/lib/definitions";
 import Link from "next/link";
+import { ExportButton } from "@/components/pdf-export/ExportButton";
+import { PDFExportData } from "@/lib/pdfGenerator";
 
 const Z_INDEX = {
   OVERLAY: 40,
@@ -18,10 +20,11 @@ const Z_INDEX = {
 
 interface BuildGuideClientProps {
   buildGuideData: BuildGuide;
+  projectId?: number;
   dummy?: boolean;
 }
 
-export default function BuildGuideClient({ buildGuideData, dummy }: BuildGuideClientProps) {
+export default function BuildGuideClient({ buildGuideData, projectId, dummy }: BuildGuideClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -75,6 +78,13 @@ export default function BuildGuideClient({ buildGuideData, dummy }: BuildGuideCl
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  const pdfData: PDFExportData = {
+    title: "Blueprint Report",
+    projectName: buildGuideData.project,
+    buildGuide: buildGuideData,
+  };
+
+
   return (
     <div className="min-h-screen">
       {sidebarOpen && (
@@ -114,9 +124,15 @@ export default function BuildGuideClient({ buildGuideData, dummy }: BuildGuideCl
               </div>
             </div>
 
+
+
             <div className="flex gap-2 items-center">
+              {buildGuideData && pdfData && (
+                <ExportButton data={pdfData} buttonText="Export PDF" fileName="blueprint-report.pdf" />
+              )}
+
               {dummy ? null : (
-                <Link href="" onClick={() => router.back()} className={buttonVariants({variant: "outline", size: "lg" , className: "py-2 h-fit"})}>
+                <Link href="" onClick={() => router.back()} className={buttonVariants({ variant: "outline", size: "lg", className: "py-2 h-fit" })}>
                   Back
                 </Link>
               )}

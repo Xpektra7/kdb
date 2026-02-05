@@ -11,24 +11,24 @@ export function TimelineDemo() {
       subtitle: '"What systems does this project need?"',
       icon: <HugeiconsIcon icon={Target} className="w-5 h-5" />,
       content: (
-        <div>
+        <div key="decision-matrix-content">
           <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Apollo breaks your project into <span className="text-foreground font-semibold">subsystems</span> (sensing, control, power, communication) and forces you to make deliberate choices before building anything.
           </p>
           <ul className="space-y-2">
-            <li className="flex items-start gap-3">
+            <li key="dm-1" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">List realistic options for each subsystem</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="dm-2" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">See tradeoffs: cost vs complexity vs availability</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="dm-3" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Understand why each option works</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="dm-4" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Catch incompatible choices early</span>
             </li>
@@ -42,24 +42,24 @@ export function TimelineDemo() {
       subtitle: '"Given these choices, what does the project look like?"',
       icon: <HugeiconsIcon icon={Note01Icon} className="w-5 h-5" />,
       content: (
-        <div>
+        <div key="blueprint-content">
           <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Once your decisions are locked in, Apollo generates a <span className="text-foreground font-semibold">coherent system architecture</span> that shows exactly how everything fits together.
           </p>
           <ul className="space-y-2">
-            <li className="flex items-start gap-3">
+            <li key="bp-1" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">System architecture diagram and component mapping</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="bp-2" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Cost estimation and bill of materials</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="bp-3" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Skills and time requirements</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="bp-4" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Risks, constraints, and failure modes</span>
             </li>
@@ -73,24 +73,24 @@ export function TimelineDemo() {
       subtitle: '"How do I actually build this?"',
       icon: <HugeiconsIcon icon={Hammer} className="w-5 h-5" />,
       content: (
-        <div>
+        <div key="build-guide-content">
           <p className="mb-4 text-sm text-muted-foreground leading-relaxed">
             Only after you've locked in the blueprint, Apollo gives you the <span className="text-foreground font-semibold">execution plan</span>—everything you need to actually build and test.
           </p>
           <ul className="space-y-2">
-            <li className="flex items-start gap-3">
+            <li key="bg-1" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Wiring, pin mappings, and physical assembly</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="bg-2" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Code structure and configuration steps</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="bg-3" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Calibration, testing, and validation procedures</span>
             </li>
-            <li className="flex items-start gap-3">
+            <li key="bg-4" className="flex items-start gap-3">
               <HugeiconsIcon icon={CheckCircle} className="w-4 h-4 text-accent mt-0.5 shrink-0" />
               <span className="text-sm text-muted-foreground">Common failure points and how to debug them</span>
             </li>

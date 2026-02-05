@@ -168,7 +168,7 @@ export async function POST(request: NextRequest) {
       
       aiOutput = result;
     } catch (aiError) {
-      await prisma.aIGeneration.create({
+      await prisma.aiGeneration.create({
         data: {
           projectId: project.id,
           userId,
@@ -206,22 +206,13 @@ export async function POST(request: NextRequest) {
 
         for (let i = 0; i < subsystemsData.length; i++) {
           const subsysData = subsystemsData[i];
-          
-          const inputFrom = subsysData.from 
-            ? (Array.isArray(subsysData.from) ? subsysData.from : [subsysData.from])
-            : [];
-          const outputTo = subsysData.to
-            ? (Array.isArray(subsysData.to) ? subsysData.to : [subsysData.to])
-            : [];
 
           const subsystem = await tx.subsystem.create({
             data: {
               projectId,
               name: subsysData.subsystem,
               description: null,
-              order: i,
-              inputFrom,
-              outputTo
+              order: i
             }
           });
 
@@ -235,7 +226,6 @@ export async function POST(request: NextRequest) {
                 name: optionData.name,
                 description: optionData.why_it_works || "",
                 whyItWorks: optionData.why_it_works || "",
-                features: optionData.features || [],
                 pros: optionData.pros || [],
                 cons: optionData.cons || [],
                 estimatedCost: optionData.estimated_cost?.join(", ") || "N/A",
@@ -255,22 +245,22 @@ export async function POST(request: NextRequest) {
         await tx.decisionMatrixResult.upsert({
           where: { projectId },
           update: {
-            generatedAt: new Date()
+            generatedAt: new Date(),
+            aiOutput: validation.data,
+            projectTitle: validation.data.project,
+            concept: validation.data.concept,
+            problemsOverall: validation.data.problems_overall ?? undefined,
+            skillsRequired: validation.data.skills ?? undefined
           },
           create: {
-            projectId
+            projectId,
+            aiOutput: validation.data,
+            projectTitle: validation.data.project,
+            concept: validation.data.concept,
+            problemsOverall: validation.data.problems_overall ?? undefined,
+            skillsRequired: validation.data.skills ?? undefined
           }
         });
-        
-        if (validation.data.research && validation.data.research.length > 0) {
-          await tx.projectResearch.createMany({
-            data: validation.data.research.map(source => ({
-              projectId,
-              source,
-              stage: "DECISION_MATRIX"
-            }))
-          });
-        }
 
         await tx.project.update({
           where: { id: projectId },
@@ -280,7 +270,7 @@ export async function POST(request: NextRequest) {
           }
         });
         
-        await tx.aIGeneration.create({
+        await tx.aiGeneration.create({
           data: {
             projectId,
             userId,
