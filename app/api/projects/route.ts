@@ -4,6 +4,7 @@ import ai from "@/lib/ai/ai-config";
 import z from "zod";
 import { auth } from "@/auth";
 import { retryWithBackoff } from "@/lib/utils/retry";
+import { ProjectStage } from "@/lib/generated/prisma/enums";
 
 // Temporary userId for demonstration purposes
 
@@ -136,7 +137,7 @@ export async function POST(request: NextRequest) {
 
     let aiOutput;
     let tokensUsed = 0;
-    
+
     try {
       const result = await retryWithBackoff(
         async () => {
@@ -165,7 +166,7 @@ export async function POST(request: NextRequest) {
           }
         }
       );
-      
+
       aiOutput = result;
     } catch (aiError) {
       await prisma.aIGeneration.create({
@@ -243,34 +244,34 @@ export async function POST(request: NextRequest) {
           });
         }
 
-        await tx.decisionMatrixResult.upsert({
-          where: { projectId },
-          update: {
-            generatedAt: new Date(),
-            aiOutput: validation.data,
-            projectTitle: validation.data.project,
-            concept: validation.data.concept,
-            problemsOverall: validation.data.problems_overall ?? undefined,
-            skillsRequired: validation.data.skills ?? undefined
-          },
-          create: {
-            projectId,
-            aiOutput: validation.data,
-            projectTitle: validation.data.project,
-            concept: validation.data.concept,
-            problemsOverall: validation.data.problems_overall ?? undefined,
-            skillsRequired: validation.data.skills ?? undefined
-          }
-        });
+        // await tx.decisionMatrixResult.upsert({
+        //   where: { projectId },
+        //   update: {
+        //     generatedAt: new Date(),
+        //     aiOutput: validation.data,
+        //     projectTitle: validation.data.project,
+        //     concept: validation.data.concept,
+        //     problemsOverall: validation.data.problems_overall ?? undefined,
+        //     skillsRequired: validation.data.skills ?? undefined
+        //   },
+        //   create: {
+        //     projectId,
+        //     aiOutput: validation.data,
+        //     projectTitle: validation.data.project,
+        //     concept: validation.data.concept,
+        //     problemsOverall: validation.data.problems_overall ?? undefined,
+        //     skillsRequired: validation.data.skills ?? undefined
+        //   }
+        // });
 
         await tx.project.update({
           where: { id: projectId },
-          data: { 
-            stage: "DECISION_MATRIX",
+          data: {
+            stage: ProjectStage.DECISION_MATRIX,
             goals: validation.data.goals || []
           }
         });
-        
+
         await tx.aIGeneration.create({
           data: {
             projectId,
@@ -339,14 +340,14 @@ export async function GET(request: NextRequest) {
     }
     const projects = await prisma.project.findMany({
       where: { userId },
-      include:{
-        decisionMatrix:true,
-        subsystems:true,
-        blueprint:true,
-        buildGuide:true,
-        _count:true,
-        decisions:true,
-        user:true,
+      include: {
+        // decisionMatrix:true,
+        subsystems: true,
+        blueprint: true,
+        buildGuide: true,
+        _count: true,
+        decisions: true,
+        user: true,
       },
       orderBy: { createdAt: "desc" },
     });
@@ -359,6 +360,32 @@ export async function GET(request: NextRequest) {
     console.error("[GET /api/projects] Unexpected error:", error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : "Failed to fetch projects" },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    // const session = await auth();
+    // const userId = session?.user?.id;
+    // if (!userId) {
+    //   return NextResponse.json(
+    //     { error: "Unauthorized - No authenticated user found" },
+    //     { status: 401 }
+    //   );
+    // }
+
+    const deleted = await prisma.project.deleteMany();
+
+    return NextResponse.json(
+      { deletedCount: deleted.count },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error("[DELETE /api/projects] Unexpected error:", error);
+    return NextResponse.json(
+      { error: error instanceof Error ? error.message : "Failed to delete projects" },
       { status: 500 }
     );
   }
