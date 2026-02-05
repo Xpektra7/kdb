@@ -40,7 +40,7 @@ export default function Page() {
         });
     }, []);
 
-    async function handleBuildClick(currentProjectDescription: string) {
+    async function      handleBuildClick(currentProjectDescription: string) {
         setIsLoading(true);
         setError(null);
 
