@@ -7,6 +7,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 import type { BuildGuideFirmware } from '@/lib/definitions';
 
 interface FirmwareProps {
@@ -39,7 +40,7 @@ export function Firmware({ firmware, contentRef }: FirmwareProps) {
                   {firmware.structure.map((item, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                       <span className="text-muted-foreground">•</span>
-                      <span>{item}</span>
+                      <span>{parseMarkdown(item)}</span>
                     </li>
                   ))}
                 </ul>
@@ -54,7 +55,7 @@ export function Firmware({ firmware, contentRef }: FirmwareProps) {
                       <span className="shrink-0 w-6 h-6 bg-muted-foreground/20 rounded-full flex items-center justify-center text-xs font-medium">
                         {i + 1}
                       </span>
-                      <span>{logic}</span>
+                      <span>{parseMarkdown(logic)}</span>
                     </li>
                   ))}
                 </ul>

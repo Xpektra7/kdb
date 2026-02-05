@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 import type { BuildGuideWiring } from '@/lib/definitions';
 
 interface WiringProps {
@@ -21,7 +22,7 @@ export function Wiring({ wiring, contentRef }: WiringProps) {
           </AccordionTrigger>
           <AccordionContent className="pt-4 pl-4 border-l-2 border-accent-border">
             <div className="space-y-4">
-              <p className="text-sm sm:text-base leading-relaxed">{wiring.description}</p>
+              <p className="text-sm sm:text-base leading-relaxed">{parseMarkdown(wiring.description)}</p>
               
               <div className="bg-muted/20 rounded-lg p-4 sm:p-6 border border-border">
                 <h3 className="text-base sm:text-lg font-medium mb-3">Connections</h3>
@@ -31,7 +32,7 @@ export function Wiring({ wiring, contentRef }: WiringProps) {
                       <span className="shrink-0 w-6 h-6 bg-muted-foreground/20 rounded-full flex items-center justify-center text-xs font-medium">
                         {i + 1}
                       </span>
-                      <span>{connection}</span>
+                      <span>{parseMarkdown(connection)}</span>
                     </li>
                   ))}
                 </ul>

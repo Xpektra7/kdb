@@ -73,9 +73,17 @@ export async function GET(
         blueprint: {
           select: {
             id: true,
+            aiOutput: true,
             architecture: true,
             estimatedTotalCost: true,
             requiredSkills: true,
+            generatedAt: true
+          }
+        },
+        buildGuide: {
+          select: {
+            id: true,
+            aiOutput: true,
             generatedAt: true
           }
         }

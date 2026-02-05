@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 import type { BuildGuideTesting } from '@/lib/definitions';
 
 interface TestingProps {
@@ -31,7 +32,7 @@ export function Testing({ testing, contentRef }: TestingProps) {
                   {testing.unit.map((test, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                       <span className="text-muted-foreground">•</span>
-                      <span>{test}</span>
+                      <span>{parseMarkdown(test)}</span>
                     </li>
                   ))}
                 </ul>
@@ -47,7 +48,7 @@ export function Testing({ testing, contentRef }: TestingProps) {
                   {testing.integration.map((test, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                       <span className="text-muted-foreground">•</span>
-                      <span>{test}</span>
+                      <span>{parseMarkdown(test)}</span>
                     </li>
                   ))}
                 </ul>
@@ -63,7 +64,7 @@ export function Testing({ testing, contentRef }: TestingProps) {
                   {testing.acceptance.map((test, i) => (
                     <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                       <span className="text-muted-foreground">•</span>
-                      <span>{test}</span>
+                      <span>{parseMarkdown(test)}</span>
                     </li>
                   ))}
                 </ul>

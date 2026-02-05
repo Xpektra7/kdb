@@ -20,10 +20,11 @@ const Z_INDEX = {
 
 interface BlueprintClientProps {
   blueprintData: Blueprint;
+  projectId?: number;
   dummy?: boolean;
 }
 
-export default function BlueprintClient({ blueprintData, dummy }: BlueprintClientProps) {
+export default function BlueprintClient({ blueprintData, projectId, dummy }: BlueprintClientProps) {
   const router = useRouter();
   const [activeSection, setActiveSection] = useState("overview");
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({
@@ -156,6 +157,7 @@ export default function BlueprintClient({ blueprintData, dummy }: BlueprintClien
               expandedItems={expandedItems}
               toggleSection={toggleSection}
               toggleItem={toggleItem}
+              projectId={projectId}
               dummy={dummy}
             />
           </div>

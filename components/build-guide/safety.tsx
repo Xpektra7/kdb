@@ -4,20 +4,11 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 
 interface SafetyProps {
   safety: string[];
   contentRef?: (el: HTMLDivElement | null) => void;
-}
-
-function formatText(text: string) {
-  const parts = text.split(/(\*\*.*?\*\*)/g);
-  return parts.map((part, index) => {
-    if (part.startsWith('**') && part.endsWith('**')) {
-      return <strong key={index}>{part.slice(2, -2)}</strong>;
-    }
-    return part;
-  });
 }
 
 export function Safety({ safety, contentRef }: SafetyProps) {
@@ -34,7 +25,7 @@ export function Safety({ safety, contentRef }: SafetyProps) {
                 {safety.map((item, i) => (
                   <li key={i} className="flex items-start gap-2 text-sm sm:text-base leading-relaxed">
                     <span className="text-amber-500">⚠</span>
-                    <span>{formatText(item)}</span>
+                    <span>{parseMarkdown(item)}</span>
                   </li>
                 ))}
               </ul>

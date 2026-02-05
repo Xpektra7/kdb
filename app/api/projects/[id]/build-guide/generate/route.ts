@@ -84,43 +84,39 @@ export async function POST(
       return acc;
     }, []);
 
-    // Create build guide with normalized data
+    // Create build guide with normalized data - store full aiOutput for retrieval
     const buildGuide = await prisma.buildGuide.upsert({
       where: { projectId },
       update: {
-        buildOverview: aiOutput.build_overview || "",
-        prerequisites: aiOutput.prerequisites || { tools: [], materials: [] },
-        wiringDescription: aiOutput.wiring?.description || "",
-        wiringConnections: wiringConnectionsFlat,
-        firmwareLanguage: aiOutput.firmware?.language || "",
-        firmwareStructure: aiOutput.firmware?.structure || [],
-        firmwareKeyLogic: aiOutput.firmware?.key_logic || [],
+        aiOutput: aiOutput,
+        wiringInstructions: aiOutput.wiring?.description || "",
+        codeStructure: JSON.stringify(aiOutput.firmware || {}),
         calibrationSteps: aiOutput.calibration || [],
-        testingUnit: aiOutput.testing?.unit || [],
-        testingIntegration: aiOutput.testing?.integration || [],
-        testingAcceptance: aiOutput.testing?.acceptance || [],
-        commonFailures: aiOutput.common_failures || [],
-        safety: aiOutput.safety || [],
-        nextSteps: aiOutput.next_steps || [],
+        testingProcedures: [
+          ...(aiOutput.testing?.unit || []),
+          ...(aiOutput.testing?.integration || []),
+          ...(aiOutput.testing?.acceptance || [])
+        ],
+        commonFailureModes: (aiOutput.common_failures || []).map((f: any) => 
+          `${f.issue}: ${f.cause} - Fix: ${f.fix}`
+        ),
         updatedAt: new Date()
       },
       create: {
         projectId,
         blueprintId: project.blueprint.id,
-        buildOverview: aiOutput.build_overview || "",
-        prerequisites: aiOutput.prerequisites || { tools: [], materials: [] },
-        wiringDescription: aiOutput.wiring?.description || "",
-        wiringConnections: wiringConnectionsFlat,
-        firmwareLanguage: aiOutput.firmware?.language || "",
-        firmwareStructure: aiOutput.firmware?.structure || [],
-        firmwareKeyLogic: aiOutput.firmware?.key_logic || [],
+        aiOutput: aiOutput,
+        wiringInstructions: aiOutput.wiring?.description || "",
+        codeStructure: JSON.stringify(aiOutput.firmware || {}),
         calibrationSteps: aiOutput.calibration || [],
-        testingUnit: aiOutput.testing?.unit || [],
-        testingIntegration: aiOutput.testing?.integration || [],
-        testingAcceptance: aiOutput.testing?.acceptance || [],
-        commonFailures: aiOutput.common_failures || [],
-        safety: aiOutput.safety || [],
-        nextSteps: aiOutput.next_steps || []
+        testingProcedures: [
+          ...(aiOutput.testing?.unit || []),
+          ...(aiOutput.testing?.integration || []),
+          ...(aiOutput.testing?.acceptance || [])
+        ],
+        commonFailureModes: (aiOutput.common_failures || []).map((f: any) => 
+          `${f.issue}: ${f.cause} - Fix: ${f.fix}`
+        )
       }
     });
 
@@ -128,21 +124,6 @@ export async function POST(
     const updatedProject = await prisma.project.update({
       where: { id: projectId },
       data: { stage: "BUILDING" }
-    });
-
-    // Track AI generation
-    const projectUserId = (await prisma.project.findUnique({ 
-      where: { id: projectId }, 
-      select: { userId: true } 
-    }))?.userId || "";
-
-    await prisma.aIGeneration.create({
-      data: {
-        projectId,
-        userId: projectUserId,
-        stage: "BUILD_GUIDE",
-        status: "SUCCESS"
-      }
     });
 
     return NextResponse.json(

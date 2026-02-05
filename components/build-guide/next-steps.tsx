@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 
 interface NextStepsProps {
   nextSteps: string[];
@@ -26,7 +27,7 @@ export function NextSteps({ nextSteps, contentRef }: NextStepsProps) {
                     <span className="shrink-0 w-6 h-6 bg-primary/20 text-primary rounded-full flex items-center justify-center text-xs font-medium">
                       {i + 1}
                     </span>
-                    <span className="flex-1">{step}</span>
+                    <span className="flex-1">{parseMarkdown(step)}</span>
                   </li>
                 ))}
               </ol>

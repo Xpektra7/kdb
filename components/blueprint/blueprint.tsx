@@ -37,6 +37,7 @@ interface BlueprintProps {
   expandedItems: Record<string, boolean>;
   toggleSection: (id: string) => void;
   toggleItem: (id: string) => void;
+  projectId?: number;
   dummy?: boolean;
 }
 
@@ -47,10 +48,12 @@ export default function Blueprint({
   expandedItems,
   toggleSection,
   toggleItem,
+  projectId,
   dummy,
 }: BlueprintProps) {
   const router = useRouter();
   const [isGenerating, setIsGenerating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleProceedToBuildGuide = async () => {
     // In dummy mode, just navigate directly to the build guide page
@@ -60,6 +63,7 @@ export default function Blueprint({
     }
     
     setIsGenerating(true);
+    setError(null);
     
     try {
       // Compress blueprint to minimal format
@@ -80,37 +84,51 @@ export default function Blueprint({
         throw new Error(errorData.error || 'Failed to generate build guide');
       }
 
-      const { output, error } = await generateResponse.json();
+      const { output, error: genError } = await generateResponse.json();
       
-      if (error) {
-        throw new Error(error);
+      if (genError) {
+        throw new Error(genError);
       }
       
       // Output is already parsed from the API
       const buildGuideOutput = output;
-      
-      // Store the build guide and get the request ID
-      const storeResponse = await fetch('/api/build-guide-requests', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          project: compressedBlueprint.project,
-          buildGuideOutput,
-        }),
-      });
 
-      if (!storeResponse.ok) {
-        throw new Error('Failed to store build guide');
+      if (projectId) {
+        // New flow: Persist build guide to project
+        const persistResponse = await fetch(`/api/projects/${projectId}/build-guide/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ aiOutput: buildGuideOutput }),
+        });
+
+        if (!persistResponse.ok) {
+          const errorData = await persistResponse.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Failed to save build guide');
+        }
+
+        router.push(`/app/build-guide?projectId=${projectId}`);
+      } else {
+        // Legacy flow: Store in temporary request store
+        const storeResponse = await fetch('/api/build-guide-requests', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            project: compressedBlueprint.project,
+            buildGuideOutput,
+          }),
+        });
+
+        if (!storeResponse.ok) {
+          throw new Error('Failed to store build guide');
+        }
+
+        const { requestId } = await storeResponse.json();
+        router.push(`/app/build-guide?requestId=${requestId}`);
       }
-
-      const { requestId } = await storeResponse.json();
       
-      // Navigate to build guide page
-      router.push(`/app/build-guide?requestId=${requestId}`);
-      
-    } catch (error) {
-      console.error('Error generating build guide:', error);
-      // TODO: Show error toast/notification to user
+    } catch (err) {
+      console.error('Error generating build guide:', err);
+      setError(err instanceof Error ? err.message : 'Failed to generate build guide');
     } finally {
       setIsGenerating(false);
     }
@@ -214,13 +232,27 @@ export default function Blueprint({
           references={blueprintData.references}
         />
       )}
+
+      {error && (
+        <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">
+          {error}
+        </div>
+      )}
+
       <Button 
         variant="default" 
         className="w-full sm:w-auto mt-6" 
         onClick={handleProceedToBuildGuide}
         disabled={isGenerating}
       >
-        {isGenerating ? 'Generating Build Guide...' : 'Proceed to Build Guide'}
+        {isGenerating ? (
+          <>
+            <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent mr-2" />
+            Generating Build Guide...
+          </>
+        ) : (
+          'Proceed to Build Guide'
+        )}
       </Button>
     </>
   );

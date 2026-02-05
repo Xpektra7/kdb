@@ -4,6 +4,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from '@/components/ui/accordion';
+import { parseMarkdown } from '@/lib/utils/markdown';
 
 interface BuildOverviewProps {
   overview: string;
@@ -19,7 +20,7 @@ export function BuildOverview({ overview, contentRef }: BuildOverviewProps) {
             <h2>Build Overview</h2>
           </AccordionTrigger>
           <AccordionContent className="pt-4 pl-4 border-l-2 border-accent-border">
-            <p className="text-sm sm:text-base leading-relaxed">{overview}</p>
+            <p className="text-sm sm:text-base leading-relaxed">{parseMarkdown(overview)}</p>
           </AccordionContent>
         </AccordionItem>
       </Accordion>
