@@ -88,6 +88,7 @@ model User {
   sessions      Session[]
   usages    Usage[]
   projects  Project[]
+  aiGenerations    AIGeneration[]
 }
 
 model Profile {
@@ -138,6 +139,8 @@ model Project {
   user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
   subsystems        Subsystem[]
   decisions         ProjectDecision[]
+  aiGenerations    AIGeneration[]
+  researchEntries  ProjectResearch[]
   decisionMatrix    DecisionMatrixResult?
   blueprint         BlueprintResult?
   buildGuide        BuildGuide?
@@ -240,6 +243,7 @@ model BlueprintResult {
 
   project             Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   buildGuides         BuildGuide[]
+  blockDiagramNodes  BlockDiagramNode[]
 
   @@index([projectId])
   @@map("blueprint_results")
@@ -264,4 +268,47 @@ model BuildGuide {
 
   @@index([projectId])
   @@map("build_guides")
+}
+model ProjectResearch {
+  id          Int      @id @default(autoincrement())
+  projectId   Int
+  source      String   @db.Text
+  stage       String
+  createdAt   DateTime @default(now())
+  
+  project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId])
+  @@map("project_research")
+}
+
+model AIGeneration {
+  id              Int      @id @default(autoincrement())
+  projectId       Int
+  userId          String
+  stage           String
+  status          String
+  tokensUsed      Int?
+  cost            Int?
+  errorMessage    String?  @db.Text
+  generatedAt     DateTime @default(now())
+  
+  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  
+  @@index([projectId, stage])
+  @@index([userId, generatedAt])
+  @@map("ai_generations")
+}
+
+model BlockDiagramNode {
+  id          Int      @id @default(autoincrement())
+  blueprintId Int
+  name        String
+  order       Int
+  
+  blueprint   BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+  
+  @@index([blueprintId])
+  @@map("block_diagram_nodes")
 }
