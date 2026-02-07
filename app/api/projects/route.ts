@@ -244,6 +244,15 @@ export async function POST(request: NextRequest) {
           });
         }
 
+        for (const problem_overall of validation.data.problems_overall || []) {
+          await tx.problemOverall.create({
+            data: {
+              projectId, ...problem_overall
+            }
+          })
+        }
+        // tx.problemOverall.create({data:{projectId, validation.data.problems_overall?.map(p => ({problem: p.problem, suggested_solution: p.suggested_solution})) || []}})
+
         // await tx.decisionMatrixResult.upsert({
         //   where: { projectId },
         //   update: {
