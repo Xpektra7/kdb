@@ -27,9 +27,12 @@ export async function GET(
       );
     }
 
-    const result = await prisma.decisionMatrixResult.findUnique({
-      where: { projectId }
-    });
+    // const result = await prisma.decisionMatrixResult.findUnique({
+    //   where: { projectId }
+    // });
+
+   const result = await prisma.project.findFirst({
+      where: { id: projectId }})
 
     if (!result) {
       return NextResponse.json(
@@ -39,12 +42,12 @@ export async function GET(
     }
 
     // Check if expired
-    if (new Date() > result.expiresAt) {
-      return NextResponse.json(
-        { error: "Decision matrix has expired. Please regenerate." },
-        { status: 410 }
-      );
-    }
+    // if (new Date() > result.) {
+    //   return NextResponse.json(
+    //     { error: "Decision matrix has expired. Please regenerate." },
+    //     { status: 410 }
+    //   );
+    // }
 
     return NextResponse.json(result, { status: 200 });
   } catch (error) {
