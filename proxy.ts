@@ -38,10 +38,9 @@ export default auth((req) => {
   }
 
   if (!isAuthenticated) {
-    console.log("i shouldn't be here j",isAuthenticated)
-    // if (isProtectedApi(pathname)) {
-    //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    // }
+      // if (isProtectedApi(pathname)) {
+      //   return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      // }
 
     if (isProtectedPage(pathname)) {
       const url = req.nextUrl.clone();

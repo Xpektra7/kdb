@@ -179,7 +179,7 @@ export interface Problem {
 export interface DecisionMatrixOutput {
   project: string;
   concept: string;
-  research: string[];
+  research: string[]; // Updated to array of objects with title and url
   goals?: string[]; // New field for project goals
   problems_overall: Problem[];
   decision_matrix: DecisionMatrixItem[];

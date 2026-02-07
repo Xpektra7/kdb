@@ -31,13 +31,10 @@ export async function GET(
     //   where: { projectId }
     // });
 
-   const result = await prisma.project.findFirst({
-      where: { id: projectId },include:{
-        project_overall:true,
-        research:true,
-        subsystems:{include:{options:true,}}
-      }})
-
+    const result = await prisma.project.findFirst({
+      where: { id: projectId }, include: { subsystems: { include: { options: true }, }, problems_overall: true, }
+    })
+    
     if (!result) {
       return NextResponse.json(
         { error: "Decision matrix not yet generated for this project" },

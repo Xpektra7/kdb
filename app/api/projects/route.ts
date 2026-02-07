@@ -22,7 +22,7 @@ const aiOptionSchema = z.object({
   features: z.array(z.string()).optional(),
   pros: z.array(z.string()).optional(),
   cons: z.array(z.string()).optional(),
-  estimated_cost: z.union([z.array(z.string()), z.string()]).optional(),
+  estimated_cost: z.string().optional(),
   availability: z.string().optional()
 });
 
@@ -125,10 +125,10 @@ export async function POST(request: NextRequest) {
     {
       "project":"string",
       "concept":"string",
-      "research":["string"],
+      "research":"string[]",
       "goals":["string"],
       "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-      "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":["string"],"availability":"string"}]}],
+      "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
       "skills":"string",
     }
     RULES:
@@ -155,7 +155,7 @@ export async function POST(request: NextRequest) {
         async () => {
           const genResult = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: input
+            contents: input,
           });
 
           const text = genResult.text;
@@ -201,7 +201,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    console.log("Raw AI Output:", aiOutput);
+
     const validation = aiOutputSchema.safeParse(aiOutput);
+
     console.log("AI Output Validation Result:", validation);
     if (!validation.success) {
       await prisma.project.delete({ where: { id: project.id } });
@@ -232,6 +235,19 @@ export async function POST(request: NextRequest) {
             }
           });
 
+
+
+         
+          // for (const researchItem of validation.data.research || []) {
+          //   await tx.projectResearch.create({
+          //     data: {
+          //       projectId,
+          //       url: researchItem.url,
+          //       title: researchItem.title
+          //     }
+          //   });
+          // }
+
           const optionsData = subsysData.options || [];
           const createdOptions = [];
 
@@ -244,7 +260,7 @@ export async function POST(request: NextRequest) {
                 whyItWorks: optionData.why_it_works || "",
                 pros: optionData.pros || [],
                 cons: optionData.cons || [],
-                estimatedCost: normalizeEstimatedCost(optionData.estimated_cost),
+                estimatedCost: optionData.estimated_cost?.join(", ") || "N/A",
                 availability: optionData.availability || "Unknown"
               }
             });
@@ -291,7 +307,8 @@ export async function POST(request: NextRequest) {
           where: { id: projectId },
           data: {
             stage: ProjectStage.DECISION_MATRIX,
-            goals: validation.data.goals || []
+            goals: validation.data.goals || [],
+            research: validation.data.research || []
           }
         });
 

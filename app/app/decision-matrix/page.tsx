@@ -7,9 +7,9 @@ function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOut
   return {
     project: project.title,
     concept: project.description || "",
-    research: [], // Research is stored separately in ProjectResearch table
+    research: project.research || [], // Research is stored separately in ProjectResearch table
     goals : project.goals ,
-    problems_overall: [], // Problems are stored separately
+    problems_overall: project.problems_overall, // Problems are stored separately
     decision_matrix: project.subsystems.map((subsystem: any) => ({
       subsystem: subsystem.name,
       from: subsystem.inputFrom || null,
@@ -42,6 +42,8 @@ async function fetchProject(projectId: string): Promise<{ project: any; decision
   }
 
   const project = await response.json();
+  console.log(project);
+  
   const decisionMatrixOutput = transformProjectToDecisionMatrixOutput(project);
   
   return { project, decisionMatrixOutput };
