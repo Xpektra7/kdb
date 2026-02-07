@@ -9,7 +9,7 @@ function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOut
     concept: project.description || "",
     research: [], // Research is stored separately in ProjectResearch table
     goals : project.goals ,
-    problems_overall: [], // Problems are stored separately
+    problems_overall: project.problems_overall,
     decision_matrix: project.subsystems.map((subsystem: any) => ({
       subsystem: subsystem.name,
       from: subsystem.inputFrom || null,
