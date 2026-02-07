@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
                 whyItWorks: optionData.why_it_works || "",
                 pros: optionData.pros || [],
                 cons: optionData.cons || [],
-                estimatedCost: optionData.estimated_cost?.join(", ") || "N/A",
+                estimatedCost: optionData.estimated_cost || "N/A",
                 availability: optionData.availability || "Unknown"
               }
             });
