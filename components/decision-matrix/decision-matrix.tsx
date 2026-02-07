@@ -8,6 +8,7 @@ import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
 
 import type { DecisionMatrixProps, DecisionMatrixOption } from '@/lib/definitions';
+import Goals from './goals';
 
 interface ExtendedDecisionMatrixProps extends DecisionMatrixProps {
   projectId?: number;
@@ -154,7 +155,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       {/* Goals */}
       {output.goals && (
         <div ref={(el) => { contentRefs.current['goals'] = el; }} className="scroll-mt-20">
-          <Research research={output.goals} />
+          <Goals goals={output.goals} />
         </div>
       )}
 

@@ -138,6 +138,7 @@ model Project {
   updatedAt   DateTime      @updatedAt
 
   user              User                    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  problems_overall ProblemOverall[]
   subsystems        Subsystem[]
   decisions         ProjectDecision[]
   aiGenerations    AIGeneration[]
@@ -151,6 +152,15 @@ model Project {
   @@map("projects")
 }
 
+
+model ProblemOverall {
+  id Int @id @default(autoincrement())
+  projectId Int
+  problem String
+  suggested_solution String
+
+  project Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+}
 model Subsystem {
   id          Int     @id @default(autoincrement())
   projectId   Int
@@ -277,8 +287,8 @@ model BuildGuide {
 model ProjectResearch {
   id          Int      @id @default(autoincrement())
   projectId   Int
-  source      String   @db.Text
-  stage       String
+  url      String   @db.Text
+  title       String
   createdAt   DateTime @default(now())
   
   project     Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)

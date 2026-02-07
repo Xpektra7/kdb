@@ -147,10 +147,10 @@ export async function POST(
       // Save research sources
       if (aiOutput.research && aiOutput.research.length > 0) {
         await tx.projectResearch.createMany({
-          data: aiOutput.research.map((source: string) => ({
+          data: aiOutput.research.map((source: { title: string; url: string }) => ({
             projectId,
-            source,
-            stage: "DECISION_MATRIX"
+            source: source.title,
+            url: source.url,
           }))
         });
       }
