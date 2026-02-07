@@ -151,6 +151,13 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
         </div>
       )}
 
+      {/* Goals */}
+      {output.goals && (
+        <div ref={(el) => { contentRefs.current['goals'] = el; }} className="scroll-mt-20">
+          <Research research={output.goals} />
+        </div>
+      )}
+
       {/* Problems */}
       {output.problems_overall && (
         <div ref={(el) => { contentRefs.current['problems'] = el; }} className="scroll-mt-20">

@@ -162,7 +162,6 @@ export interface DecisionMatrixOption {
   why_it_works: string;
   pros: string[];
   cons: string[];
-  add_ons: string[];
 }
 
 export interface DecisionMatrixItem {
@@ -181,6 +180,7 @@ export interface DecisionMatrixOutput {
   project: string;
   concept: string;
   research: string[];
+  goals?: string[]; // New field for project goals
   problems_overall: Problem[];
   decision_matrix: DecisionMatrixItem[];
   cost: string;
