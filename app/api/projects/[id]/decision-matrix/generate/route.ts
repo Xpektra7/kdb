@@ -1,6 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 
+const normalizeEstimatedCost = (value?: string | string[] | null): string => {
+  if (!value) {
+    return "N/A";
+  }
+  if (Array.isArray(value)) {
+    const cleaned = value.map((item) => item.trim()).filter(Boolean);
+    return cleaned.length ? cleaned.join(", ") : "N/A";
+  }
+  const cleaned = value.trim();
+  return cleaned || "N/A";
+};
+
 /**
  * POST /api/projects/[id]/decision-matrix/generate
  * 
@@ -112,7 +124,7 @@ export async function POST(
               features: optionData.features || [],
               pros: optionData.pros || [],
               cons: optionData.cons || [],
-              estimatedCost: optionData.estimated_cost || "N/A",
+              estimatedCost: normalizeEstimatedCost(optionData.estimated_cost),
               availability: optionData.availability || "Unknown"
             }
           });

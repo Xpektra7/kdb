@@ -22,9 +22,21 @@ const aiOptionSchema = z.object({
   features: z.array(z.string()).optional(),
   pros: z.array(z.string()).optional(),
   cons: z.array(z.string()).optional(),
-  estimated_cost: z.array(z.string()).optional(),
+  estimated_cost: z.union([z.array(z.string()), z.string()]).optional(),
   availability: z.string().optional()
 });
+
+const normalizeEstimatedCost = (value?: string | string[] | null): string => {
+  if (!value) {
+    return "N/A";
+  }
+  if (Array.isArray(value)) {
+    const cleaned = value.map((item) => item.trim()).filter(Boolean);
+    return cleaned.length ? cleaned.join(", ") : "N/A";
+  }
+  const cleaned = value.trim();
+  return cleaned || "N/A";
+};
 
 const aiSubsystemSchema = z.object({
   subsystem: z.string(),
@@ -148,7 +160,7 @@ export async function POST(request: NextRequest) {
 
           const text = genResult.text;
           tokensUsed = genResult.usageMetadata?.totalTokenCount || 0;
-          console.log(genResult.usageMetadata);
+          // console.log(genResult.text);
 
           const cleanedText = text ? text.replace(/```json\n|\n```/g, "").trim() : "";
 
@@ -168,6 +180,8 @@ export async function POST(request: NextRequest) {
       );
 
       aiOutput = result;
+
+      console.log("AI Output:", aiOutput);
     } catch (aiError) {
       await prisma.aIGeneration.create({
         data: {
@@ -230,7 +244,7 @@ export async function POST(request: NextRequest) {
                 whyItWorks: optionData.why_it_works || "",
                 pros: optionData.pros || [],
                 cons: optionData.cons || [],
-                estimatedCost: optionData.estimated_cost?.join(", ") || "N/A",
+                estimatedCost: normalizeEstimatedCost(optionData.estimated_cost),
                 availability: optionData.availability || "Unknown"
               }
             });

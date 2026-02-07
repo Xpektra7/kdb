@@ -1,571 +1,296 @@
 {
-    "id": 3,
-    "userId": "cml54po810000f4uwbqqsrie3",
-    "title": "Gas Production from waste",
-    "description": "I want to build a system that convert sewage wastes to gas and any other useful materials that can be extracted",
-    "stage": "DECISION_MATRIX",
-    "createdAt": "2026-02-02T12:12:31.464Z",
-    "updatedAt": "2026-02-02T12:12:53.074Z",
-    "decisionMatrix": {
-        "id": 1,
-        "projectId": 3,
-        "aiOutput": {
-            "skills": "Process Engineering (anaerobic digestion kinetics, mass/energy balance), Mechanical Engineering (pumps, mixers, tanks, gas handling, engine design), Chemical Engineering (gas purification, material science), Civil Engineering (structural design for tanks, foundations), Environmental Engineering (waste treatment, emissions, digestate management), Microbiology/Biochemistry (understanding microbial processes), Electrical Engineering (power generation, controls, instrumentation), Project Management, Safety Engineering.",
-            "concept": "Anaerobic digestion of organic waste (sewage) to produce biogas (primarily methane and carbon dioxide) for energy, and digestate for nutrient recovery or soil amendment.",
-            "project": "Gas Production from waste",
-            "research": [
-                "Anaerobic digestion process kinetics and microbiology for sewage sludge",
-                "Biogas composition analysis and optimal upgrading technologies for H2S and CO2 removal",
-                "Digestate dewatering and nutrient recovery techniques (N, P, K)",
-                "Local waste characterization and quantity assessment for Nigeria",
-                "Regulatory framework and market potential for biogas and organic fertilizer in Nigeria",
-                "Optimal digester design parameters (retention time, temperature) for sewage treatment"
-            ],
-            "decision_matrix": [
+    "project": "Simple Biogas Production System for Cooking Fuel",
+    "concept": "To design and implement a small-scale anaerobic digestion system converting organic waste (e.g., animal manure, kitchen scraps) into biogas for use as cooking fuel in rural or peri-urban settings in Nigeria, focusing on sustainability, cost-effectiveness, and ease of maintenance.",
+    "research": [
+        "Optimal C:N ratio for local feedstocks (e.g., cow dung, food waste)",
+        "Digester volume calculation based on household needs and available feedstock",
+        "Biogas yield estimation and methane content analysis",
+        "H2S and CO2 scrubbing methods suitable for small scale",
+        "Safety standards for biogas handling and usage",
+        "Local material sourcing and construction techniques",
+        "Community engagement strategies for adoption and maintenance"
+    ],
+    "goals": [
+        "Produce sufficient biogas (e.g., 2-4 m³/day) for a typical household's daily cooking needs",
+        "Reduce reliance on traditional biomass fuels (wood, charcoal) and LPG",
+        "Mitigate greenhouse gas emissions from organic waste decomposition",
+        "Provide a sustainable waste management solution for organic residues",
+        "Improve indoor air quality and health outcomes for users",
+        "Demonstrate a replicable, low-cost energy model adaptable to local conditions"
+    ],
+    "problems_overall": [
+        {
+            "problem": "Inconsistent biogas production due to feedstock variability.",
+            "suggested_solution": "Implement standardized feedstock preparation protocols and regular feeding schedules. Consider co-digestion of multiple waste streams for a more balanced nutrient input."
+        },
+        {
+            "problem": "Biogas leakage and odor issues from poorly sealed systems.",
+            "suggested_solution": "Ensure proper sealing of all connections, regular inspection for leaks using soapy water, and adequate ventilation in the digester vicinity. Use high-quality, durable materials for gas lines."
+        },
+        {
+            "problem": "High H2S content in raw biogas causing corrosion and potential health risks.",
+            "suggested_solution": "Integrate a simple H2S scrubber (e.g., packed bed with iron filings or steel wool) post-digester and pre-usage to reduce sulfide levels."
+        },
+        {
+            "problem": "Limited technical expertise for system installation, maintenance, and troubleshooting at the local level.",
+            "suggested_solution": "Provide comprehensive, hands-on training to local users and technicians. Develop a simple, visual maintenance guide and establish a local support network."
+        }
+    ],
+    "decision_matrix": [
+        {
+            "subsystem": "Feedstock Preparation",
+            "from": "Organic waste (e.g., animal manure, kitchen scraps)",
+            "to": "Homogenous slurry for digestion",
+            "options": [
                 {
-                    "to": "Homogenized Feedstock",
-                    "from": "Raw Sewage",
-                    "options": [
-                        {
-                            "cons": [
-                                "Requires regular maintenance",
-                                "Energy consumption"
-                            ],
-                            "name": "Screening and Grinding",
-                            "pros": [
-                                "Prevents operational issues",
-                                "Improves digester efficiency",
-                                "Relatively simple operation"
-                            ],
-                            "features": [
-                                "Mechanical screens",
-                                "Grinders/macerators"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Removes large inert materials, reduces particle size for better digestibility and prevents pump clogging.",
-                            "estimated_cost": [
-                                "Medium capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "High energy consumption",
-                                "Higher capital cost",
-                                "Corrosion potential"
-                            ],
-                            "name": "Thermal Pre-treatment",
-                            "pros": [
-                                "Significant increase in biogas yield",
-                                "Pathogen reduction",
-                                "Improved dewaterability of digestate"
-                            ],
-                            "features": [
-                                "Heat exchangers",
-                                "Retention tanks"
-                            ],
-                            "availability": "Medium",
-                            "why_it_works": "Hydrolyzes complex organic matter, increasing biodegradability and biogas yield. Can also pasteurize pathogens.",
-                            "estimated_cost": [
-                                "High capital, High O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Increased risk of digester clogging",
-                                "Reduced efficiency",
-                                "Potential for lower biogas yield"
-                            ],
-                            "name": "No Intensive Pre-treatment (Basic Pumping)",
-                            "pros": [
-                                "Lowest capital and O&M cost for pre-treatment",
-                                "Simplest design"
-                            ],
-                            "features": [
-                                "Pumps"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Simplifies the front-end, relying on the digester to handle raw material.",
-                            "estimated_cost": [
-                                "Low capital, Low O&M"
-                            ]
-                        }
+                    "name": "Manual Shredding & Mixing",
+                    "why_it_works": "Relies on human labor for simple mechanical reduction and mixing with water, requiring no power.",
+                    "features": [
+                        "Low initial investment",
+                        "No external power required",
+                        "Labor-intensive",
+                        "Batch process"
                     ],
-                    "subsystem": "Waste Pre-treatment"
-                },
-                {
-                    "to": "Biogas & Digestate",
-                    "from": "Homogenized Feedstock",
-                    "options": [
-                        {
-                            "cons": [
-                                "Higher energy for mixing",
-                                "Large footprint for high retention times"
-                            ],
-                            "name": "CSTR (Continuously Stirred Tank Reactor)",
-                            "pros": [
-                                "High stability and reliability",
-                                "Good for variable feedstocks",
-                                "Established technology"
-                            ],
-                            "features": [
-                                "Single or multiple tanks",
-                                "Mechanical stirrers",
-                                "Heating system"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Well-mixed, robust design suitable for slurries with high solids content; ensures good contact between microorganisms and substrate.",
-                            "estimated_cost": [
-                                "Medium capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Sensitive to high solids content",
-                                "Start-up can be slow to develop granules",
-                                "Requires consistent feedstock quality"
-                            ],
-                            "name": "UASB (Upflow Anaerobic Sludge Blanket)",
-                            "pros": [
-                                "No mechanical mixing (lower energy)",
-                                "Small footprint",
-                                "High organic loading rates for suitable feedstocks"
-                            ],
-                            "features": [
-                                "Reactor tank with settler",
-                                "Granular sludge bed"
-                            ],
-                            "availability": "Medium",
-                            "why_it_works": "Forms granular sludge that allows high biomass retention and efficient treatment of liquid waste with lower solids content, no mechanical mixing.",
-                            "estimated_cost": [
-                                "Medium capital, Low O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Potential for short-circuiting",
-                                "Less robust to shock loads",
-                                "Temperature control can be challenging"
-                            ],
-                            "name": "Plug-Flow Digester",
-                            "pros": [
-                                "Good for high solids slurries",
-                                "Lower mixing energy than CSTR",
-                                "Can be integrated with existing channels"
-                            ],
-                            "features": [
-                                "Elongated tank",
-                                "Slow-speed agitators or no mixing"
-                            ],
-                            "availability": "Medium",
-                            "why_it_works": "Operates like a long channel, with feedstock moving linearly, suited for higher solids content and offers good temperature control along the length.",
-                            "estimated_cost": [
-                                "Medium capital, Medium O&M"
-                            ]
-                        }
+                    "pros": [
+                        "Extremely low cost",
+                        "Easy to implement with basic tools",
+                        "Empowers local labor"
                     ],
-                    "subsystem": "Anaerobic Digester"
-                },
-                {
-                    "to": "Stored Biogas",
-                    "from": "Biogas from Digester",
-                    "options": [
-                        {
-                            "cons": [
-                                "Vulnerable to weather (wind, UV)",
-                                "Requires continuous air inflation",
-                                "Potential for membrane damage"
-                            ],
-                            "name": "Double Membrane Gas Holder",
-                            "pros": [
-                                "Flexible volume storage",
-                                "Relatively low cost per volume",
-                                "Good pressure regulation"
-                            ],
-                            "features": [
-                                "Inner and outer membrane",
-                                "Air support system"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Provides flexible storage capacity at low pressure, compensating for fluctuating biogas production and demand.",
-                            "estimated_cost": [
-                                "Medium capital, Low O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Less flexible for fluctuating production",
-                                "Higher capital cost per volume than membrane",
-                                "Corrosion risk"
-                            ],
-                            "name": "Low-Pressure Steel Tank",
-                            "pros": [
-                                "Durable and long-lasting",
-                                "Low maintenance",
-                                "Fixed, reliable volume"
-                            ],
-                            "features": [
-                                "Steel tank",
-                                "Pressure relief valves"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Robust, rigid storage for a fixed volume of biogas, typically used for smaller applications or as a buffer.",
-                            "estimated_cost": [
-                                "Medium capital, Low O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Limited operational flexibility",
-                                "Risk of flaring excess gas",
-                                "Requires constant demand"
-                            ],
-                            "name": "Direct Use (No Storage)",
-                            "pros": [
-                                "Lowest capital cost",
-                                "No storage maintenance"
-                            ],
-                            "features": [
-                                "Gas piping",
-                                "Pressure regulator"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Simplest approach if biogas production matches demand closely, or for immediate flaring.",
-                            "estimated_cost": [
-                                "Low capital, Low O&M"
-                            ]
-                        }
+                    "cons": [
+                        "Time-consuming and physically demanding",
+                        "Inconsistent slurry quality",
+                        "Lower throughput"
                     ],
-                    "subsystem": "Biogas Collection & Storage"
+                    "estimated_cost": "Low (NGN 5,000 - 15,000 for basic tools)",
+                    "availability": "High (tools readily available locally)"
                 },
                 {
-                    "to": "Clean Biomethane/Fuel",
-                    "from": "Raw Biogas (CH4, CO2, H2S, H2O)",
-                    "options": [
-                        {
-                            "cons": [
-                                "Requires large amount of water",
-                                "Can lead to methane loss",
-                                "Requires water treatment/disposal"
-                            ],
-                            "name": "Water Scrubber",
-                            "pros": [
-                                "Simple technology",
-                                "Effective for H2S and some CO2 removal",
-                                "Low chemical usage"
-                            ],
-                            "features": [
-                                "Packed column",
-                                "Water circulation system",
-                                "Degassing unit"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Washes biogas with water to remove H2S and CO2 due to their solubility, producing cleaner biogas.",
-                            "estimated_cost": [
-                                "Medium capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Carbon media requires regeneration or replacement",
-                                "Not effective for CO2 removal",
-                                "Disposal of spent carbon"
-                            ],
-                            "name": "Activated Carbon Adsorption",
-                            "pros": [
-                                "Highly effective for H2S removal",
-                                "Dry process",
-                                "Relatively simple to operate"
-                            ],
-                            "features": [
-                                "Adsorption vessels",
-                                "Activated carbon media"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Utilizes porous activated carbon to physically adsorb H2S (and some other trace compounds) from the biogas.",
-                            "estimated_cost": [
-                                "Low capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "High capital cost",
-                                "Sensitive to impurities (e.g., H2S must be removed first)",
-                                "Requires high inlet pressure"
-                            ],
-                            "name": "Membrane Separation",
-                            "pros": [
-                                "High efficiency for CO2 removal",
-                                "Produces high-purity biomethane",
-                                "Compact footprint"
-                            ],
-                            "features": [
-                                "Membrane modules",
-                                "Compressors"
-                            ],
-                            "availability": "Medium",
-                            "why_it_works": "Uses selective permeable membranes to separate CO2 from methane based on differences in molecular size and solubility.",
-                            "estimated_cost": [
-                                "High capital, Medium O&M"
-                            ]
-                        }
+                    "name": "Mechanical Shredder & Mixer (Motorized)",
+                    "why_it_works": "Utilizes a motor-driven blade or pump system to efficiently shred and mix feedstock with water, creating a uniform slurry.",
+                    "features": [
+                        "Higher throughput",
+                        "Consistent slurry quality",
+                        "Requires power source (electricity or small engine)",
+                        "Higher initial cost"
                     ],
-                    "subsystem": "Biogas Upgrading"
-                },
-                {
-                    "to": "Treated Solids & Liquids",
-                    "from": "Digestate from Digester",
-                    "options": [
-                        {
-                            "cons": [
-                                "High capital and O&M costs",
-                                "Requires energy and chemical input",
-                                "Liquid fraction still needs treatment"
-                            ],
-                            "name": "Mechanical Dewatering (Screw Press/Centrifuge)",
-                            "pros": [
-                                "Significant volume reduction",
-                                "Creates solid fertilizer product",
-                                "Recovers nutrients in liquid for recirculation"
-                            ],
-                            "features": [
-                                "Screw press or centrifuge",
-                                "Polymer dosing unit"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Separates digestate into a solid cake (rich in nutrients) and a liquid fraction, reducing volume for transport and improving handling.",
-                            "estimated_cost": [
-                                "Medium capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Requires additional land area",
-                                "Labor intensive",
-                                "Long processing time"
-                            ],
-                            "name": "Composting (Solid Digestate)",
-                            "pros": [
-                                "Produces high-quality organic fertilizer",
-                                "Further pathogen reduction",
-                                "Odor reduction"
-                            ],
-                            "features": [
-                                "Aerated windrows or in-vessel systems",
-                                "Turning equipment"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Aerobically stabilizes the solid fraction of digestate, creating a more stable, pathogen-free, and marketable soil amendment.",
-                            "estimated_cost": [
-                                "Low-Medium capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Requires accessible agricultural land",
-                                "Risk of nutrient runoff/leaching",
-                                "Potential for odor and pathogen concerns",
-                                "Regulatory restrictions may apply"
-                            ],
-                            "name": "Direct Land Application (Liquid/Slurry)",
-                            "pros": [
-                                "Lowest capital and O&M costs",
-                                "Direct nutrient recycling",
-                                "Reduces need for synthetic fertilizers"
-                            ],
-                            "features": [
-                                "Pumps",
-                                "Tankers or irrigation systems"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Applies raw or minimally treated digestate directly to agricultural land as a nutrient-rich fertilizer.",
-                            "estimated_cost": [
-                                "Low capital, Low O&M"
-                            ]
-                        }
+                    "pros": [
+                        "Significant time and labor savings",
+                        "Improved digester efficiency due to uniform feedstock",
+                        "Scalable for larger systems"
                     ],
-                    "subsystem": "Digestate Management"
-                },
-                {
-                    "to": "Electricity/Heat/Fuel",
-                    "from": "Cleaned Biogas/Biomethane",
-                    "options": [
-                        {
-                            "cons": [
-                                "High capital cost",
-                                "Requires regular maintenance",
-                                "Emissions control may be needed"
-                            ],
-                            "name": "CHP (Combined Heat and Power) Engine",
-                            "pros": [
-                                "High overall energy efficiency",
-                                "Produces both electricity and heat",
-                                "Reduces reliance on grid electricity"
-                            ],
-                            "features": [
-                                "Internal combustion engine",
-                                "Generator",
-                                "Heat recovery system"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Generates electricity and recovers waste heat, maximizing energy efficiency from biogas.",
-                            "estimated_cost": [
-                                "High capital, Medium O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "No electricity generation",
-                                "Lower overall energy utilization"
-                            ],
-                            "name": "Biogas Boiler",
-                            "pros": [
-                                "Simpler than CHP",
-                                "Reliable heat source for digester",
-                                "Lower capital cost than CHP"
-                            ],
-                            "features": [
-                                "Biogas burner",
-                                "Heat exchanger"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Burns biogas to produce hot water or steam, primarily for heating the digester or other industrial processes.",
-                            "estimated_cost": [
-                                "Medium capital, Low O&M"
-                            ]
-                        },
-                        {
-                            "cons": [
-                                "Limited scalability",
-                                "Requires safety infrastructure for distribution",
-                                "Potential for odor and handling issues"
-                            ],
-                            "name": "Direct Use as Cooking Fuel",
-                            "pros": [
-                                "Low technology barrier",
-                                "Direct local benefit",
-                                "Reduces reliance on traditional fuels (wood, kerosene)"
-                            ],
-                            "features": [
-                                "Piping network",
-                                "Biogas stoves"
-                            ],
-                            "availability": "High",
-                            "why_it_works": "Distributes cleaned biogas directly to local households or institutions for cooking, offering a simple and immediate benefit.",
-                            "estimated_cost": [
-                                "Low capital, Low O&M"
-                            ]
-                        }
+                    "cons": [
+                        "Higher initial capital cost",
+                        "Requires power, which may be intermittent",
+                        "Maintenance of mechanical parts"
                     ],
-                    "subsystem": "Power Generation/Utilization"
-                }
-            ],
-            "problems_overall": [
-                {
-                    "problem": "Variable feedstock composition and availability from sewage waste.",
-                    "suggested_solution": "Implement robust pre-treatment and homogenization systems, consider co-digestion with other organic waste streams if available and suitable."
-                },
-                {
-                    "problem": "High levels of hydrogen sulfide (H2S) in raw biogas, corrosive and toxic.",
-                    "suggested_solution": "Integrate H2S removal technologies (e.g., activated carbon, biological scrubbers) as part of biogas upgrading."
-                },
-                {
-                    "problem": "Management and utilization of digestate (liquid and solid fractions).",
-                    "suggested_solution": "Implement dewatering technologies to separate liquid and solid digestate; explore options for fertilizer production or safe land application."
-                },
-                {
-                    "problem": "Process instability due to pH swings, volatile fatty acid accumulation, or nutrient imbalance.",
-                    "suggested_solution": "Implement continuous monitoring and control systems for key parameters (pH, temperature, VFA/alkalinity ratio), and robust process design."
+                    "estimated_cost": "Moderate (NGN 150,000 - 400,000)",
+                    "availability": "Moderate (some models available locally, specialized units may need import)"
                 }
             ]
         },
-        "projectTitle": "Gas Production from waste",
-        "concept": "Anaerobic digestion of organic waste (sewage) to produce biogas (primarily methane and carbon dioxide) for energy, and digestate for nutrient recovery or soil amendment.",
-        "problemsOverall": [
-            {
-                "problem": "Variable feedstock composition and availability from sewage waste.",
-                "suggested_solution": "Implement robust pre-treatment and homogenization systems, consider co-digestion with other organic waste streams if available and suitable."
-            },
-            {
-                "problem": "High levels of hydrogen sulfide (H2S) in raw biogas, corrosive and toxic.",
-                "suggested_solution": "Integrate H2S removal technologies (e.g., activated carbon, biological scrubbers) as part of biogas upgrading."
-            },
-            {
-                "problem": "Management and utilization of digestate (liquid and solid fractions).",
-                "suggested_solution": "Implement dewatering technologies to separate liquid and solid digestate; explore options for fertilizer production or safe land application."
-            },
-            {
-                "problem": "Process instability due to pH swings, volatile fatty acid accumulation, or nutrient imbalance.",
-                "suggested_solution": "Implement continuous monitoring and control systems for key parameters (pH, temperature, VFA/alkalinity ratio), and robust process design."
-            }
-        ],
-        "skillsRequired": "Process Engineering (anaerobic digestion kinetics, mass/energy balance), Mechanical Engineering (pumps, mixers, tanks, gas handling, engine design), Chemical Engineering (gas purification, material science), Civil Engineering (structural design for tanks, foundations), Environmental Engineering (waste treatment, emissions, digestate management), Microbiology/Biochemistry (understanding microbial processes), Electrical Engineering (power generation, controls, instrumentation), Project Management, Safety Engineering.",
-        "generatedAt": "2026-02-02T12:12:52.987Z",
-        "expiresAt": "2026-03-04T12:12:52.677Z"
-    },
-    "subsystems": [
         {
-            "id": 1,
-            "projectId": 3,
-            "name": "Waste Pre-treatment",
-            "description": null,
-            "order": 0,
-            "createdAt": "2026-02-02T12:12:52.685Z"
+            "subsystem": "Bioreactor (Digester)",
+            "from": "Prepared feedstock slurry",
+            "to": "Biogas, digestate",
+            "options": [
+                {
+                    "name": "Fixed-Dome Digester",
+                    "why_it_works": "An underground, rigid, airtight concrete or brick structure where anaerobic digestion occurs, with an integrated gas storage space above the slurry level.",
+                    "features": [
+                        "Underground construction",
+                        "Integrated gas storage",
+                        "Constant volume, variable pressure",
+                        "Long lifespan"
+                    ],
+                    "pros": [
+                        "Highly durable and robust",
+                        "Low maintenance once built",
+                        "Protects against temperature fluctuations",
+                        "No moving parts"
+                    ],
+                    "cons": [
+                        "High initial civil construction cost",
+                        "Requires skilled masons",
+                        "Gas pressure fluctuations",
+                        "Leaks are difficult to detect and repair"
+                    ],
+                    "estimated_cost": "High (NGN 500,000 - 1,500,000 depending on size and materials)",
+                    "availability": "High (construction materials and skills are widely available in Nigeria)"
+                },
+                {
+                    "name": "Floating-Drum Digester",
+                    "why_it_works": "Consists of a cylindrical tank with a separate, movable steel or plastic drum that floats on the slurry, collecting biogas and indicating gas volume.",
+                    "features": [
+                        "Above-ground or semi-underground",
+                        "Visible gas volume",
+                        "Constant gas pressure",
+                        "Moving parts (drum)"
+                    ],
+                    "pros": [
+                        "Easy to monitor gas production",
+                        "Constant gas pressure for usage",
+                        "Easier to repair than fixed-dome",
+                        "Can be prefabricated"
+                    ],
+                    "cons": [
+                        "Higher capital cost (drum material)",
+                        "Metal drum susceptible to corrosion",
+                        "Requires regular painting/maintenance",
+                        "Less protected from temperature changes"
+                    ],
+                    "estimated_cost": "Moderate (NGN 300,000 - 800,000)",
+                    "availability": "Medium (metal fabrication skills common, specialized drums less so)"
+                },
+                {
+                    "name": "Balloon Digester (Flexible Bag)",
+                    "why_it_works": "A simple, portable plastic or rubber bag that contains the slurry and collects the biogas, expanding as gas is produced.",
+                    "features": [
+                        "Above-ground, portable",
+                        "Flexible material",
+                        "Variable gas pressure",
+                        "Short lifespan"
+                    ],
+                    "pros": [
+                        "Lowest initial cost",
+                        "Very easy and fast to install",
+                        "Requires minimal civil work",
+                        "Suitable for temporary setups"
+                    ],
+                    "cons": [
+                        "Susceptible to physical damage (punctures, UV degradation)",
+                        "Shortest lifespan (3-7 years)",
+                        "Variable gas pressure",
+                        "Less aesthetically pleasing"
+                    ],
+                    "estimated_cost": "Low (NGN 100,000 - 300,000)",
+                    "availability": "High (plastic/PVC materials available, pre-made bags can be sourced)"
+                }
+            ]
         },
         {
-            "id": 2,
-            "projectId": 3,
-            "name": "Anaerobic Digester",
-            "description": null,
-            "order": 1,
-            "createdAt": "2026-02-02T12:12:52.777Z"
+            "subsystem": "Gas Purification",
+            "from": "Raw Biogas (CH4, CO2, H2S, H2O)",
+            "to": "Purified Biogas (reduced H2S, CO2, H2O)",
+            "options": [
+                {
+                    "name": "Water Scrubber",
+                    "why_it_works": "Biogas is bubbled through water, which absorbs some CO2 and H2S due to their solubility, and also removes water vapor.",
+                    "features": [
+                        "Simple design",
+                        "Removes H2S, CO2, and H2O",
+                        "Requires water source",
+                        "Reduces calorific value slightly"
+                    ],
+                    "pros": [
+                        "Low cost and easy to construct",
+                        "Effectively removes water vapor",
+                        "Reduces H2S and some CO2"
+                    ],
+                    "cons": [
+                        "Requires continuous water supply/replacement",
+                        "Does not remove all CO2 or H2S",
+                        "May require a pump if not gravity-fed"
+                    ],
+                    "estimated_cost": "Low (NGN 10,000 - 30,000)",
+                    "availability": "High (basic plumbing materials)"
+                },
+                {
+                    "name": "Iron Filings/Chips Adsorption (for H2S)",
+                    "why_it_works": "Biogas passes through a bed of iron filings (e.g., steel wool, iron sponge) where H2S reacts with iron to form iron sulfides, removing H2S.",
+                    "features": [
+                        "Specific for H2S removal",
+                        "Dry process",
+                        "Requires periodic replacement of media",
+                        "Simple contact chamber"
+                    ],
+                    "pros": [
+                        "Very effective at removing H2S",
+                        "Low operating cost (iron filings are cheap)",
+                        "Prevents corrosion of appliances"
+                    ],
+                    "cons": [
+                        "Only removes H2S, not CO2",
+                        "Media needs regular replacement (becomes saturated)",
+                        "May be less efficient at very high H2S concentrations"
+                    ],
+                    "estimated_cost": "Low (NGN 5,000 - 15,000 for filter housing and media)",
+                    "availability": "High (scrap metal, steel wool widely available)"
+                },
+                {
+                    "name": "Activated Carbon Filter (for H2S & some VOCs)",
+                    "why_it_works": "Activated carbon has a porous structure that adsorbs H2S and other trace impurities and volatile organic compounds (VOCs) from the biogas.",
+                    "features": [
+                        "Broad-spectrum purification",
+                        "Requires regeneration or replacement of carbon",
+                        "Dry process",
+                        "High adsorption capacity"
+                    ],
+                    "pros": [
+                        "Highly effective for H2S and other impurities",
+                        "Improves biogas quality significantly",
+                        "Compact unit"
+                    ],
+                    "cons": [
+                        "Higher initial cost for activated carbon",
+                        "Carbon needs periodic replacement or regeneration",
+                        "Less effective for CO2 removal"
+                    ],
+                    "estimated_cost": "Moderate (NGN 30,000 - 80,000 for unit and initial carbon)",
+                    "availability": "Medium (activated carbon can be sourced from industrial suppliers)"
+                }
+            ]
         },
         {
-            "id": 3,
-            "projectId": 3,
-            "name": "Biogas Collection & Storage",
-            "description": null,
-            "order": 2,
-            "createdAt": "2026-02-02T12:12:52.815Z"
-        },
-        {
-            "id": 4,
-            "projectId": 3,
-            "name": "Biogas Upgrading",
-            "description": null,
-            "order": 3,
-            "createdAt": "2026-02-02T12:12:52.847Z"
-        },
-        {
-            "id": 5,
-            "projectId": 3,
-            "name": "Digestate Management",
-            "description": null,
-            "order": 4,
-            "createdAt": "2026-02-02T12:12:52.880Z"
-        },
-        {
-            "id": 6,
-            "projectId": 3,
-            "name": "Power Generation/Utilization",
-            "description": null,
-            "order": 5,
-            "createdAt": "2026-02-02T12:12:52.906Z"
+            "subsystem": "Gas Distribution & Usage",
+            "from": "Purified Biogas",
+            "to": "Cooking appliance",
+            "options": [
+                {
+                    "name": "Direct Pipeline to Biogas Burner",
+                    "why_it_works": "Biogas is transported directly from the purification unit to a single biogas-compatible stove burner via a low-pressure pipeline.",
+                    "features": [
+                        "Minimal components",
+                        "Short distribution distance",
+                        "Dedicated burner",
+                        "Low pressure"
+                    ],
+                    "pros": [
+                        "Simplest and lowest cost setup",
+                        "Fewer points of potential leakage",
+                        "Easy to install and maintain"
+                    ],
+                    "cons": [
+                        "Limited to a single usage point",
+                        "Pressure may fluctuate based on digester type",
+                        "Not ideal for multiple appliances or distant usage"
+                    ],
+                    "estimated_cost": "Low (NGN 10,000 - 30,000 for piping and burner)",
+                    "availability": "High (PVC/HDPE pipes, biogas burners increasingly available locally)"
+                },
+                {
+                    "name": "Low-Pressure Regulator & Distribution Manifold",
+                    "why_it_works": "A pressure regulator stabilizes the biogas pressure, and a manifold then distributes it to multiple outlets, each potentially with an individual valve.",
+                    "features": [
+                        "Stabilized pressure",
+                        "Multiple usage points",
+                        "Safer operation",
+                        "Requires regulator and manifold"
+                    ],
+                    "pros": [
+                        "Consistent flame and cooking performance",
+                        "Allows connection to multiple stoves/appliances",
+                        "Enhanced safety through pressure control"
+                    ],
+                    "cons": [
+                        "Higher initial cost due to regulator and manifold",
+                        "More complex piping and connections",
+                        "Requires proper sizing of regulator and pipes"
+                    ],
+                    "estimated_cost": "Moderate (NGN 30,000 - 80,000)",
+                    "availability": "Medium (biogas regulators and manifolds becoming more available from specialized suppliers)"
+                }
+            ]
         }
     ],
-    "blueprint": null,
-    "buildGuide": null,
-    "_count": {
-        "subsystems": 6,
-        "decisions": 0
-    },
-    "decisions": [],
-    "user": {
-        "id": "cml54po810000f4uwbqqsrie3",
-        "email": "ayinla@asotia.com",
-        "password": "$2b$10$evgsztI2iYqEZpJeGRApHeBLbn/i3NPYXxhxJiQZsuKZoah09zEDK",
-        "name": "sherifdeen raji",
-        "role": "USER",
-        "createdAt": "2026-02-02T12:11:26.305Z",
-        "updatedAt": "2026-02-02T12:11:26.305Z"
-    }
+    "skills": "Biochemical Engineering (anaerobic digestion kinetics, feedstock optimization), Mechanical Engineering (digester design, piping, gas handling, burner selection), Civil Engineering (digester construction, site preparation, structural integrity), Environmental Engineering (waste management, emissions control, digestate handling), Safety Engineering (gas handling, pressure systems, leak detection)."
 }

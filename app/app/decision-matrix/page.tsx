@@ -35,6 +35,8 @@ async function fetchProject(projectId: string): Promise<{ project: any; decision
     cache: "no-store",
   });
 
+  console.log("Fetching project decision matrix:", response);
+
   if (!response.ok) {
     throw new Error(`Project not found: ${response.status}`);
   }
