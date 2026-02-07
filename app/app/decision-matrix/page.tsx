@@ -6,8 +6,9 @@ import type { DecisionMatrixOutput } from "@/lib/definitions";
 function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOutput {
   return {
     project: project.title,
-    concept: project.decisionMatrix?.concept || project.description || "",
+    concept: project.description || "",
     research: [], // Research is stored separately in ProjectResearch table
+    goals : project.goals ,
     problems_overall: [], // Problems are stored separately
     decision_matrix: project.subsystems.map((subsystem: any) => ({
       subsystem: subsystem.name,
@@ -30,7 +31,7 @@ function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOut
 
 async function fetchProject(projectId: string): Promise<{ project: any; decisionMatrixOutput: DecisionMatrixOutput }> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/projects/${projectId}`, {
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}/decision-matrix/`, {
     cache: "no-store",
   });
 
@@ -45,7 +46,7 @@ async function fetchProject(projectId: string): Promise<{ project: any; decision
 }
 
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string; requestId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string }> }) {
   try {
     const params = await searchParams;
     
