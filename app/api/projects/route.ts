@@ -36,10 +36,7 @@ const aiSubsystemSchema = z.object({
 const aiOutputSchema = z.object({
   project: z.string(),
   concept: z.string(),
-  research: z.array(z.object({
-    title: z.string(),
-    url: z.string()
-  })).optional(),
+  research: z.array(z.string()).optional(),
   goals: z.array(z.string()).optional(),
   problems_overall: z.array(z.object({
     problem: z.string(),
@@ -116,7 +113,7 @@ export async function POST(request: NextRequest) {
     {
       "project":"string",
       "concept":"string",
-      "research":[{"title":"string","url":"string"}],
+      "research":"string[]",
       "goals":["string"],
       "problems_overall":[{"problem":"string","suggested_solution":"string"}],
       "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
@@ -131,7 +128,6 @@ export async function POST(request: NextRequest) {
     - Keep output concise and execution-focused.
     - Prefer textbooks or peer-reviewed sources.
     - Describe the simplest viable system; extras are optional.
-    - Use the googlesearch tool to find relevant links to similar reasearh paper about the project.
     PROJECT:
     Title: ${title}
     Description: ${description || "N/A"}
@@ -147,7 +143,7 @@ export async function POST(request: NextRequest) {
         async () => {
           const genResult = await ai.models.generateContent({
             model: "gemini-2.5-flash",
-            contents: input,config:{tools:[{googleSearch:{}}]}
+            contents: input,
           });
 
           const text = genResult.text;
@@ -228,15 +224,15 @@ export async function POST(request: NextRequest) {
 
 
          
-          for (const researchItem of validation.data.research || []) {
-            await tx.projectResearch.create({
-              data: {
-                projectId,
-                url: researchItem.url,
-                title: researchItem.title
-              }
-            });
-          }
+          // for (const researchItem of validation.data.research || []) {
+          //   await tx.projectResearch.create({
+          //     data: {
+          //       projectId,
+          //       url: researchItem.url,
+          //       title: researchItem.title
+          //     }
+          //   });
+          // }
 
           const optionsData = subsysData.options || [];
           const createdOptions = [];
@@ -297,7 +293,8 @@ export async function POST(request: NextRequest) {
           where: { id: projectId },
           data: {
             stage: ProjectStage.DECISION_MATRIX,
-            goals: validation.data.goals || []
+            goals: validation.data.goals || [],
+            research: validation.data.research || []
           }
         });
 

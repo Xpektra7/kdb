@@ -84,7 +84,7 @@ export async function POST(
     const blueprint = await prisma.blueprintResult.upsert({
       where: { projectId },
       update: {
-        aiOutput: aiOutput,
+        // aiOutput: aiOutput,
         architecture: aiOutput.architecture?.overview || null,
         blockDiagram: aiOutput.architecture?.block_diagram || null,
         estimatedTotalCost: aiOutput.cost || null,
@@ -94,7 +94,7 @@ export async function POST(
       },
       create: {
         projectId,
-        aiOutput: aiOutput,
+        // aiOutput: aiOutput,
         architecture: aiOutput.architecture?.overview || null,
         blockDiagram: aiOutput.architecture?.block_diagram || null,
         estimatedTotalCost: aiOutput.cost || null,
