@@ -157,15 +157,15 @@ export async function POST(
       // });
       
       // Save research sources
-      if (aiOutput.research && aiOutput.research.length > 0) {
-        await tx.projectResearch.createMany({
-          data: aiOutput.research.map((source: { title: string; url: string }) => ({
-            projectId,
-            source: source.title,
-            url: source.url,
-          }))
-        });
-      }
+      // if (aiOutput.research && aiOutput.research.length > 0) {
+      //   await tx.projectResearch.createMany({
+      //     data: aiOutput.research.map((source: { title: string; url: string }) => ({
+      //       projectId,
+      //       source: source.title,
+      //       url: source.url,
+      //     }))
+      //   });
+      // }
 
       // Update project with goals and stage
       await tx.project.update({
