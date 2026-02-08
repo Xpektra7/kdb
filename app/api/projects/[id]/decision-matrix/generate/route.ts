@@ -120,11 +120,11 @@ export async function POST(
               subsystemId: subsystem.id,
               name: optionData.name,
               description: optionData.why_it_works || "",
-              whyItWorks: optionData.why_it_works || "",
+              why_it_works: optionData.why_it_works || "",
               features: optionData.features || [],
               pros: optionData.pros || [],
               cons: optionData.cons || [],
-              estimatedCost: normalizeEstimatedCost(optionData.estimated_cost),
+              estimated_cost: normalizeEstimatedCost(optionData.estimated_cost),
               availability: optionData.availability || "Unknown"
             }
           });
@@ -145,44 +145,12 @@ export async function POST(
       });
       const userId = projectData?.userId || "";
 
-      // Save decision matrix result
-      // await tx.decisionMatrixResult.upsert({
-      //   where: { projectId },
-      //   update: {
-      //     generatedAt: new Date()
-      //   },
-      //   create: {
-      //     projectId
-      //   }
-      // });
-      
-      // Save research sources
-      // if (aiOutput.research && aiOutput.research.length > 0) {
-      //   await tx.projectResearch.createMany({
-      //     data: aiOutput.research.map((source: { title: string; url: string }) => ({
-      //       projectId,
-      //       source: source.title,
-      //       url: source.url,
-      //     }))
-      //   });
-      // }
-
-      // Update project with goals and stage
+  
       await tx.project.update({
         where: { id: projectId },
         data: { 
           stage: "DECISION_MATRIX",
           goals: aiOutput.goals || []
-        }
-      });
-
-      // Track AI generation
-      await tx.aIGeneration.create({
-        data: {
-          projectId,
-          userId,
-          stage: "DECISION_MATRIX",
-          status: "SUCCESS"
         }
       });
 

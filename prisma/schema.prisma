@@ -52,16 +52,6 @@ model Session {
   @@map("sessions")
 }
  
-// model User {
-//   id            String    @id @default(cuid())
-//   name          String?
-//   email         String?   @unique
-//   emailVerified DateTime? @map("email_verified")
-//   image         String?
- 
-//   @@map("users")
-// }
- 
 model VerificationToken {
   identifier String
   token      String
@@ -88,7 +78,7 @@ model User {
   sessions      Session[]
   usages    Usage[]
   projects  Project[]
-  aiGenerations    AIGeneration[]
+  // aiGenerations    AIGeneration[]
 }
 
 model Profile {
@@ -130,7 +120,7 @@ model Project {
   userId      String
   
   title       String
-  description String?
+  concept String?
   goals       String[]    @default([])
   stage       ProjectStage  @default(IDEATION)
   
@@ -142,8 +132,7 @@ model Project {
   problems_overall ProblemOverall[]
   subsystems        Subsystem[]
   decisions         ProjectDecision[]
-  aiGenerations    AIGeneration[]
-  // decisionMatrix    DecisionMatrixResult?
+
   blueprint         BlueprintResult?
   buildGuide        BuildGuide?
 
@@ -164,14 +153,14 @@ model ProblemOverall {
 model Subsystem {
   id          Int     @id @default(autoincrement())
   projectId   Int
+  order       Int     @default(0)
+  createdAt   DateTime @default(now())
   
   name        String
   description String?
-  order       Int     @default(0)
   inputFrom String[]
   outputTo  String[]
   
-  createdAt   DateTime @default(now())
 
   project     Project              @relation(fields: [projectId], references: [id], onDelete: Cascade)
   options     SubsystemOption[]
@@ -188,15 +177,13 @@ model SubsystemOption {
   name            String
   features        String[]
   description     String    @db.Text
-  whyItWorks      String    @db.Text
+  why_it_works      String    @db.Text
   
   pros            String[]
   cons            String[]
-  estimatedCost   String
+  estimated_cost   String
   availability    String
-  
-  imageUrl        String?
-  datasheet       String?
+
   
   createdAt       DateTime  @default(now())
 
@@ -224,44 +211,79 @@ model ProjectDecision {
   @@map("project_decisions")
 }
 
-// model DecisionMatrixResult {
-//   id              Int       @id @default(autoincrement())
-//   projectId       Int       @unique
-  
 
-//   projectTitle    String?
-//   concept         String?
-//   problemsOverall Json?
-//   skillsRequired  String?
-  
-//   generatedAt     DateTime  @default(now())
-//   expiresAt       DateTime  @default(dbgenerated("now() + INTERVAL '30 days'"))
+model Problem {
+  id Int @id @default(autoincrement())
+  blueprintId  Int @unique
+  statment String
+  constraint String[]
+  blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+}
 
-//   project         Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+model Architecture {
+  id Int @id @default(autoincrement())
+  blueprintId  Int @unique
+  overview String
+  block_diagram String[]
+  blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+}
 
-//   @@index([projectId])
-//   @@map("decision_matrix_results")
-// }
-
+model Testing {
+  id Int @id @default(autoincrement())
+  blueprintId  Int @unique
+  methods String[]
+  successCriteria String
+  blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+}
 model BlueprintResult {
   id                  Int       @id @default(autoincrement())
   projectId           Int       @unique
 
-  architecture        String?
-  blockDiagram        Json?
-  estimatedTotalCost  String?
-  requiredSkills      String[]
+
   executionSteps      String[]
+  references          String[]
+  extensions           String[]
+  cost String
+  skills String[]
+  testing Testing?
   
   generatedAt         DateTime  @default(now())
   expiresAt           DateTime  @default(dbgenerated("now() + INTERVAL '90 days'"))
 
   project             Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  architecture        Architecture?
+  problem             Problem?  
   buildGuides         BuildGuide[]
-  blockDiagramNodes  BlockDiagramNode[]
 
   @@index([projectId])
   @@map("blueprint_results")
+}
+
+model Prerequisite {
+  id Int @id @default(autoincrement())
+  buildGuideId Int @unique
+  tools String[]
+  materials String[]
+
+  buildGuide BuildGuide @relation(fields: [buildGuideId], references: [id], onDelete: Cascade)
+}
+
+model Wiring {
+  id Int @id @default(autoincrement())
+  buildGuideId Int @unique
+  description String @db.Text
+  connections String[]
+
+  buildGuide BuildGuide @relation(fields: [buildGuideId], references: [id], onDelete: Cascade)
+}
+
+model Firmware {
+  id Int @id @default(autoincrement())
+  buildGuideId Int @unique
+  language String @db.Text
+  codeStructure String @db.Text
+
+  buildGuide BuildGuide @relation(fields: [buildGuideId], references: [id], onDelete: Cascade)
 }
 
 model BuildGuide {
@@ -269,7 +291,11 @@ model BuildGuide {
   projectId           Int       @unique
   blueprintId         Int
 
-  wiringInstructions  String    @db.Text
+
+  build_overview            String    @db.Text
+  prerequisites       Prerequisite?
+
+  wiring  Wiring?
   codeStructure       String    @db.Text
   calibrationSteps    String[]
   testingProcedures   String[]
@@ -283,36 +309,4 @@ model BuildGuide {
 
   @@index([projectId])
   @@map("build_guides")
-}
-
-
-model AIGeneration {
-  id              Int      @id @default(autoincrement())
-  projectId       Int
-  userId          String
-  stage           String
-  status          String
-  tokensUsed      Int?
-  cost            Int?
-  errorMessage    String?  @db.Text
-  generatedAt     DateTime @default(now())
-  
-  project         Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  
-  @@index([projectId, stage])
-  @@index([userId, generatedAt])
-  @@map("ai_generations")
-}
-
-model BlockDiagramNode {
-  id          Int      @id @default(autoincrement())
-  blueprintId Int
-  name        String
-  order       Int
-  
-  blueprint   BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
-  
-  @@index([blueprintId])
-  @@map("block_diagram_nodes")
 }

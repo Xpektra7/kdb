@@ -26,17 +26,17 @@ const aiOptionSchema = z.object({
   availability: z.string().optional()
 });
 
-const normalizeEstimatedCost = (value?: string | string[] | null): string => {
-  if (!value) {
-    return "N/A";
-  }
-  if (Array.isArray(value)) {
-    const cleaned = value.map((item) => item.trim()).filter(Boolean);
-    return cleaned.length ? cleaned.join(", ") : "N/A";
-  }
-  const cleaned = value.trim();
-  return cleaned || "N/A";
-};
+// const normalizeEstimatedCost = (value?: string | string[] | null): string => {
+//   if (!value) {
+//     return "N/A";
+//   }
+//   if (Array.isArray(value)) {
+//     const cleaned = value.map((item) => item.trim()).filter(Boolean);
+//     return cleaned.length ? cleaned.join(", ") : "N/A";
+//   }
+//   const cleaned = value.trim();
+//   return cleaned || "N/A";
+// };
 
 const aiSubsystemSchema = z.object({
   subsystem: z.string(),
@@ -109,7 +109,7 @@ export async function POST(request: NextRequest) {
     const project = await prisma.project.create({
       data: {
         title: title.trim(),
-        description: description?.trim() || null,
+        concept: description?.trim() || null,
         userId,
         stage: "IDEATION"
       },
