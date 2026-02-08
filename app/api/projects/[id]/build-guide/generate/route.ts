@@ -88,7 +88,7 @@ export async function POST(
     const buildGuide = await prisma.buildGuide.upsert({
       where: { projectId },
       update: {
-        aiOutput: aiOutput,
+        // aiOutput: aiOutput,
         wiringInstructions: aiOutput.wiring?.description || "",
         codeStructure: JSON.stringify(aiOutput.firmware || {}),
         calibrationSteps: aiOutput.calibration || [],
@@ -105,7 +105,7 @@ export async function POST(
       create: {
         projectId,
         blueprintId: project.blueprint.id,
-        aiOutput: aiOutput,
+        // aiOutput: aiOutput,
         wiringInstructions: aiOutput.wiring?.description || "",
         codeStructure: JSON.stringify(aiOutput.firmware || {}),
         calibrationSteps: aiOutput.calibration || [],

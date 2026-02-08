@@ -60,20 +60,20 @@ export async function GET(
             }
           }
         },
-        decisionMatrix: {
-          select: {
-            id: true,
-            projectTitle: true,
-            concept: true,
-            skillsRequired: true,
-            generatedAt: true,
-            expiresAt: true
-          }
-        },
+        // decisionMatrix: {
+        //   select: {
+        //     id: true,
+        //     projectTitle: true,
+        //     concept: true,
+        //     skillsRequired: true,
+        //     generatedAt: true,
+        //     expiresAt: true
+        //   }
+        // },
         blueprint: {
           select: {
             id: true,
-            aiOutput: true,
+            //aiOutput: true,
             architecture: true,
             estimatedTotalCost: true,
             requiredSkills: true,
@@ -83,7 +83,7 @@ export async function GET(
         buildGuide: {
           select: {
             id: true,
-            aiOutput: true,
+            //aiOutput: true,
             generatedAt: true
           }
         }
