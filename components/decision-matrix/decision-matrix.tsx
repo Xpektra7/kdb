@@ -39,14 +39,14 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
   // Send selected options to Blueprint API and navigate
   const handleProceedToBlueprint = async () => {
     // Validate all subsystems have a selection
-    const missing = (output.decision_matrix || [])
+    const missing = (output.subsystems || [])
       .filter((m) => !selectedOptions[m.subsystem])
       .map((m) => m.subsystem);
 
     if (missing.length > 0) {
       setMissingSubs(missing);
       // Scroll to the first missing subsystem for better UX
-      const firstMissingIdx = (output.decision_matrix || []).findIndex((m) => m.subsystem === missing[0]);
+      const firstMissingIdx = (output.subsystems || []).findIndex((m) => m.subsystem === missing[0]);
       const target = contentRefs.current[`component-${firstMissingIdx}`] || contentRefs.current['components'];
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -173,9 +173,9 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
         <h1 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">Component Options</h1>
-        {output.decision_matrix && (
+        {output.subsystems && (
           <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
-            {output.decision_matrix.map((matrix, index) => (
+            {output.subsystems.map((matrix, index) => (
               <div
                 key={index}
                 ref={(el) => { contentRefs.current[`component-${index}`] = el; }}

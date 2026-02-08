@@ -128,17 +128,15 @@ export async function POST(request: NextRequest) {
       "research":"string[]",
       "goals":["string"],
       "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-      "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
-      "skills":"string",
+      "subsystems":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
     }
     RULES:
     - block_diagram represents abstract subsystems only and must be decision-agnostic and stable, and should ONLY include subsystem name.
-    - decision_matrix subsystems must map 1-to-1 to block_diagram blocks.
     - Omit subsystems with no viable options.
     - Engineering systems only.
     - Provide 2–4 options per subsystem with real tradeoffs.
     - Keep output concise and execution-focused.
-    - Prefer textbooks or peer-reviewed sources.
+    - research should be list of things user should research to understand the solution, not general background reading.
     - Describe the simplest viable system; extras are optional.
     PROJECT:
     Title: ${title}

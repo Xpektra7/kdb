@@ -18,7 +18,6 @@ export async function POST(request: Request) {
 Return ONLY minified valid JSON. No prose, markdown, or extra text.
 SCHEMA:
 {
-"project":"string",
 "build_overview":"string",
 "prerequisites":{"tools":["string"],"materials":["string"]},
 "wiring":{"description":"string","connections":["string"]},

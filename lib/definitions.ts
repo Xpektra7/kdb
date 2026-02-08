@@ -182,7 +182,7 @@ export interface DecisionMatrixOutput {
   research: string[]; // Updated to array of objects with title and url
   goals?: string[]; // New field for project goals
   problems_overall: Problem[];
-  decision_matrix: DecisionMatrixItem[];
+  subsystems: DecisionMatrixItem[];
   cost: string;
   skills: string;
 }
