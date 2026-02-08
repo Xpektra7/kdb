@@ -23,13 +23,17 @@ async function fetchBlueprintFromProject(projectId: string): Promise<Blueprint> 
   }
 
   const blueprintResult = await response.json();
+
+  console.log(blueprintResult)
+
+  return blueprintResult as Blueprint;
   
   // The aiOutput field contains the full blueprint data
-  if (!blueprintResult.aiOutput) {
-    throw new Error("Blueprint data is missing");
-  }
+  // if (!blueprintResult.aiOutput) {
+  //   throw new Error("Blueprint data is missing");
+  // }
   
-  return blueprintResult.aiOutput as Blueprint;
+  // return blueprintResult.aiOutput as Blueprint;
 }
 
 async function generateBlueprint(project: string, selectedOptions: Record<string, unknown>): Promise<Blueprint> {
