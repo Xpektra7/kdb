@@ -29,7 +29,7 @@ export async function GET(
     }
 
     const result = await prisma.blueprintResult.findUnique({
-      where: { projectId }
+      where: { projectId }, include:{ }
     });
 
     if (!result) {
