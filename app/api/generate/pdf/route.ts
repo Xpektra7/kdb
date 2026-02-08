@@ -9,3 +9,5 @@
 // Create a JSON schema for your pages
 // Build a /api/generate/pdf route
 // Modify the export button to use it
+
+export const GET = async (request: Request) => {}
