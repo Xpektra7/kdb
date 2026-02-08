@@ -31,8 +31,11 @@ export async function GET(
     //   where: { projectId }
     // });
 
-   const result = await prisma.project.findFirst({
-      where: { id: projectId }})
+    const result = await prisma.project.findFirst({
+      where: { id: projectId }, include: { research: true, subsystems: { include: { options: true }, },problems_overall:true}
+    })
+
+
 
     if (!result) {
       return NextResponse.json(
