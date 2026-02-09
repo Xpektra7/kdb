@@ -122,50 +122,67 @@ BLUEPRINT:${JSON.stringify(blueprint)}
   // The client gets the API key from the environment variable `GEMINI_API_KEY`.
   const ai = new GoogleGenAI({ apiKey });
 
-  const parsed = await retry(async () => {
-    const result = await ai.models.generateContent({
-      model: "gemini-2.5-flash", // Note: gemini-2.5-flash might not be public yet, falling back to 2.0 or use user's string if preferred
-      contents: input,
+  try {
+    const parsed = await retry(async () => {
+      const result = await ai.models.generateContent({
+        model: "gemini-2.5-flash", // Note: gemini-2.5-flash might not be public yet, falling back to 2.0 or use user's string if preferred
+        contents: input,
+      });
+
+      const text = result.text;
+
+      // Clean up markdown code blocks and extract valid JSON
+      let cleanedText = text || "";
+
+      // Remove markdown code blocks (various formats)
+      cleanedText = cleanedText
+        .replace(/```json\s*/gi, "")
+        .replace(/```\s*/g, "")
+        .trim();
+
+      const extractedJson = extractJsonObject(cleanedText);
+      if (!extractedJson) {
+        throw new Error("No JSON object found in response");
+      }
+
+      cleanedText = extractedJson;
+
+      // Validate the JSON before returning
+      try {
+        const parsedResponse = JSON.parse(cleanedText);
+        console.log({ parsed: parsedResponse, cleanedText });
+        console.log("Generated build guide content (valid JSON)");
+        return parsedResponse;
+      } catch (parseError) {
+        console.error("Failed to parse AI response as JSON:", parseError);
+        console.error("Cleaned text length:", cleanedText.length);
+        console.error("Cleaned text (first 500 chars):", cleanedText.substring(0, 500));
+        console.error(
+          "Cleaned text (last 500 chars):",
+          cleanedText.substring(cleanedText.length - 500)
+        );
+        throw parseError;
+      }
+    }, { retries: 3, delayMs: 300 });
+
+    return new Response(JSON.stringify({ output: parsed }), {
+      status: 200,
+      headers: { "Content-Type": "application/json" },
     });
-
-    const text = result.text;
-
-    // Clean up markdown code blocks and extract valid JSON
-    let cleanedText = text || "";
-
-    // Remove markdown code blocks (various formats)
-    cleanedText = cleanedText
-      .replace(/```json\s*/gi, "")
-      .replace(/```\s*/g, "")
-      .trim();
-
-    const extractedJson = extractJsonObject(cleanedText);
-    if (!extractedJson) {
-      throw new Error("No JSON object found in response");
-    }
-
-    cleanedText = extractedJson;
-
-    // Validate the JSON before returning
-    try {
-      const parsedResponse = JSON.parse(cleanedText);
-      console.log({ parsed: parsedResponse, cleanedText });
-      console.log("Generated build guide content (valid JSON)");
-      return parsedResponse;
-    } catch (parseError) {
-      console.error("Failed to parse AI response as JSON:", parseError);
-      console.error("Cleaned text length:", cleanedText.length);
-      console.error("Cleaned text (first 500 chars):", cleanedText.substring(0, 500));
-      console.error(
-        "Cleaned text (last 500 chars):",
-        cleanedText.substring(cleanedText.length - 500)
+  } catch (error: any) {
+    // Handle quota/rate limit errors
+    if (error?.code === 429 || error?.status === "RESOURCE_EXHAUSTED") {
+      console.error("Gemini API quota exceeded:", error.message);
+      return new Response(
+        JSON.stringify({
+          error: "AI service temporarily unavailable due to rate limits. Please try again later.",
+          details: error.message
+        }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
       );
-      throw parseError;
     }
-  }, { retries: 3, delayMs: 300 });
 
-  return new Response(JSON.stringify({ output: parsed }), {
-    status: 200,
-    headers: { "Content-Type": "application/json" },
-  });
+    // Re-throw other errors to be handled by outer catch
+    throw error;
+  }
 }
