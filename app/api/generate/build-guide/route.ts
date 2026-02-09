@@ -125,7 +125,7 @@ BLUEPRINT:${JSON.stringify(blueprint)}
   try {
     const parsed = await retry(async () => {
       const result = await ai.models.generateContent({
-        model: "gemini-3-pro-preview", // Note: gemini-3-pro-preview might not be public yet, falling back to 2.0 or use user's string if preferred
+        model: "gemini-2.5-flash",
         contents: input,
       });
 
