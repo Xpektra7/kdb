@@ -1,14 +1,20 @@
-"use client"
+"use client";
 
-export default function Error() {
+import ErrorComponent from "@/components/error/error-boundary";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-4">
-        Something went wrong!
-      </h1>
-      <p className="text-sm sm:text-base text-muted-foreground">
-        An unexpected error has occurred. Please try again later.
-      </p>
-    </div>
+    <ErrorComponent
+      error={error}
+      reset={reset}
+      title="Decision Matrix Error"
+      message="Unable to load the decision matrix. This might be due to a network issue or the project data may be unavailable."
+    />
   );
 }

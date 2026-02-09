@@ -1,4 +1,7 @@
 import Link from "next/link";
+import { buttonVariants } from "@/components/ui/button";
+import { HugeiconsIcon } from "@hugeicons/react";
+import { ArrowLeft01Icon } from "@hugeicons/core-free-icons";
 
 const examples = [
     {
@@ -27,6 +30,17 @@ const examples = [
 export default function Page() {
     return (
         <main className="max-w-3xl mx-auto py-16 px-6">
+            {/* Back Button */}
+            <div className="mb-8">
+                <Link
+                    href="/"
+                    className={buttonVariants({ variant: "ghost", size: "sm", className: "gap-2 -ml-2" })}
+                >
+                    <HugeiconsIcon icon={ArrowLeft01Icon} className="w-4 h-4" />
+                    Back to Home
+                </Link>
+            </div>
+
             <h1 className="text-3xl font-semibold tracking-tight mb-2">Examples</h1>
             <p className="text-muted-foreground mb-8">
                 Browse sample outputs for each workflow stage. Use these to understand

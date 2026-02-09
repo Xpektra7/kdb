@@ -12,9 +12,10 @@ import Goals from './goals';
 
 interface ExtendedDecisionMatrixProps extends DecisionMatrixProps {
   projectId?: number;
+  dummy?: boolean; // If true, skips API calls and navigates directly to blueprint with example data
 }
 
-export default function DecisionMatrix({ output, contentRefs, projectId }: ExtendedDecisionMatrixProps) {
+export default function DecisionMatrix({ output, contentRefs, projectId, dummy }: ExtendedDecisionMatrixProps) {
 
   const router = useRouter();
   
@@ -213,7 +214,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       <Button 
         variant="default" 
         className="w-full sm:w-auto mt-6" 
-        onClick={handleProceedToBlueprint}
+        onClick={dummy ? () => router.push('/examples/blueprint') : handleProceedToBlueprint}
         disabled={isLoading}
       >
         {isLoading ? (

@@ -1,14 +1,20 @@
-'use client';
+"use client";
 
-export default function ErrorBoundary() {
+import ErrorComponent from "@/components/error/error-boundary";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-4">
-        Something went wrong!
-      </h1>
-      <p className="text-sm sm:text-base text-muted-foreground">
-        An unexpected error has occurred. Please try again later.
-      </p>
-    </div>
+    <ErrorComponent
+      error={error}
+      reset={reset}
+      title="Blueprint Error"
+      message="Unable to load the blueprint. Please ensure you have completed the decision matrix first."
+    />
   );
 }

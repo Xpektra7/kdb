@@ -1,0 +1,543 @@
+import type { DecisionMatrixOutput } from "@/lib/definitions";
+
+export const decisionMatrixDummyData: DecisionMatrixOutput = {
+  id: 11,
+  title: "Low-cost solar powered flood sensor",
+  project: "Low-cost solar powered flood sensor",
+  concept:
+    "Deploy a network of solar-powered flood sensors in Nigeria to detect flood events, provide short-term forecasts, log data, send alerts, and activate local sirens, focusing on cost-effectiveness and reliability for remote areas.",
+  goals: [
+    "Accurate and reliable flood event detection",
+    "Provide short-term flood forecasting (e.g., 6-12 hours)",
+    "Log sensor data securely to a cloud platform",
+    "Generate real-time alerts via SMS/email upon flood detection",
+    "Activate local sirens in danger zones",
+    "Achieve low capital and operational costs for widespread deployment",
+    "Ensure autonomous operation using solar power",
+    "Design for robustness and low maintenance in harsh environments",
+  ],
+  research: [
+    "LoRaWAN network planning for rural deployments",
+    "Solar power sizing for low-power IoT devices",
+    "Hydrodynamic flood modeling basics for localized forecasting",
+    "Water level sensor calibration and deployment best practices",
+    "Low-cost siren activation mechanisms and safety protocols",
+  ],
+  problems_overall: [],
+  subsystems: [
+    {
+      id: 26,
+      subsystem: "Water Level Sensing Module",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 74,
+          name: "Ultrasonic Sensor (e.g., JSN-SR04T)",
+          features: [
+            "Non-contact measurement",
+            "Relatively inexpensive",
+            "Good for dirty water",
+          ],
+          why_it_works:
+            "Measures time-of-flight of sound waves reflected from the water surface, providing non-contact distance to water.",
+          pros: [
+            "Avoids sensor fouling and corrosion from direct water contact",
+            "Easy to install above water",
+          ],
+          cons: [
+            "Affected by temperature changes, humidity, and wind",
+            "Narrow beam can be deflected by debris or waves",
+            "Requires clear line of sight to water surface",
+          ],
+          estimated_cost: "Very Low",
+          availability: "High",
+        },
+        {
+          id: 75,
+          name: "Submersible Pressure Transducer",
+          features: [
+            "Direct water depth measurement",
+            "Robust industrial design",
+            "High accuracy",
+          ],
+          why_it_works:
+            "Measures hydrostatic pressure exerted by the water column above it, directly inferring water depth.",
+          pros: [
+            "Highly accurate and reliable in various water conditions",
+            "Unaffected by surface conditions (wind, foam)",
+            "Resistant to fouling if properly designed/maintained",
+          ],
+          cons: [
+            "Requires direct water contact (fouling risk)",
+            "More expensive than ultrasonic sensors",
+            "Needs careful calibration and vent tube for atmospheric pressure compensation",
+          ],
+          estimated_cost: "Medium",
+          availability: "Medium",
+        },
+        {
+          id: 76,
+          name: "Float Switch Array",
+          features: [
+            "Discrete level detection",
+            "Extremely low power consumption",
+            "Simple digital output",
+          ],
+          why_it_works:
+            "Utilizes multiple sealed float switches positioned at discrete levels to indicate when water reaches specific thresholds.",
+          pros: [
+            "Very robust to water quality and debris",
+            "Extremely low power, ideal for battery-only systems",
+            "Simple interface and highly reliable for threshold detection",
+          ],
+          cons: [
+            "Only provides discrete water levels, not continuous",
+            "Mechanical parts can potentially jam or wear out",
+            "Bulkier installation for multiple levels",
+          ],
+          estimated_cost: "Low",
+          availability: "High",
+        },
+      ],
+    },
+    {
+      id: 27,
+      subsystem: "Meteorological Data Module",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 77,
+          name: "Integrated Weather Sensor (e.g., BME280/BMP280 + Tipping Bucket Rain Gauge)",
+          features: [
+            "Temperature, humidity, pressure, and rainfall measurement",
+            "Compact electronic sensor",
+            "Accurate rainfall data",
+          ],
+          why_it_works:
+            "Combines a digital barometer, thermometer, and hygrometer (BME280) with a separate tipping bucket mechanism to measure rainfall accumulation.",
+          pros: [
+            "Cost-effective for multiple parameters",
+            "Rainfall data crucial for short-term flood forecasting",
+            "Easy digital interface for BME280/BMP280",
+          ],
+          cons: [
+            "Rain gauge is a separate mechanical unit, requiring careful placement",
+            "Accuracy of temperature/humidity can be affected by solar radiation without shielding",
+          ],
+          estimated_cost: "Low",
+          availability: "High",
+        },
+        {
+          id: 78,
+          name: "Optical Rain Sensor",
+          features: [
+            "Solid-state rain detection",
+            "No moving parts",
+            "Quick response time",
+          ],
+          why_it_works:
+            "Detects raindrops by sensing changes in infrared light transmission or reflection caused by water on a sensing surface.",
+          pros: [
+            "No mechanical wear, durable",
+            "Can distinguish between rain and other precipitation",
+            "Compact and easy to integrate",
+          ],
+          cons: [
+            "May require heating element to prevent frost/dew accumulation",
+            "Accuracy can be affected by dust or debris on the sensing surface",
+            "Higher cost than a simple tipping bucket mechanism",
+          ],
+          estimated_cost: "Medium",
+          availability: "Medium",
+        },
+      ],
+    },
+    {
+      id: 28,
+      subsystem: "Main Control Unit",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 79,
+          name: "ESP32 Microcontroller",
+          features: [
+            "Integrated Wi-Fi and Bluetooth",
+            "Good processing power",
+            "Rich peripheral set",
+          ],
+          why_it_works:
+            "Dual-core processor with integrated Wi-Fi and Bluetooth, capable of processing sensor data and managing communication protocols efficiently.",
+          pros: [
+            "Excellent processing capabilities for local analytics and complex logic",
+            "Built-in wireless for local debugging/setup",
+            "Large community support and extensive libraries",
+          ],
+          cons: [
+            "Higher power consumption than dedicated low-power MCUs if Wi-Fi/BT are used frequently",
+            "Might be overkill for very simple applications",
+          ],
+          estimated_cost: "Very Low",
+          availability: "High",
+        },
+        {
+          id: 80,
+          name: "STM32L Series Microcontroller",
+          features: [
+            "Ultra-low power consumption",
+            "ARM Cortex-M architecture",
+            "Rich peripheral set",
+          ],
+          why_it_works:
+            "Designed specifically for ultra-low-power applications, offering excellent energy efficiency and robust performance for battery-operated devices.",
+          pros: [
+            "Best-in-class power efficiency for extended battery life",
+            "Industrial-grade reliability and robustness",
+            "Flexible and powerful for embedded systems",
+          ],
+          cons: [
+            "Higher cost than ESP32/Arduino equivalents",
+            "Steeper learning curve for embedded development",
+            "Less widely supported by hobbyist communities than Arduino/ESP",
+          ],
+          estimated_cost: "Medium",
+          availability: "High",
+        },
+        {
+          id: 81,
+          name: "Arduino Pro Mini (or similar low-power ATMega-based board)",
+          features: [
+            "Simple to program",
+            "Low cost",
+            "Compact size",
+          ],
+          why_it_works:
+            "Simple 8-bit microcontroller known for its ease of use, low cost, and extensive community support, with potential for low-power optimization.",
+          pros: [
+            "Extremely easy to program and prototype with",
+            "Massive community and library ecosystem",
+            "Very low cost hardware",
+          ],
+          cons: [
+            "Limited processing power for complex tasks like forecasting models",
+            "Less power efficient than dedicated low-power MCUs without significant optimization",
+            "Limited built-in connectivity options",
+          ],
+          estimated_cost: "Low",
+          availability: "High",
+        },
+      ],
+    },
+    {
+      id: 29,
+      subsystem: "Power Management System",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 82,
+          name: "Integrated Solar Charge Controller (e.g., TP4056-based with DC-DC boost/buck)",
+          features: [
+            "Battery charging",
+            "Voltage regulation",
+            "Compact size",
+          ],
+          why_it_works:
+            "Provides basic lithium-ion battery charging from a solar panel and a regulated output voltage for the sensor electronics.",
+          pros: [
+            "Very low cost and readily available",
+            "Simple to integrate for small power systems",
+            "Effective for basic battery protection",
+          ],
+          cons: [
+            "Basic charge algorithm, not true MPPT",
+            "Limited efficiency compared to dedicated controllers",
+            "May not handle larger solar panels or batteries optimally",
+          ],
+          estimated_cost: "Very Low",
+          availability: "High",
+        },
+        {
+          id: 83,
+          name: "MPPT Solar Charge Controller (IoT specific)",
+          features: [
+            "Maximum Power Point Tracking (MPPT)",
+            "Advanced battery protection",
+            "Efficient charging",
+          ],
+          why_it_works:
+            "Maximizes power extraction from the solar panel by dynamically adjusting impedance, ensuring efficient battery charging and extending battery lifespan.",
+          pros: [
+            "Significantly higher energy yield from solar panel",
+            "Extends battery life through optimized charging/discharging",
+            "Robust protection against overcharge, deep discharge",
+          ],
+          cons: [
+            "Higher cost than basic charge controllers",
+            "Larger physical footprint",
+            "More complex integration due to additional features",
+          ],
+          estimated_cost: "Medium",
+          availability: "Medium",
+        },
+        {
+          id: 84,
+          name: "Commercial Solar Power Bank (modified)",
+          features: [
+            "All-in-one unit",
+            "Often includes rugged casing",
+            "Built-in battery",
+          ],
+          why_it_works:
+            "A self-contained unit typically includes a small solar panel, battery, and basic charge controller, which can be modified to power the sensor system.",
+          pros: [
+            "Very simple to integrate, often plug-and-play for power supply",
+            "Rugged design often suitable for outdoor use",
+            "Reduces component sourcing and assembly complexity",
+          ],
+          cons: [
+            "Limited control over charging parameters and battery health",
+            "Efficiency might be suboptimal for continuous IoT loads",
+            "Battery capacity may not be easily customizable",
+          ],
+          estimated_cost: "Low",
+          availability: "High",
+        },
+      ],
+    },
+    {
+      id: 30,
+      subsystem: "Communication Module",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 85,
+          name: "LoRaWAN Transceiver (e.g., SX127x-based module)",
+          features: [
+            "Long range (kilometers)",
+            "Ultra-low power consumption",
+            "Secure communication",
+          ],
+          why_it_works:
+            "Utilizes Long Range Wide Area Network (LoRaWAN) protocol for low-power, long-distance wireless data transmission to a gateway.",
+          pros: [
+            "Ideal for remote areas with no cellular infrastructure (requires gateway)",
+            "Extends battery life significantly due to low power usage",
+            "Scalable for network deployment with multiple sensors",
+          ],
+          cons: [
+            "Requires LoRaWAN gateway infrastructure (can be privately deployed)",
+            "Lower data rates compared to cellular technologies",
+            "Potential for network congestion in dense deployments",
+          ],
+          estimated_cost: "Low (module), Medium (gateway)",
+          availability: "High",
+        },
+        {
+          id: 86,
+          name: "NB-IoT/LTE-M Module (e.g., SIM7000G/BG96)",
+          features: [
+            "Cellular network coverage",
+            "Low power (compared to standard cellular)",
+            "Robust connection",
+          ],
+          why_it_works:
+            "Leverages existing cellular infrastructure for Low-Power Wide-Area (LPWA) communication optimized for IoT devices.",
+          pros: [
+            "Does not require dedicated gateway infrastructure (uses existing cell towers)",
+            "Higher data rates and lower latency than LoRaWAN",
+            "Good for areas with existing cellular LPWAN coverage",
+          ],
+          cons: [
+            "Requires cellular subscription and SIM card (recurring cost)",
+            "Coverage can be spotty in very remote areas of Nigeria",
+            "Higher power consumption than LoRaWAN, impacting battery life",
+          ],
+          estimated_cost: "Medium (module), Recurring (subscription)",
+          availability: "High (modules), Variable (network coverage)",
+        },
+        {
+          id: 87,
+          name: "Satellite IoT Module (e.g., RockBLOCK / Iridium SBD)",
+          features: [
+            "Global coverage",
+            "Truly remote connectivity",
+            "Robust against terrestrial disasters",
+          ],
+          why_it_works:
+            "Communicates directly with satellites, providing global coverage even in the most remote locations where terrestrial networks are unavailable.",
+          pros: [
+            "Provides connectivity in absolutely any remote location",
+            "Highly reliable for mission-critical data in isolated areas",
+            "Independent of local terrestrial infrastructure",
+          ],
+          cons: [
+            "Highest module cost and significant recurring subscription fees",
+            "Higher power consumption than other LPWAN options",
+            "Lower data rates and higher latency than terrestrial options",
+          ],
+          estimated_cost: "High (module), High (subscription)",
+          availability: "High (modules), Global (network)",
+        },
+      ],
+    },
+    {
+      id: 31,
+      subsystem: "Siren Activation Module",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 88,
+          name: "Electromechanical Relay Module",
+          features: [
+            "Galvanic isolation",
+            "Simple ON/OFF switching",
+            "Handles high currents",
+          ],
+          why_it_works:
+            "Uses an electromagnet to physically switch a contact, isolating the microcontroller's low-voltage circuit from the siren's high-power circuit.",
+          pros: [
+            "Very common, inexpensive, and easy to use",
+            "Reliable for simple switching applications",
+            "Provides full electrical isolation",
+          ],
+          cons: [
+            "Mechanical wear and tear, limited lifespan for frequent switching",
+            "Can produce audible clicking noise",
+            "Slower switching speed compared to solid-state options",
+          ],
+          estimated_cost: "Very Low",
+          availability: "High",
+        },
+        {
+          id: 89,
+          name: "Solid State Relay (SSR) Module",
+          features: [
+            "No moving parts",
+            "Fast switching",
+            "Silence operation",
+          ],
+          why_it_works:
+            "Uses semiconductor components to switch power to the siren, offering electronic switching without moving parts.",
+          pros: [
+            "Extremely long lifespan due to no mechanical wear",
+            "Silent operation, ideal for sensitive environments",
+            "Faster switching speed than electromechanical relays",
+          ],
+          cons: [
+            "Can have higher 'ON' resistance, leading to heat generation",
+            "Can exhibit leakage current when 'OFF'",
+            "More sensitive to voltage spikes and overcurrents without proper protection",
+          ],
+          estimated_cost: "Low",
+          availability: "High",
+        },
+        {
+          id: 90,
+          name: "MOSFET-based High-Side Switch Circuit",
+          features: [
+            "Solid-state switching",
+            "Low power loss (when fully 'ON')",
+            "Controllable current",
+          ],
+          why_it_works:
+            "Utilizes a power MOSFET to switch the positive supply to the siren, controlled by a low-voltage signal from the microcontroller.",
+          pros: [
+            "Highly efficient when designed correctly (low voltage drop)",
+            "No moving parts, long lifespan",
+            "Compact and customizable for specific current/voltage requirements",
+          ],
+          cons: [
+            "Requires careful component selection (MOSFET, driver, flyback diode)",
+            "More complex circuit design than a simple relay module",
+            "Incorrect implementation can lead to MOSFET failure",
+          ],
+          estimated_cost: "Low",
+          availability: "High",
+        },
+      ],
+    },
+    {
+      id: 32,
+      subsystem: "Data Logging & Cloud Platform",
+      inputFrom: [],
+      outputTo: [],
+      options: [
+        {
+          id: 91,
+          name: "Thingspeak / Ubidots",
+          features: [
+            "Real-time dashboards",
+            "Data logging and storage",
+            "Basic alerting via webhooks/email",
+          ],
+          why_it_works:
+            "Cloud-based IoT platforms that provide pre-built dashboards, data storage, and basic alerting capabilities, simplifying data visualization and access.",
+          pros: [
+            "Very easy and quick to set up for prototyping",
+            "Free tiers available for small deployments",
+            "No server management required",
+          ],
+          cons: [
+            "Limited customization options for advanced analytics",
+            "Scalability restrictions and higher costs for large-scale production",
+            "Vendor lock-in and less control over raw data",
+          ],
+          estimated_cost: "Low (free tier), Medium (paid plans)",
+          availability: "High",
+        },
+        {
+          id: 92,
+          name: "Custom Cloud Solution (AWS IoT / Azure IoT / Google Cloud IoT)",
+          features: [
+            "Highly scalable infrastructure",
+            "Advanced analytics and machine learning integration",
+            "Custom dashboards and API access",
+          ],
+          why_it_works:
+            "Leverages robust and scalable cloud infrastructure to build a fully customizable data ingestion, processing, storage, and visualization pipeline.",
+          pros: [
+            "Ultimate flexibility and control over all data aspects",
+            "Seamless integration with a wide range of cloud services",
+            "Robust security features and enterprise-grade reliability",
+          ],
+          cons: [
+            "Requires significant cloud development expertise",
+            "Can incur higher operational costs for extensive usage",
+            "Steeper learning curve for deployment and management",
+          ],
+          estimated_cost: "Medium to High (variable based on usage)",
+          availability: "High",
+        },
+        {
+          id: 93,
+          name: "Self-Hosted Solution (e.g., Grafana + InfluxDB on VPS)",
+          features: [
+            "Customizable dashboards",
+            "Time-series data storage",
+            "Open-source flexibility",
+          ],
+          why_it_works:
+            "Deploys open-source data visualization (Grafana) and time-series database (InfluxDB) software on a virtual private server for full control over the data stack.",
+          pros: [
+            "Full control over data, security, and infrastructure",
+            "Potentially lower long-term recurring costs compared to proprietary clouds",
+            "Leverages widely supported open-source tools",
+          ],
+          cons: [
+            "Requires server administration and maintenance expertise",
+            "Scalability can be more complex to manage than public cloud services",
+            "Initial setup can be time-consuming",
+          ],
+          estimated_cost: "Low (VPS cost)",
+          availability: "High (software), Medium (hosting)",
+        },
+      ],
+    },
+  ],
+  cost: "Low to Medium",
+};

@@ -1,14 +1,20 @@
 "use client";
 
-export default function ErrorComponent({error} : {error: string}) {
+import ErrorComponent from "@/components/error/error-boundary";
+
+export default function Error({
+  error,
+  reset,
+}: {
+  error: Error & { digest?: string };
+  reset: () => void;
+}) {
   return (
-    <div className="flex flex-col items-center justify-center h-full p-6 text-center">
-      <h1 className="text-2xl sm:text-3xl font-semibold mb-4">
-        Something went wrong!
-      </h1>
-      <p className="text-sm sm:text-base text-muted-foreground">
-        {error}
-      </p>
-    </div>
+    <ErrorComponent
+      error={error}
+      reset={reset}
+      title="Application Error"
+      message="We're sorry, but something went wrong while loading this page. Our team has been notified."
+    />
   );
 }

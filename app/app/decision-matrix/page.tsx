@@ -50,11 +50,11 @@ async function fetchProject(projectId: string): Promise<{ project: any; decision
 }
 
 
-export default async function Page({ searchParams }: { searchParams?: { projectId?: string } }) {
+export default async function Page({ searchParams }: { searchParams?: Promise<{ projectId?: string }> }) {
   try {
-    const params = searchParams ?? {};
+    const params = await searchParams ?? {};
     
-    // New flow: Use projectId from persistent storage
+    // Use projectId from persistent storage
     if (params.projectId) {
       const { project, decisionMatrixOutput } = await fetchProject(params.projectId);
       return <DecisionMatrixClient output={decisionMatrixOutput} projectId={parseInt(params.projectId)} />;

@@ -116,7 +116,29 @@ export default function AuthPage() {
 
 
     return (
-        <div className="min-h-screen bg-black flex items-center justify-center p-4 sm:p-6 lg:p-8">
+        <div className="min-h-screen bg-black flex flex-col items-center justify-center p-4 sm:p-6 lg:p-8">
+            {/* Back to Home Button */}
+            <div className="absolute top-4 left-4 sm:top-6 sm:left-6">
+                <Link
+                    href="/"
+                    className="inline-flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground hover:text-foreground transition-colors rounded-lg hover:bg-muted/30"
+                >
+                    <svg
+                        className="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth={2}
+                            d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                        />
+                    </svg>
+                    Back to Home
+                </Link>
+            </div>
 
             {/* Auth Card */}
             <div className="relative  w-full max-w-md p-6 sm:p-8 transform transition-all duration-500">

@@ -154,7 +154,7 @@ export default function DecisionMatrixClient({ output, projectId, dummy }: Decis
                 Analyze and compare different options based on multiple criteria to make informed decisions.
               </p>
             </div>
-            <DecisionMatrix output={output} contentRefs={contentRefs} projectId={projectId} />
+            <DecisionMatrix output={output} contentRefs={contentRefs} projectId={projectId} dummy={dummy} />
           </div>
         </div>
       </main>

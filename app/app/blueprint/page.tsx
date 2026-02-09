@@ -1,5 +1,4 @@
 import { dummydata } from "@/schema/air-quality-result";
-import { getDataModeServer } from "@/lib/data-mode.server";
 import type { Blueprint } from "@/lib/definitions";
 import BlueprintClient from "./BlueprintClient";
 
@@ -24,42 +23,13 @@ async function fetchBlueprintFromProject(projectId: string): Promise<Blueprint> 
   }
 
   return response.json();
-  
-  // The aiOutput field contains the full blueprint data
-  // if (!blueprintResult.aiOutput) {
-  //   throw new Error("Blueprint data is missing");
-  // }
-  
-  // return blueprintResult.aiOutput as Blueprint;
 }
 
-async function generateBlueprint(project: string, selectedOptions: Record<string, unknown>): Promise<Blueprint> {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/generate/blueprint`, {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ project, selectedOptions }),
-    cache: "no-store",
-  });
-
-  if (!response.ok) {
-    throw new Error(`Blueprint generation failed: ${response.status}`);
-  }
-
-  const { output } = await response.json();
-  return typeof output === "string" ? JSON.parse(output) : output;
-}
-
-export default async function Page({ searchParams }: { searchParams?: { projectId?: string } }) {
+export default async function Page({ searchParams }: { searchParams?: Promise<{ projectId?: string }> }) {
   try {
-    const params = searchParams ?? {};
-    const useDummyData = await getDataModeServer();
+    const params = await searchParams ?? {};
 
-    if (useDummyData) {
-      return <BlueprintClient blueprintData={dummydata as unknown as Blueprint} dummy />;
-    }
-
-    // New flow: Use projectId from persistent storage
+    // Use projectId from persistent storage
     if (params.projectId) {
       const blueprintData = await fetchBlueprintFromProject(params.projectId);
       return <BlueprintClient blueprintData={blueprintData} projectId={parseInt(params.projectId)} />;

@@ -62,7 +62,7 @@ export default function Blueprint({
   const handleProceedToBuildGuide = async () => {
     // In dummy mode, just navigate directly to the build guide page
     if (dummy) {
-      router.push('/app/build-guide');
+      router.push('/examples/build-guide');
       return;
     }
     

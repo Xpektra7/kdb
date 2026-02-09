@@ -1,6 +1,4 @@
 import type { BuildGuide } from "@/lib/definitions";
-import { getDataModeServer } from "@/lib/data-mode.server";
-import { buildGuideDummyData } from "@/schema/build-guide-dummy";
 import BuildGuideClient from "./BuildGuideClient";
 
 export const dynamic = "force-dynamic";
@@ -22,17 +20,12 @@ async function fetchBuildGuideFromProject(projectId: string): Promise<BuildGuide
   return response.json();
 }
 
-export default async function Page({ searchParams }: { searchParams?: { projectId?: string } }) {
+export default async function Page({ searchParams }: { searchParams?: Promise<{ projectId?: string }> }) {
   
   try {
-    const params = searchParams ?? {};
-    const useDummyData = await getDataModeServer();
+    const params = await searchParams ?? {};
 
-    if (useDummyData) {
-      return <BuildGuideClient buildGuideData={buildGuideDummyData} dummy />;
-    }
-
-    // New flow: Use projectId from persistent storage
+    // Use projectId from persistent storage
     if (params.projectId) {
       const buildGuideData = await fetchBuildGuideFromProject(params.projectId);
       return <BuildGuideClient buildGuideData={buildGuideData} projectId={parseInt(params.projectId)} />;
