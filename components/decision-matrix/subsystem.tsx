@@ -41,8 +41,8 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption, s
                                 <div className="text-xs sm:text-sm text-muted-foreground">
                                     <p className="line-clamp-none leading-relaxed">{option.why_it_works}</p>
                                     <div className="flex flex-wrap items-center gap-2 sm:gap-3 mt-3">
-                                        <Badge className="text-xs sm:text-sm" variant="secondary">{option.estimated_cost}</Badge>
-                                        <Badge className="text-xs sm:text-sm" variant="secondary">{option.availability}</Badge>
+                                        <Badge className="text-xs sm:text-sm" variant="secondary" title="Estimated Cost">{option.estimated_cost}</Badge>
+                                        <Badge className="text-xs sm:text-sm" variant="secondary" title="Availability">{option.availability}</Badge>
                                     </div>
                                 </div>
                                 {option.features && option.features.length > 0 && (
