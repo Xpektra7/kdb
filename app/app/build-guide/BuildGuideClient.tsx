@@ -79,7 +79,7 @@ export default function BuildGuideClient({ buildGuideData, projectId, dummy }: B
   }, []);
 
   const pdfData: PDFExportData = {
-    title: "Blueprint Report",
+    title: "Build Guide Report",
     projectName: buildGuideData.project,
     buildGuide: buildGuideData,
   };

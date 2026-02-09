@@ -1,215 +1,662 @@
 {
-  "output": {
-    "project": "IoT-based Outdoor Air Quality Monitoring System for Smart Cities",
-    "concept": "Deploy low-power edge nodes with PM2.5 and VOC sensing, solar powered where feasible, communicating via cellular/WiFi/LoRa to a cloud dashboard for real-time air quality analytics across Nigerian urban areas.",
-    "research": [
-      "World Health Organization. WHO Global Air Quality Guidelines.",
-      "U.S. Environmental Protection Agency. The Air Sensor Toolbox.",
-      "Castell N, et al. Can commercial low-cost sensors deliver reliable data? Environment International, 2017.",
-      "Snyder JC, et al. The Air Sensor Toolbox: A practical approach to low-cost sensors. J Air Waste Manag Assoc, 2016."
-    ],
-    "problems_overall": [
-      {
-        "problem": "Harsh outdoor environment causing sensor drift and enclosure ingress.",
-        "suggested_solution": "Use IP65+ enclosure, desiccants, and environmental shielding; apply routine calibration checks and weatherproof cabling."
-      },
-      {
-        "problem": "Power reliability for remote/urban deployments with outages.",
-        "suggested_solution": "Adopt solar+primary battery with low-power duty cycling; include a small mains backup option where grid power is available."
-      },
-      {
-        "problem": "Connectivity variability impacting data reliability.",
-        "suggested_solution": "Design with multi-network options (cellular, LoRaWAN, WiFi) and onboard buffering for offline periods."
-      },
-      {
-        "problem": "Calibration and data quality across diverse sensors.",
-        "suggested_solution": "Implement periodic co-location with a reference monitor and in-field drift correction using cross-sensor data fusion."
-      }
-    ],
-
-    "decision_matrix": [
-      {
-        "subsystem": "Sensing",
-        "from": "Power",
-        "to": "Control",
-
-        "options": [
-          {
-            "name": "Plantower PMS5003 PM2.5 sensor",
-            "why_it_works": "Low-cost, widely used for outdoor PM monitoring.",
-            "features": [
-              "PM2.5/PM10 measurements",
-              "UART interface",
-              "I2C compatibility via bridge"
-            ],
-            "pros": ["Very cheap", "Easy integration", "Good for scaling"],
-            "cons": ["No gas sensing", "Humidity sensitivity without drying"],
-            "estimated_cost": "NGN 6,000–9,000",
-            "availability": "Widely available from local distributors; 1–2 weeks supply"
-          },
-          {
-            "name": "Sensirion SPS30 PM sensor",
-            "why_it_works": "Higher accuracy and stability than basic PM sensors.",
-            "features": ["PM1.0/2.5/10", "I2C/SPI", "Low drift"],
-            "pros": ["Better data quality", "Longer calibration interval"],
-            "cons": ["Higher cost", "Requires careful handling/shielding"],
-            "estimated_cost": "NGN 40,000–60,000",
-            "availability": "Imported; 2–4 weeks with local distributors"
-          },
-          {
-            "name": "BME680 (gas + temp/humidity)",
-            "why_it_works": "Provides VOC/air quality proxy with environmental context.",
-            "features": ["TVOC/CO2 estimate", "Temp/Humidity/Pressure", "I2C"],
-            "pros": ["Compact, low power", "Helps contextualize data"],
-            "cons": ["No PM measurement; must be paired with PM sensor"],
-            "estimated_cost": "NGN 4,000–9,000",
-            "availability": "Widely available from electronics suppliers"
-          },
-          {
-            "name": "CCS811 gas sensor",
-            "why_it_works": "Low-cost VOC/eCO2 estimation for indoor/outdoor use.",
-            "features": ["TVOC/eCO2 estimation", "I2C"],
-            "pros": ["Low power", "Cheaper than multi-sensor packs"],
-            "cons": ["Limited accuracy; requires calibration/offsets"],
-            "estimated_cost": "NGN 3,000–5,000",
-            "availability": "Common in Nigeria via distributors"
+  "id": 11,
+  "userId": "cmlahoh0q0000gkl6eajoyhvi",
+  "title": "Low-cost solar powered flood sensor",
+  "concept": "Deploy a network of solar-powered flood sensors in Nigeria to detect flood events, provide short-term forecasts, log data, send alerts, and activate local sirens, focusing on cost-effectiveness and reliability for remote areas.",
+  "goals": [
+    "Accurate and reliable flood event detection",
+    "Provide short-term flood forecasting (e.g., 6-12 hours)",
+    "Log sensor data securely to a cloud platform",
+    "Generate real-time alerts via SMS/email upon flood detection",
+    "Activate local sirens in danger zones",
+    "Achieve low capital and operational costs for widespread deployment",
+    "Ensure autonomous operation using solar power",
+    "Design for robustness and low maintenance in harsh environments"
+  ],
+  "stage": "BLUEPRINT",
+  "createdAt": "2026-02-09T11:11:14.747Z",
+  "updatedAt": "2026-02-09T11:17:07.026Z",
+  "research": [
+    "LoRaWAN network planning for rural deployments",
+    "Solar power sizing for low-power IoT devices",
+    "Hydrodynamic flood modeling basics for localized forecasting",
+    "Water level sensor calibration and deployment best practices",
+    "Low-cost siren activation mechanisms and safety protocols"
+  ],
+  "subsystems": [
+    {
+      "id": 26,
+      "projectId": 11,
+      "order": 0,
+      "createdAt": "2026-02-09T11:12:02.674Z",
+      "name": "Water Level Sensing Module",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 74,
+          "name": "Ultrasonic Sensor (e.g., JSN-SR04T)",
+          "features": [
+            "Non-contact measurement",
+            "Relatively inexpensive",
+            "Good for dirty water"
+          ],
+          "why_it_works": "Measures time-of-flight of sound waves reflected from the water surface, providing non-contact distance to water.",
+          "pros": [
+            "Avoids sensor fouling and corrosion from direct water contact",
+            "Easy to install above water"
+          ],
+          "cons": [
+            "Affected by temperature changes, humidity, and wind",
+            "Narrow beam can be deflected by debris or waves",
+            "Requires clear line of sight to water surface"
+          ],
+          "estimated_cost": "Very Low",
+          "availability": "High"
+        },
+        {
+          "id": 75,
+          "name": "Submersible Pressure Transducer",
+          "features": [
+            "Direct water depth measurement",
+            "Robust industrial design",
+            "High accuracy"
+          ],
+          "why_it_works": "Measures hydrostatic pressure exerted by the water column above it, directly inferring water depth.",
+          "pros": [
+            "Highly accurate and reliable in various water conditions",
+            "Unaffected by surface conditions (wind, foam)",
+            "Resistant to fouling if properly designed/maintained"
+          ],
+          "cons": [
+            "Requires direct water contact (fouling risk)",
+            "More expensive than ultrasonic sensors",
+            "Needs careful calibration and vent tube for atmospheric pressure compensation"
+          ],
+          "estimated_cost": "Medium",
+          "availability": "Medium"
+        },
+        {
+          "id": 76,
+          "name": "Float Switch Array",
+          "features": [
+            "Discrete level detection",
+            "Extremely low power consumption",
+            "Simple digital output"
+          ],
+          "why_it_works": "Utilizes multiple sealed float switches positioned at discrete levels to indicate when water reaches specific thresholds.",
+          "pros": [
+            "Very robust to water quality and debris",
+            "Extremely low power, ideal for battery-only systems",
+            "Simple interface and highly reliable for threshold detection"
+          ],
+          "cons": [
+            "Only provides discrete water levels, not continuous",
+            "Mechanical parts can potentially jam or wear out",
+            "Bulkier installation for multiple levels"
+          ],
+          "estimated_cost": "Low",
+          "availability": "High"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 43,
+          "projectId": 11,
+          "subsystemId": 26,
+          "selectedOptionId": 74,
+          "decidedAt": "2026-02-09T11:16:31.884Z",
+          "selectedOption": {
+            "id": 74,
+            "name": "Ultrasonic Sensor (e.g., JSN-SR04T)"
           }
-        ]
-      },
-      {
-        "subsystem": "Control",
-        "from": "Sensing",
-        "to": "Communication",
-
-        "options": [
-          {
-            "name": "ESP32-WROOM-32D",
-            "why_it_works": "Low-power, built-in WiFi/Bluetooth, robust ecosystem.",
-            "features": ["Dual-core MCU", "WiFi/Bluetooth", "Easy OTA"],
-            "pros": ["Low cost", "Large community", "Good for edge processing"],
-            "cons": ["Limited real-time performance compared to SBCs"],
-            "estimated_cost": "NGN 4,000–9,000",
-            "availability": "Widely available locally"
-          },
-          {
-            "name": "Raspberry Pi 4 Model B (2GB/4GB)",
-            "why_it_works": "Full Linux environment for advanced processing and analytics.",
-            "features": ["Linux OS", "USB/HDMI", "GPIO expansion"],
-            "pros": ["Flexible software stack", "Strong support"],
-            "cons": ["Higher power, needs cooling", "More expensive"],
-            "estimated_cost": "NGN 35,000–60,000",
-            "availability": "Widely available; 1–3 weeks lead time"
-          },
-          {
-            "name": "Raspberry Pi Zero 2 W",
-            "why_it_works": "Compact edge device with adequate compute for lightweight tasks.",
-            "features": ["Quad-core Arm Cortex-A53", "WiFi"],
-            "pros": ["Low cost", "Small form factor"],
-            "cons": ["Less RAM, limited I/O", "Not ideal for heavy processing"],
-            "estimated_cost": "NGN 12,000–20,000",
-            "availability": "Common; 1–2 weeks from distributors"
+        }
+      ]
+    },
+    {
+      "id": 27,
+      "projectId": 11,
+      "order": 1,
+      "createdAt": "2026-02-09T11:12:02.858Z",
+      "name": "Meteorological Data Module",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 77,
+          "name": "Integrated Weather Sensor (e.g., BME280/BMP280 + Tipping Bucket Rain Gauge)",
+          "features": [
+            "Temperature, humidity, pressure, and rainfall measurement",
+            "Compact electronic sensor",
+            "Accurate rainfall data"
+          ],
+          "why_it_works": "Combines a digital barometer, thermometer, and hygrometer (BME280) with a separate tipping bucket mechanism to measure rainfall accumulation.",
+          "pros": [
+            "Cost-effective for multiple parameters",
+            "Rainfall data crucial for short-term flood forecasting",
+            "Easy digital interface for BME280/BMP280"
+          ],
+          "cons": [
+            "Rain gauge is a separate mechanical unit, requiring careful placement",
+            "Accuracy of temperature/humidity can be affected by solar radiation without shielding"
+          ],
+          "estimated_cost": "Low",
+          "availability": "High"
+        },
+        {
+          "id": 78,
+          "name": "Optical Rain Sensor",
+          "features": [
+            "Solid-state rain detection",
+            "No moving parts",
+            "Quick response time"
+          ],
+          "why_it_works": "Detects raindrops by sensing changes in infrared light transmission or reflection caused by water on a sensing surface.",
+          "pros": [
+            "No mechanical wear, durable",
+            "Can distinguish between rain and other precipitation",
+            "Compact and easy to integrate"
+          ],
+          "cons": [
+            "May require heating element to prevent frost/dew accumulation",
+            "Accuracy can be affected by dust or debris on the sensing surface",
+            "Higher cost than a simple tipping bucket mechanism"
+          ],
+          "estimated_cost": "Medium",
+          "availability": "Medium"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 44,
+          "projectId": 11,
+          "subsystemId": 27,
+          "selectedOptionId": 78,
+          "decidedAt": "2026-02-09T11:16:33.232Z",
+          "selectedOption": {
+            "id": 78,
+            "name": "Optical Rain Sensor"
           }
-        ]
-      },
-      {
-        "subsystem": "Power",
-        "from": null,
-        "to": ["Sensing", "Control", "Communication"],
-        "options": [
-          {
-            "name": "Solar panel + Li-ion battery pack",
-            "why_it_works": "Off-grid, suitable for outdoor deployments with sun exposure.",
-            "features": [
-              "6–10W panel",
-              "3.7V Li-ion cell or pack",
-              "Charge controller"
-            ],
-            "pros": ["Green power, scalable", "Low operating cost"],
-            "cons": ["Variable output by weather", "Initial setup complexity"],
-            "estimated_cost": "NGN 25,000–45,000",
-            "availability": "Widely available; 2–4 weeks lead time"
-          },
-          {
-            "name": "Mains adapter + UPS backup",
-            "why_it_works": "Reliable urban deployments with grid access.",
-            "features": ["230V AC input", "DC regulator output", "USB/5V rail"],
-            "pros": ["Stable power", "Simple maintenance"],
-            "cons": [
-              "Requires grid access",
-              "No outage resilience without UPS"
-            ],
-            "estimated_cost": "NGN 5,000–15,000",
-            "availability": "Common; readily available"
-          },
-          {
-            "name": "USB power bank with regulator",
-            "why_it_works": "Low-cost portable solution for temporary deployments.",
-            "features": ["5V/1A–2A output", "Charge via USB-C"],
-            "pros": ["Very cheap", "Easy replacement"],
-            "cons": [
-              "Limited life in outdoor use",
-              "Needs frequent recharging"
-            ],
-            "estimated_cost": "NGN 3,000–8,000",
-            "availability": "Widely available"
+        }
+      ]
+    },
+    {
+      "id": 28,
+      "projectId": 11,
+      "order": 2,
+      "createdAt": "2026-02-09T11:12:02.919Z",
+      "name": "Main Control Unit",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 79,
+          "name": "ESP32 Microcontroller",
+          "features": [
+            "Integrated Wi-Fi and Bluetooth",
+            "Good processing power",
+            "Rich peripheral set"
+          ],
+          "why_it_works": "Dual-core processor with integrated Wi-Fi and Bluetooth, capable of processing sensor data and managing communication protocols efficiently.",
+          "pros": [
+            "Excellent processing capabilities for local analytics and complex logic",
+            "Built-in wireless for local debugging/setup",
+            "Large community support and extensive libraries"
+          ],
+          "cons": [
+            "Higher power consumption than dedicated low-power MCUs if Wi-Fi/BT are used frequently",
+            "Might be overkill for very simple applications"
+          ],
+          "estimated_cost": "Very Low",
+          "availability": "High"
+        },
+        {
+          "id": 80,
+          "name": "STM32L Series Microcontroller",
+          "features": [
+            "Ultra-low power consumption",
+            "ARM Cortex-M architecture",
+            "Rich peripheral set"
+          ],
+          "why_it_works": "Designed specifically for ultra-low-power applications, offering excellent energy efficiency and robust performance for battery-operated devices.",
+          "pros": [
+            "Best-in-class power efficiency for extended battery life",
+            "Industrial-grade reliability and robustness",
+            "Flexible and powerful for embedded systems"
+          ],
+          "cons": [
+            "Higher cost than ESP32/Arduino equivalents",
+            "Steeper learning curve for embedded development",
+            "Less widely supported by hobbyist communities than Arduino/ESP"
+          ],
+          "estimated_cost": "Medium",
+          "availability": "High"
+        },
+        {
+          "id": 81,
+          "name": "Arduino Pro Mini (or similar low-power ATMega-based board)",
+          "features": [
+            "Simple to program",
+            "Low cost",
+            "Compact size"
+          ],
+          "why_it_works": "Simple 8-bit microcontroller known for its ease of use, low cost, and extensive community support, with potential for low-power optimization.",
+          "pros": [
+            "Extremely easy to program and prototype with",
+            "Massive community and library ecosystem",
+            "Very low cost hardware"
+          ],
+          "cons": [
+            "Limited processing power for complex tasks like forecasting models",
+            "Less power efficient than dedicated low-power MCUs without significant optimization",
+            "Limited built-in connectivity options"
+          ],
+          "estimated_cost": "Low",
+          "availability": "High"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 45,
+          "projectId": 11,
+          "subsystemId": 28,
+          "selectedOptionId": 79,
+          "decidedAt": "2026-02-09T11:16:33.584Z",
+          "selectedOption": {
+            "id": 79,
+            "name": "ESP32 Microcontroller"
           }
-        ]
-      },
-      {
-        "subsystem": "Communication",
-        "from": "Control",
-        "to": null,
-
-        "options": [
-          {
-            "name": "LTE-M / NB-IoT cellular module (e.g., BG95-M3)",
-            "why_it_works": "Broad coverage in Nigeria with low power for remote sensors.",
-            "features": ["Cellular IoT", "Low power modes", "SIM-based"],
-            "pros": ["Good rural/urban reach", "Managed connectivity"],
-            "cons": ["SIM data costs", "Network availability varies"],
-            "estimated_cost": "NGN 9,000–25,000",
-            "availability": "Moderate; import often required"
-          },
-          {
-            "name": "WiFi direct to local gateway (ESP32-based)",
-            "why_it_works": "Low-cost, high-bandwidth if local network exists.",
-            "features": ["WiFi", "Easy OTA", "Local network"],
-            "pros": [
-              "Very cheap",
-              "Simple deployment in campuses/neighborhoods"
-            ],
-            "cons": [
-              "Depends on local network reliability",
-              "Limited rural coverage"
-            ],
-            "estimated_cost": "NGN 1,500–6,000",
-            "availability": "Widely available"
-          },
-          {
-            "name": "LoRaWAN module with gateway",
-            "why_it_works": "Long-range, low-power comms suitable for city-scale deployments.",
-            "features": ["LoRa transceiver", "Low data rate", "Long range"],
-            "pros": ["Excellent for wide-area coverage", "Low power"],
-            "cons": ["Requires LoRaWAN gateway coverage", "Data rate limits"],
-            "estimated_cost": "NGN 3,000–7,000",
-            "availability": "Moderate; gateways available through distributors"
+        }
+      ]
+    },
+    {
+      "id": 29,
+      "projectId": 11,
+      "order": 3,
+      "createdAt": "2026-02-09T11:12:02.972Z",
+      "name": "Power Management System",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 82,
+          "name": "Integrated Solar Charge Controller (e.g., TP4056-based with DC-DC boost/buck)",
+          "features": [
+            "Battery charging",
+            "Voltage regulation",
+            "Compact size"
+          ],
+          "why_it_works": "Provides basic lithium-ion battery charging from a solar panel and a regulated output voltage for the sensor electronics.",
+          "pros": [
+            "Very low cost and readily available",
+            "Simple to integrate for small power systems",
+            "Effective for basic battery protection"
+          ],
+          "cons": [
+            "Basic charge algorithm, not true MPPT",
+            "Limited efficiency compared to dedicated controllers",
+            "May not handle larger solar panels or batteries optimally"
+          ],
+          "estimated_cost": "Very Low",
+          "availability": "High"
+        },
+        {
+          "id": 83,
+          "name": "MPPT Solar Charge Controller (IoT specific)",
+          "features": [
+            "Maximum Power Point Tracking (MPPT)",
+            "Advanced battery protection",
+            "Efficient charging"
+          ],
+          "why_it_works": "Maximizes power extraction from the solar panel by dynamically adjusting impedance, ensuring efficient battery charging and extending battery lifespan.",
+          "pros": [
+            "Significantly higher energy yield from solar panel",
+            "Extends battery life through optimized charging/discharging",
+            "Robust protection against overcharge, deep discharge"
+          ],
+          "cons": [
+            "Higher cost than basic charge controllers",
+            "Larger physical footprint",
+            "More complex integration due to additional features"
+          ],
+          "estimated_cost": "Medium",
+          "availability": "Medium"
+        },
+        {
+          "id": 84,
+          "name": "Commercial Solar Power Bank (modified)",
+          "features": [
+            "All-in-one unit",
+            "Often includes rugged casing",
+            "Built-in battery"
+          ],
+          "why_it_works": "A self-contained unit typically includes a small solar panel, battery, and basic charge controller, which can be modified to power the sensor system.",
+          "pros": [
+            "Very simple to integrate, often plug-and-play for power supply",
+            "Rugged design often suitable for outdoor use",
+            "Reduces component sourcing and assembly complexity"
+          ],
+          "cons": [
+            "Limited control over charging parameters and battery health",
+            "Efficiency might be suboptimal for continuous IoT loads",
+            "Battery capacity may not be easily customizable"
+          ],
+          "estimated_cost": "Low",
+          "availability": "High"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 46,
+          "projectId": 11,
+          "subsystemId": 29,
+          "selectedOptionId": 82,
+          "decidedAt": "2026-02-09T11:16:33.926Z",
+          "selectedOption": {
+            "id": 82,
+            "name": "Integrated Solar Charge Controller (e.g., TP4056-based with DC-DC boost/buck)"
           }
-        ]
-      }
-    ],
-    "skills": "IoT hardware integration, embedded software (C/Python), edge data processing, sensor calibration, cloud data ingestion, dashboard development (Grafana/Power BI).",
-    "suggestions": [
-      "Use IP65/IP66-rated enclosures with passive cooling for outdoor sensors.",
-      "Implement duty cycling and data buffering to handle connectivity gaps.",
-      "Plan for sensor co-location trials to calibrate PM and gas sensors against a reference monitor.",
-      "Deploy a scalable cloud architecture with secure APIs and role-based access.",
-      "Develop a maintenance plan including sensor replacement schedules and enclosure cleaning."
-    ],
-    "research_papers": [
-      "World Health Organization. WHO Global Air Quality Guidelines.",
-      "U.S. EPA. The Air Sensor Toolbox.",
-      "Castell N, et al. Can commercial low-cost sensors deliver reliable data? Environment International, 2017.",
-      "Snyder JC, Watkins TJ, Kilaru VJ, et al. The Air Sensor Toolbox: A practical approach to low-cost sensors. J Air Waste Manag Assoc, 2016."
+        }
+      ]
+    },
+    {
+      "id": 30,
+      "projectId": 11,
+      "order": 4,
+      "createdAt": "2026-02-09T11:12:03.038Z",
+      "name": "Communication Module",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 85,
+          "name": "LoRaWAN Transceiver (e.g., SX127x-based module)",
+          "features": [
+            "Long range (kilometers)",
+            "Ultra-low power consumption",
+            "Secure communication"
+          ],
+          "why_it_works": "Utilizes Long Range Wide Area Network (LoRaWAN) protocol for low-power, long-distance wireless data transmission to a gateway.",
+          "pros": [
+            "Ideal for remote areas with no cellular infrastructure (requires gateway)",
+            "Extends battery life significantly due to low power usage",
+            "Scalable for network deployment with multiple sensors"
+          ],
+          "cons": [
+            "Requires LoRaWAN gateway infrastructure (can be privately deployed)",
+            "Lower data rates compared to cellular technologies",
+            "Potential for network congestion in dense deployments"
+          ],
+          "estimated_cost": "Low (module), Medium (gateway)",
+          "availability": "High"
+        },
+        {
+          "id": 86,
+          "name": "NB-IoT/LTE-M Module (e.g., SIM7000G/BG96)",
+          "features": [
+            "Cellular network coverage",
+            "Low power (compared to standard cellular)",
+            "Robust connection"
+          ],
+          "why_it_works": "Leverages existing cellular infrastructure for Low-Power Wide-Area (LPWA) communication optimized for IoT devices.",
+          "pros": [
+            "Does not require dedicated gateway infrastructure (uses existing cell towers)",
+            "Higher data rates and lower latency than LoRaWAN",
+            "Good for areas with existing cellular LPWAN coverage"
+          ],
+          "cons": [
+            "Requires cellular subscription and SIM card (recurring cost)",
+            "Coverage can be spotty in very remote areas of Nigeria",
+            "Higher power consumption than LoRaWAN, impacting battery life"
+          ],
+          "estimated_cost": "Medium (module), Recurring (subscription)",
+          "availability": "High (modules), Variable (network coverage)"
+        },
+        {
+          "id": 87,
+          "name": "Satellite IoT Module (e.g., RockBLOCK / Iridium SBD)",
+          "features": [
+            "Global coverage",
+            "Truly remote connectivity",
+            "Robust against terrestrial disasters"
+          ],
+          "why_it_works": "Communicates directly with satellites, providing global coverage even in the most remote locations where terrestrial networks are unavailable.",
+          "pros": [
+            "Provides connectivity in absolutely any remote location",
+            "Highly reliable for mission-critical data in isolated areas",
+            "Independent of local terrestrial infrastructure"
+          ],
+          "cons": [
+            "Highest module cost and significant recurring subscription fees",
+            "Higher power consumption than other LPWAN options",
+            "Lower data rates and higher latency than terrestrial options"
+          ],
+          "estimated_cost": "High (module), High (subscription)",
+          "availability": "High (modules), Global (network)"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 47,
+          "projectId": 11,
+          "subsystemId": 30,
+          "selectedOptionId": 85,
+          "decidedAt": "2026-02-09T11:16:34.257Z",
+          "selectedOption": {
+            "id": 85,
+            "name": "LoRaWAN Transceiver (e.g., SX127x-based module)"
+          }
+        }
+      ]
+    },
+    {
+      "id": 31,
+      "projectId": 11,
+      "order": 5,
+      "createdAt": "2026-02-09T11:12:03.126Z",
+      "name": "Siren Activation Module",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 88,
+          "name": "Electromechanical Relay Module",
+          "features": [
+            "Galvanic isolation",
+            "Simple ON/OFF switching",
+            "Handles high currents"
+          ],
+          "why_it_works": "Uses an electromagnet to physically switch a contact, isolating the microcontroller's low-voltage circuit from the siren's high-power circuit.",
+          "pros": [
+            "Very common, inexpensive, and easy to use",
+            "Reliable for simple switching applications",
+            "Provides full electrical isolation"
+          ],
+          "cons": [
+            "Mechanical wear and tear, limited lifespan for frequent switching",
+            "Can produce audible clicking noise",
+            "Slower switching speed compared to solid-state options"
+          ],
+          "estimated_cost": "Very Low",
+          "availability": "High"
+        },
+        {
+          "id": 89,
+          "name": "Solid State Relay (SSR) Module",
+          "features": [
+            "No moving parts",
+            "Fast switching",
+            "Silence operation"
+          ],
+          "why_it_works": "Uses semiconductor components to switch power to the siren, offering electronic switching without moving parts.",
+          "pros": [
+            "Extremely long lifespan due to no mechanical wear",
+            "Silent operation, ideal for sensitive environments",
+            "Faster switching speed than electromechanical relays"
+          ],
+          "cons": [
+            "Can have higher 'ON' resistance, leading to heat generation",
+            "Can exhibit leakage current when 'OFF'",
+            "More sensitive to voltage spikes and overcurrents without proper protection"
+          ],
+          "estimated_cost": "Low",
+          "availability": "High"
+        },
+        {
+          "id": 90,
+          "name": "MOSFET-based High-Side Switch Circuit",
+          "features": [
+            "Solid-state switching",
+            "Low power loss (when fully 'ON')",
+            "Controllable current"
+          ],
+          "why_it_works": "Utilizes a power MOSFET to switch the positive supply to the siren, controlled by a low-voltage signal from the microcontroller.",
+          "pros": [
+            "Highly efficient when designed correctly (low voltage drop)",
+            "No moving parts, long lifespan",
+            "Compact and customizable for specific current/voltage requirements"
+          ],
+          "cons": [
+            "Requires careful component selection (MOSFET, driver, flyback diode)",
+            "More complex circuit design than a simple relay module",
+            "Incorrect implementation can lead to MOSFET failure"
+          ],
+          "estimated_cost": "Low",
+          "availability": "High"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 48,
+          "projectId": 11,
+          "subsystemId": 31,
+          "selectedOptionId": 90,
+          "decidedAt": "2026-02-09T11:16:34.538Z",
+          "selectedOption": {
+            "id": 90,
+            "name": "MOSFET-based High-Side Switch Circuit"
+          }
+        }
+      ]
+    },
+    {
+      "id": 32,
+      "projectId": 11,
+      "order": 6,
+      "createdAt": "2026-02-09T11:12:03.198Z",
+      "name": "Data Logging & Cloud Platform",
+      "inputFrom": [],
+      "outputTo": [],
+      "options": [
+        {
+          "id": 91,
+          "name": "Thingspeak / Ubidots",
+          "features": [
+            "Real-time dashboards",
+            "Data logging and storage",
+            "Basic alerting via webhooks/email"
+          ],
+          "why_it_works": "Cloud-based IoT platforms that provide pre-built dashboards, data storage, and basic alerting capabilities, simplifying data visualization and access.",
+          "pros": [
+            "Very easy and quick to set up for prototyping",
+            "Free tiers available for small deployments",
+            "No server management required"
+          ],
+          "cons": [
+            "Limited customization options for advanced analytics",
+            "Scalability restrictions and higher costs for large-scale production",
+            "Vendor lock-in and less control over raw data"
+          ],
+          "estimated_cost": "Low (free tier), Medium (paid plans)",
+          "availability": "High"
+        },
+        {
+          "id": 92,
+          "name": "Custom Cloud Solution (AWS IoT / Azure IoT / Google Cloud IoT)",
+          "features": [
+            "Highly scalable infrastructure",
+            "Advanced analytics and machine learning integration",
+            "Custom dashboards and API access"
+          ],
+          "why_it_works": "Leverages robust and scalable cloud infrastructure to build a fully customizable data ingestion, processing, storage, and visualization pipeline.",
+          "pros": [
+            "Ultimate flexibility and control over all data aspects",
+            "Seamless integration with a wide range of cloud services",
+            "Robust security features and enterprise-grade reliability"
+          ],
+          "cons": [
+            "Requires significant cloud development expertise",
+            "Can incur higher operational costs for extensive usage",
+            "Steeper learning curve for deployment and management"
+          ],
+          "estimated_cost": "Medium to High (variable based on usage)",
+          "availability": "High"
+        },
+        {
+          "id": 93,
+          "name": "Self-Hosted Solution (e.g., Grafana + InfluxDB on VPS)",
+          "features": [
+            "Customizable dashboards",
+            "Time-series data storage",
+            "Open-source flexibility"
+          ],
+          "why_it_works": "Deploys open-source data visualization (Grafana) and time-series database (InfluxDB) software on a virtual private server for full control over the data stack.",
+          "pros": [
+            "Full control over data, security, and infrastructure",
+            "Potentially lower long-term recurring costs compared to proprietary clouds",
+            "Leverages widely supported open-source tools"
+          ],
+          "cons": [
+            "Requires server administration and maintenance expertise",
+            "Scalability can be more complex to manage than public cloud services",
+            "Initial setup can be time-consuming"
+          ],
+          "estimated_cost": "Low (VPS cost)",
+          "availability": "High (software), Medium (hosting)"
+        }
+      ],
+      "decisions": [
+        {
+          "id": 49,
+          "projectId": 11,
+          "subsystemId": 32,
+          "selectedOptionId": 92,
+          "decidedAt": "2026-02-09T11:16:35.012Z",
+          "selectedOption": {
+            "id": 92,
+            "name": "Custom Cloud Solution (AWS IoT / Azure IoT / Google Cloud IoT)"
+          }
+        }
+      ]
+    }
+  ],
+  "blueprint": {
+    "id": 3,
+    "architecture": {
+      "id": 3,
+      "blueprintId": 3,
+      "overview": "The system utilizes an ESP32 microcontroller to interface with an ultrasonic sensor for non-contact water level measurement and an optical rain sensor for precipitation detection. Power is supplied by a solar panel charging a lithium-ion battery via an integrated solar charge controller. Data is transmitted long-range using a LoRaWAN transceiver to a gateway, then forwarded to a custom cloud solution for logging, analysis, and visualization. A MOSFET-based high-side switch circuit activates a local siren upon detection of predefined flood conditions.",
+      "block_diagram": [
+        "Solar Panel -\u003E Integrated Solar Charge Controller -\u003E Li-ion Battery",
+        "Integrated Solar Charge Controller -\u003E ESP32 Microcontroller",
+        "ESP32 Microcontroller -\u003E Ultrasonic Sensor (JSN-SR04T)",
+        "ESP32 Microcontroller -\u003E Optical Rain Sensor",
+        "ESP32 Microcontroller -\u003E LoRaWAN Transceiver (SX127x-based)",
+        "ESP32 Microcontroller -\u003E MOSFET-based High-Side Switch Circuit -\u003E Siren",
+        "LoRaWAN Transceiver -\u003E LoRaWAN Gateway -\u003E Custom Cloud Solution (AWS IoT/Azure IoT/Google Cloud IoT)"
+      ]
+    },
+    "cost": "Low to Medium. The primary components (ESP32, ultrasonic, LoRa module, charge controller, MOSFET) are very low to low cost. The overall cost will be influenced by the solar panel, battery capacity, robust enclosure, siren, and the variable operational costs of the custom cloud solution based on data usage and services consumed. Strategic component selection and efficient cloud resource management will keep costs minimized.",
+    "skills": [],
+    "generatedAt": "2026-02-09T11:17:06.920Z",
+    "references": [
+      "ESP32 Datasheet (Espressif Systems)",
+      "JSN-SR04T Ultrasonic Sensor Module Datasheet",
+      "SX127x LoRa Transceiver Datasheet (Semtech)",
+      "TP4056 Lithium-Ion Battery Charger Datasheet",
+      "LoRaWAN Specification (LoRa Alliance)",
+      "Embedded Systems Design textbooks (e.g., F. Vahid, T. Givargis)",
+      "IoT and Cloud Computing best practices (e.g., AWS IoT Developer Guide)"
     ]
-  }
-}
+  },
+  "buildGuide": null

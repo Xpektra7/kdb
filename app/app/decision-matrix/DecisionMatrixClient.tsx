@@ -87,7 +87,7 @@ export default function DecisionMatrixClient({ output, projectId, dummy }: Decis
 
   const pdfData: PDFExportData = {
     title: "Decision Matrix Report",
-    projectName: output.project || "Project Analysis",
+    projectName: output.title || "Project Analysis",
     decisionMatrix: output,
   };
 

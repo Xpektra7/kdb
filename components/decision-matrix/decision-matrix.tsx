@@ -98,7 +98,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            project: output.project,
+            project: output.title,
             selectedOptions,
           }),
         });
@@ -145,7 +145,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
         ref={(el) => { contentRefs.current['overview'] = el; }}
         className="flex flex-col gap-3 sm:gap-4 scroll-mt-20 pb-6 border-b border-border"
       >
-        <h1 className="text-2xl sm:text-3xl lg:text-4xl leading-tight">{output.project}</h1>
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl leading-tight">{output.title}</h1>
         <p className="text-sm sm:text-base leading-relaxed">{output.concept}</p>
       </div>
 
@@ -172,7 +172,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
 
 
       {/* Block Diagram */}
-      <BlockDiagram matrix={output.subsystems} className=''/>
+      {/* <BlockDiagram matrix={output.subsystems} className=''/> */}
       
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">

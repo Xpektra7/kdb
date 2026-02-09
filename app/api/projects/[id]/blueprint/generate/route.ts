@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
 import z from "zod";
-import { arch } from "os";
 
 /**
  * POST /api/projects/[id]/blueprint/generate
@@ -35,6 +34,10 @@ import { arch } from "os";
 
 // create a validation schema for the expected AI output format
 const aiOutputSchema = z.object({
+  project: z.union([
+    z.object({ title: z.string() }),
+    z.string()
+  ]).optional(),
   problem: z.object({
     statement: z.string(),
     constraints: z.array(z.string())
@@ -43,6 +46,13 @@ const aiOutputSchema = z.object({
     overview: z.string(),
     block_diagram: z.array(z.string()).optional()
   }),
+  components: z.array(z.object({
+    subsystem: z.string(),
+    chosen_option: z.string(),
+    why_chosen: z.string(),
+    pros: z.array(z.string()).optional(),
+    cons: z.array(z.string()).optional()
+  })).optional(),
   execution_steps: z.array(z.string()),
   testing: z.object({
     methods: z.array(z.string()),
@@ -51,7 +61,7 @@ const aiOutputSchema = z.object({
   references: z.array(z.string()),
   extensions: z.array(z.string()),
   cost: z.string(),
-  skills: z.array(z.string())
+  skills: z.union([z.array(z.string()), z.string()])
 });
 
 export async function POST(
@@ -123,6 +133,7 @@ export async function POST(
       const bp = await tx.blueprintResult.create({
         data: {
           projectId, cost, executionSteps: execution_steps, references, extensions,
+          skills: Array.isArray(skills) ? skills : skills.split(",").map((item) => item.trim()).filter(Boolean),
         }
     });
 

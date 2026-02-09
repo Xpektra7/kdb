@@ -252,7 +252,7 @@ model BlueprintResult {
   project             Project   @relation(fields: [projectId], references: [id], onDelete: Cascade)
   architecture        Architecture?
   problem             Problem?  
-  buildGuides         BuildGuide[]
+  // buildGuides         BuildGuide[]
 
   @@index([projectId])
   @@map("blueprint_results")
@@ -312,7 +312,7 @@ model CommonFailures {
 model BuildGuide {
   id                  Int       @id @default(autoincrement())
   projectId           Int       @unique
-  blueprintId         Int
+  // blueprintId         Int
 
 
   build_overview            String    @db.Text
@@ -330,7 +330,7 @@ model BuildGuide {
   updatedAt           DateTime  @updatedAt
 
   project             Project         @relation(fields: [projectId], references: [id], onDelete: Cascade)
-  blueprint           BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
+  // blueprint           BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
 
   @@index([projectId])
   @@map("build_guides")

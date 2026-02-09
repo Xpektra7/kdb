@@ -21,7 +21,7 @@ const aiOptionSchema = z.object({
   features: z.array(z.string()).optional(),
   pros: z.array(z.string()).optional(),
   cons: z.array(z.string()).optional(),
-  estimated_cost: z.string().optional(),
+  estimated_cost: z.union([z.string(), z.array(z.string())]).optional(),
   availability: z.string().optional()
 });
 
@@ -37,8 +37,15 @@ const aiOptionSchema = z.object({
 //   return cleaned || "N/A";
 // };
 
+const normalizeToStringArray = (value?: string | string[] | null): string[] => {
+  if (!value) return [];
+  return Array.isArray(value) ? value.filter(Boolean) : [value];
+};
+
 const aiSubsystemSchema = z.object({
   subsystem: z.string(),
+  inputFrom: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
+  outputTo: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
   from: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
   to: z.union([z.string(), z.array(z.string()), z.null()]).optional(),
   options: z.array(aiOptionSchema)
@@ -54,6 +61,7 @@ const aiOutputSchema = z.object({
     suggested_solution: z.string()
   })).optional(),
   subsystems: z.array(aiSubsystemSchema),
+  decision_matrix: z.array(aiSubsystemSchema).optional(),
 });
 
 
@@ -126,10 +134,9 @@ export async function POST(request: NextRequest) {
       "research":"string[]",
       "goals":["string"],
       "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-      "subsystems":[{"subsystem":"string","inputFrom":"string|string[]|null","outputTo":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
+      "subsystems":[{"subsystem":"string","inputFrom":"string|string[]|null","outputTo":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}]
     }
     RULES:
-    - block_diagram represents abstract subsystems only and must be decision-agnostic and stable, and should ONLY include subsystem name.
     - Omit subsystems with no viable options.
     - Engineering systems only.
     - Provide 2–4 options per subsystem with real tradeoffs.
@@ -215,7 +222,9 @@ export async function POST(request: NextRequest) {
 
     try {
       createdSubsystems = await prisma.$transaction(async (tx) => {
-        const subsystemsData = validation.data.subsystems;
+        const subsystemsData = validation.data.subsystems.length
+          ? validation.data.subsystems
+          : (validation.data.decision_matrix || []);
         const created = [];
 
         for (let i = 0; i < subsystemsData.length; i++) {
@@ -225,6 +234,8 @@ export async function POST(request: NextRequest) {
             data: {
               projectId,
               name: subsysData.subsystem,
+              inputFrom: normalizeToStringArray(subsysData.inputFrom ?? subsysData.from),
+              outputTo: normalizeToStringArray(subsysData.outputTo ?? subsysData.to),
               order: i
             }
           });
@@ -238,10 +249,13 @@ export async function POST(request: NextRequest) {
               data: {
                 subsystemId: subsystem.id,
                 name: optionData.name,
-                why_it_works: optionData.why_it_works || "",
-                pros: optionData.pros || [],
-                cons: optionData.cons || [],
-                estimated_cost: optionData.estimated_cost || "N/A",
+                why_it_works: optionData.why_it_works,
+                pros: optionData.pros,
+                cons: optionData.cons,
+                features:optionData.features,
+                estimated_cost: Array.isArray(optionData.estimated_cost)
+                  ? optionData.estimated_cost.filter(Boolean).join(", ") || "N/A"
+                  : optionData.estimated_cost || "N/A",
                 availability: optionData.availability || "Unknown"
               }
             });
@@ -267,6 +281,8 @@ export async function POST(request: NextRequest) {
         await tx.project.update({
           where: { id: projectId },
           data: {
+            title:validation.data.project,
+            concept: validation.data.concept,
             stage: ProjectStage.DECISION_MATRIX,
             goals: validation.data.goals || [],
             research: validation.data.research || []

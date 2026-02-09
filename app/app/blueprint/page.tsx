@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation";
 import { dummydata } from "@/schema/air-quality-result";
 import { getDataModeServer } from "@/lib/data-mode.server";
 import type { Blueprint } from "@/lib/definitions";
@@ -22,11 +21,7 @@ async function fetchBlueprintFromProject(projectId: string): Promise<Blueprint> 
     throw new Error(`Blueprint fetch failed: ${response.status}`);
   }
 
-  const blueprintResult = await response.json();
-
-  console.log(blueprintResult)
-
-  return blueprintResult as Blueprint;
+  return response.json();
   
   // The aiOutput field contains the full blueprint data
   // if (!blueprintResult.aiOutput) {
@@ -53,7 +48,7 @@ async function generateBlueprint(project: string, selectedOptions: Record<string
   return typeof output === "string" ? JSON.parse(output) : output;
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string; requestId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string }> }) {
   try {
     const params = await searchParams;
     const useDummyData = await getDataModeServer();

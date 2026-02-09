@@ -1,20 +1,19 @@
 import { GoogleGenAI } from "@google/genai";
 // Load local .env when present (optional). Install dotenv if you plan to use a .env file:
 // npm install dotenv
-import 'dotenv/config';
-
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-    console.error(
-        "Missing GEMINI_API_KEY. Set the env var or add it to a .env file: GEMINI_API_KEY=AIza..."
-    );
-    process.exit(1);
-}
+import "dotenv/config";
 
 export async function POST(request: Request) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        return new Response(
+            JSON.stringify({ error: "Missing GEMINI_API_KEY" }),
+            { status: 500, headers: { "Content-Type": "application/json" } }
+        );
+    }
     console.log("Reached POST");
     const { project } = await request.json();
-const input = `You are an engineering project planner. Return ONLY valid minified JSON (no newlines), No prose, markdown, or extra text.
+    const input = `You are an engineering project planner. Return ONLY valid minified JSON (no newlines), No prose, markdown, or extra text.
 SCHEMA:
 {
   "project":"string",
@@ -22,12 +21,10 @@ SCHEMA:
   "research":["string"],
   "goals":["string"],
   "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-  "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":["string"],"availability":"string"}]}],
+  "subsystems":[{"subsystem":"string","inputFrom":"string|string[]|null","outputTo":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
   "skills":"string",
 }
 RULES:
-- block_diagram represents abstract subsystems only and must be decision-agnostic and stable, and should ONLY include subsystem name.
-- decision_matrix subsystems must map 1-to-1 to block_diagram blocks.
 - Omit subsystems with no viable options.
 - Engineering systems only.
 - Provide 2–4 options per subsystem with real tradeoffs.
@@ -58,4 +55,3 @@ Nigeria
         headers: { "Content-Type": "application/json" },
     });
 }
-

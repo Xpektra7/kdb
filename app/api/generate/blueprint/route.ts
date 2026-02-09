@@ -1,25 +1,26 @@
 import { GoogleGenAI } from "@google/genai";
 // Load local .env when present (optional). Install dotenv if you plan to use a .env file:
 // npm install dotenv
-import 'dotenv/config';
-
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-    console.error(
-        "Missing GEMINI_API_KEY. Set the env var or add it to a .env file: GEMINI_API_KEY=AIza..."
-    );
-    process.exit(1);
-}
+import "dotenv/config";
 
 export async function POST(request: Request,) {
+    const apiKey = process.env.GEMINI_API_KEY;
+    if (!apiKey) {
+        return new Response(
+            JSON.stringify({ error: "Missing GEMINI_API_KEY" }),
+            { status: 500, headers: { "Content-Type": "application/json" } }
+        );
+    }
     console.log("Reached POST");
     const { project, selectedOptions } = await request.json();
-const input = `You are an engineering execution planner.
+    const input = `You are an engineering execution planner.
 Return ONLY minified valid JSON. No prose, markdown, or extra text.
 SCHEMA:
 {
+"project":{"title":"string"},
 "problem":{"statement":"string","constraints":["string"]},
 "architecture":{"overview":"string","block_diagram":["string"]},
+"components":[{"subsystem":"string","chosen_option":"string","why_chosen":"string","pros":["string"],"cons":["string"]}],
 "execution_steps":["string"],
 "testing":{"methods":["string"],"success_criteria":"string"},
 "references":["string"],
@@ -35,7 +36,7 @@ RULES:
 - Nigeria context where relevant.
 - Prefer textbooks, datasheets, peer-reviewed sources.
 - Simplest working system first; extensions optional.
-PROJECT:${project}
+PROJECT:${JSON.stringify({ title: project })}
 CHOICES:${JSON.stringify(selectedOptions)}
 `;
 
@@ -59,4 +60,3 @@ CHOICES:${JSON.stringify(selectedOptions)}
         headers: { "Content-Type": "application/json" },
     });
 }
-

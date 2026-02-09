@@ -1,33 +1,33 @@
-import { redirect } from "next/navigation";
 import DecisionMatrixClient from "./DecisionMatrixClient";
 import type { DecisionMatrixOutput } from "@/lib/definitions";
 
 // Transform database project format to DecisionMatrixOutput format
 function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOutput {
   return {
-    id:project.id,
+    id: project.id,
+    title: project.title,
     project: project.title,
     concept: project.concept || "",
-    research: project.research || [], // Research is stored separately in ProjectResearch table
-    goals : project.goals ,
-    problems_overall: project.problems_overall, // Problems are stored separately
-    subsystems: project.subsystems.map((subsystem: any) => ({
-      id:subsystem.id,
+    research: project.research || [],
+    goals: project.goals || [],
+    problems_overall: project.problems_overall || [],
+    subsystems: (project.subsystems || []).map((subsystem: any) => ({
+      id: subsystem.id,
       subsystem: subsystem.name,
-      inputFrom: subsystem.inputFrom ,
-      outputTo: subsystem.outputTo ,
-      options: subsystem.options.map((option: any) => ({
-        id:option.id,
+      inputFrom: subsystem.inputFrom,
+      outputTo: subsystem.outputTo,
+      options: (subsystem.options || []).map((option: any) => ({
+        id: option.id,
         name: option.name,
         why_it_works: option.why_it_works,
         features: option.features || [],
         pros: option.pros || [],
         cons: option.cons || [],
-        estimated_cost: option.estimated_cost ? [option.estimated_cost] : [],
+        estimated_cost: option.estimated_cost || "N/A",
         availability: option.availability || "Unknown"
       }))
     })),
-    cost: ""
+    cost: project.cost || ""
   };
 }
 
@@ -37,15 +37,11 @@ async function fetchProject(projectId: string): Promise<{ project: any; decision
     cache: "no-store",
   });
 
-  console.log("Fetching project decision matrix:", response);
-
   if (!response.ok) {
     throw new Error(`Project not found: ${response.status}`);
   }
 
   const project = await response.json();
-  console.log(project);
-  
   const decisionMatrixOutput = transformProjectToDecisionMatrixOutput(project);
   
   return { project, decisionMatrixOutput };

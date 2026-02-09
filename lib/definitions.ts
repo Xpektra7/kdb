@@ -37,16 +37,16 @@ export interface BlockDiagramProps {
 
 // Blueprint page and components
 export interface Blueprint {
-  project: {title: string};
+  project: { title: string };
   problem: { statement: string; constraints: string[] };
-  architecture: { overview: string; block_diagram: string[]; data_flow?: string; };
-  components: { subsystem: string; chosen_option: string; why_chosen: string; pros: string[]; cons: string[] }[];
+  architecture: { overview: string; block_diagram: string[]; data_flow?: string };
+  components: Component[];
   execution_steps: string[];
   testing: { methods: string[]; success_criteria: string; failure_modes?: { issue: string; mitigation: string }[] };
   references: string[];
   extensions: string[];
   cost: string;
-  skills: string;
+  skills: string[] | string;
 }
 
 export interface BlockDiagramItem {
@@ -64,16 +64,22 @@ export interface ArchitectureProps {
   contentRef?: (el: HTMLDivElement | null) => void;
 }
 
-export interface Component {
-  subsystem: { name: string };
-  selectedOption: { name: string, why_it_works: string,pros: string[], cons: string[];};
-  features?: string[];
-  // availability?: string;
-  // estimated_cost?: string;
-}
+export type Component =
+  | {
+      subsystem: { name: string };
+      selectedOption: { name: string; why_it_works: string; pros: string[]; cons: string[] };
+      features?: string[];
+    }
+  | {
+      subsystem: string;
+      selectedOption: string;
+      why_chosen: string;
+      pros: string[];
+      cons: string[];
+    };
 
 export interface ComponentsProps {
-  components: any;
+  components: Component[];
   isExpanded: boolean;
   onToggle: () => void;
   expandedItems: Record<string, boolean>;
@@ -154,7 +160,7 @@ export interface SkillsProps {
 
 // Decision matrix
 export interface DecisionMatrixOption {
-  id: Number;
+  id: number;
   name: string;
   why_it_works: string;
   pros: string[];
@@ -164,7 +170,7 @@ export interface DecisionMatrixOption {
 }
 
 export interface DecisionMatrixItem {
-  id: Number;
+  id: number;
   subsystem: string;
   inputFrom?: string | string[] | null;
   outputTo?: string | string[] | null;
@@ -177,8 +183,9 @@ export interface Problem {
 }
 
 export interface DecisionMatrixOutput {
-  id: Number
-  project: string;
+  id: number;
+  title: string;
+  project?: string;
   concept: string;
   research: string[]; // Updated to array of objects with title and url
   goals?: string[]; // New field for project goals

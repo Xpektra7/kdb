@@ -19,11 +19,11 @@ import { useRouter } from 'next/navigation';
  */
 function compressBlueprintForBuildGuide(blueprint: Blueprint) {
   return {
-    project: blueprint.project,
+    project: blueprint.project.title,
     location: "Nigeria", // Default location, could be made dynamic
     systems: blueprint.components.map((comp) => ({
-      subsystem: comp.subsystem,
-      choice: comp.chosen_option,
+      subsystem: typeof comp.subsystem === "string" ? comp.subsystem : comp.subsystem.name,
+      choice: "chosen_option" in comp ? comp.chosen_option : comp.selectedOption.name,
     })),
     constraints: blueprint.problem?.constraints || [],
   };
@@ -92,6 +92,8 @@ export default function Blueprint({
       
       // Output is already parsed from the API
       const buildGuideOutput = output;
+
+      console.log("Received build guide output:", buildGuideOutput);
 
       if (projectId) {
         // New flow: Persist build guide to project

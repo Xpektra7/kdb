@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import type { BlockDiagramProps, DecisionMatrixItem } from '@/lib/definitions';
 
 export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
-  const data = matrix
+  const data : DecisionMatrixItem[] = matrix 
 
   const blocks = useMemo(() => {
     const blockMap = new Map<string, { subsystem: string; outputTo: string[] }>();

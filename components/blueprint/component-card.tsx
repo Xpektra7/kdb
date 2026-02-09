@@ -3,6 +3,22 @@ import { ArrowDown01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import type { Component, ComponentCardProps } from '@/lib/definitions';
 
 export function ComponentCard({ component, isExpanded, onToggle }: ComponentCardProps) {
+  const subsystemName = typeof component.subsystem === "string"
+    ? component.subsystem
+    : component.subsystem.name;
+  const selectedName = "selectedOption" in component
+    ? component.selectedOption.name
+    : component.selectedOption;
+  const whyChosen = "selectedOption" in component
+    ? component.selectedOption.why_it_works
+    : component.why_chosen;
+  const pros = "selectedOption" in component
+    ? component.selectedOption.pros
+    : component.pros;
+  const cons = "selectedOption" in component
+    ? component.selectedOption.cons
+    : component.cons;
+
   return (
     <div className="border border-border rounded-lg overflow-hidden">
       <button
@@ -11,10 +27,10 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
       >
         <div className="text-left flex-1 min-w-0">
           <p className="text-xs mb-1">
-            {component.subsystem.name} System
+            {subsystemName} System
           </p>
           <p className="text-sm sm:text-base wrap-break-words pr-2">
-            {component.selectedOption.name}
+            {selectedName}
           </p>
         </div>
         {isExpanded ? 
@@ -27,7 +43,7 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
         <div className="p-4 sm:p-6 space-y-3 border-t border-border">
           <div>
             <p className="text-xs mb-1">Why Chosen</p>
-            <p className="text-xs sm:text-sm">{component.selectedOption.why_it_works}</p>
+            <p className="text-xs sm:text-sm">{whyChosen}</p>
           </div>
           
           {/* {component.features && component.features.length > 0 && (
@@ -48,7 +64,7 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
             <div>
               <p className="text-xs mb-1">Pros</p>
               <ul className="space-y-1">
-                {component.selectedOption.pros.map((pro, j) => (
+                {pros.map((pro, j) => (
                   <li key={j} className="text-xs sm:text-sm">• {pro}</li>
                 ))}
               </ul>
@@ -56,7 +72,7 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
             <div>
               <p className="text-xs mb-1">Cons</p>
               <ul className="space-y-1">
-                {component.selectedOption.cons.map((con, j) => (
+                {cons.map((con, j) => (
                   <li key={j} className="text-xs sm:text-sm">• {con}</li>
                 ))}
               </ul>

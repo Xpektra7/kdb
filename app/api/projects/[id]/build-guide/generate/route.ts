@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import z from "zod";
 
 /**
  * POST /api/projects/[id]/build-guide/generate
@@ -26,6 +27,39 @@ import prisma from "@/lib/prisma";
  *   projectId, buildGuideId, stage
  * }
  */
+
+
+const aiOutputSchema = z.object({
+  project: z.string(),
+  build_overview: z.string(),
+  prerequisites: z.object({
+    tools: z.array(z.string()),
+    materials: z.array(z.string())
+  }),
+  wiring: z.object({
+    description: z.string(),
+    connections: z.array(z.string())
+  }),
+  firmware: z.object({
+    language: z.string(),
+    structure: z.array(z.string()),
+    key_logic: z.array(z.string())
+  }),
+  calibration: z.array(z.string()),
+  testing: z.object({
+    unit: z.array(z.string()),
+    integration: z.array(z.string()),
+    acceptance: z.array(z.string())
+  }),
+  common_failures: z.array(z.object({
+    issue: z.string(),
+    cause: z.string(),
+    fix: z.string()
+  })),
+  safety: z.array(z.string()),
+  next_steps: z.array(z.string())
+});
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -46,6 +80,14 @@ export async function POST(
     if (!aiOutput) {
       return NextResponse.json(
         { error: "Invalid AI output format" },
+        { status: 400 }
+      );
+    }
+
+    const parseResult = aiOutputSchema.safeParse(aiOutput);
+    if (!parseResult.success) {
+      return NextResponse.json(
+        { error: "AI output is missing required fields or has invalid types" },
         { status: 400 }
       );
     }
@@ -73,51 +115,96 @@ export async function POST(
       );
     }
 
-    // Flatten connections array
-    const wiringConnections = aiOutput.wiring?.connections || [];
-    const wiringConnectionsFlat = wiringConnections.reduce((acc: string[], item: any) => {
-      if (Array.isArray(item)) {
-        acc.push(...item);
-      } else if (typeof item === "string") {
-        acc.push(item);
-      }
-      return acc;
-    }, []);
+    const normalized = parseResult.data;
 
-    // Create build guide with normalized data - store full aiOutput for retrieval
-    const buildGuide = await prisma.buildGuide.upsert({
-      where: { projectId },
-      update: {
-        // aiOutput: aiOutput,
-        wiringInstructions: aiOutput.wiring?.description || "",
-        codeStructure: JSON.stringify(aiOutput.firmware || {}),
-        calibrationSteps: aiOutput.calibration || [],
-        testingProcedures: [
-          ...(aiOutput.testing?.unit || []),
-          ...(aiOutput.testing?.integration || []),
-          ...(aiOutput.testing?.acceptance || [])
-        ],
-        commonFailureModes: (aiOutput.common_failures || []).map((f: any) => 
-          `${f.issue}: ${f.cause} - Fix: ${f.fix}`
-        ),
-        updatedAt: new Date()
-      },
-      create: {
-        projectId,
-        blueprintId: project.blueprint.id,
-        // aiOutput: aiOutput,
-        wiringInstructions: aiOutput.wiring?.description || "",
-        codeStructure: JSON.stringify(aiOutput.firmware || {}),
-        calibrationSteps: aiOutput.calibration || [],
-        testingProcedures: [
-          ...(aiOutput.testing?.unit || []),
-          ...(aiOutput.testing?.integration || []),
-          ...(aiOutput.testing?.acceptance || [])
-        ],
-        commonFailureModes: (aiOutput.common_failures || []).map((f: any) => 
-          `${f.issue}: ${f.cause} - Fix: ${f.fix}`
-        )
+    const buildGuide = await prisma.$transaction(async (tx) => {
+      const base = await tx.buildGuide.upsert({
+        where: { projectId },
+        update: {
+          build_overview: normalized.build_overview,
+          calibration: normalized.calibration,
+          safety: normalized.safety,
+          next_steps: normalized.next_steps,
+          updatedAt: new Date()
+        },
+        create: {
+          projectId,
+          build_overview: normalized.build_overview,
+          calibration: normalized.calibration,
+          safety: normalized.safety,
+          next_steps: normalized.next_steps
+        }
+      });
+
+      await tx.prerequisite.upsert({
+        where: { buildGuideId: base.id },
+        update: {
+          tools: normalized.prerequisites.tools,
+          materials: normalized.prerequisites.materials
+        },
+        create: {
+          buildGuideId: base.id,
+          tools: normalized.prerequisites.tools,
+          materials: normalized.prerequisites.materials
+        }
+      });
+
+      await tx.wiring.upsert({
+        where: { buildGuideId: base.id },
+        update: {
+          description: normalized.wiring.description,
+          connections: normalized.wiring.connections
+        },
+        create: {
+          buildGuideId: base.id,
+          description: normalized.wiring.description,
+          connections: normalized.wiring.connections
+        }
+      });
+
+      await tx.firmware.upsert({
+        where: { buildGuideId: base.id },
+        update: {
+          language: normalized.firmware.language,
+          structure: normalized.firmware.structure,
+          key_logic: normalized.firmware.key_logic
+        },
+        create: {
+          buildGuideId: base.id,
+          language: normalized.firmware.language,
+          structure: normalized.firmware.structure,
+          key_logic: normalized.firmware.key_logic
+        }
+      });
+
+      await tx.buildTesting.upsert({
+        where: { buildGuideId: base.id },
+        update: {
+          unit: normalized.testing.unit.join("\n"),
+          integration: normalized.testing.integration,
+          acceptance: normalized.testing.acceptance
+        },
+        create: {
+          buildGuideId: base.id,
+          unit: normalized.testing.unit.join("\n"),
+          integration: normalized.testing.integration,
+          acceptance: normalized.testing.acceptance
+        }
+      });
+
+      await tx.commonFailures.deleteMany({ where: { buildGuideId: base.id } });
+      for (const failure of normalized.common_failures) {
+        await tx.commonFailures.create({
+          data: {
+            buildGuideId: base.id,
+            issue: failure.issue,
+            cause: failure.cause,
+            fix: failure.fix
+          }
+        });
       }
+
+      return base;
     });
 
     // Update project stage

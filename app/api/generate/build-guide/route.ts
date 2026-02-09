@@ -1,23 +1,23 @@
 import { GoogleGenAI } from "@google/genai";
 // Load local .env when present (optional). Install dotenv if you plan to use a .env file:
 // npm install dotenv
-import 'dotenv/config';
-
-const apiKey = process.env.GEMINI_API_KEY;
-if (!apiKey) {
-  console.error(
-    "Missing GEMINI_API_KEY. Set the env var or add it to a .env file: GEMINI_API_KEY=AIza..."
-  );
-  process.exit(1);
-}
+import "dotenv/config";
 
 export async function POST(request: Request) {
+  const apiKey = process.env.GEMINI_API_KEY;
+  if (!apiKey) {
+    return new Response(
+      JSON.stringify({ error: "Missing GEMINI_API_KEY" }),
+      { status: 500, headers: { "Content-Type": "application/json" } }
+    );
+  }
   console.log("Reached POST");
   const { project, blueprint } = await request.json();
   const input = `You are an engineering build guide generator.
 Return ONLY minified valid JSON. No prose, markdown, or extra text.
 SCHEMA:
 {
+"project":"string",
 "build_overview":"string",
 "prerequisites":{"tools":["string"],"materials":["string"]},
 "wiring":{"description":"string","connections":["string"]},
@@ -102,4 +102,3 @@ BLUEPRINT:${JSON.stringify(blueprint)}
     });
   }
 }
-

@@ -62,19 +62,27 @@ function formatBlueprintForPDF(blueprint: Blueprint): string {
   // Components
   if (blueprint.components?.length) {
     content += `# Components\n`;
-    blueprint.components.forEach((comp, i) => {
-      content += `## ${comp.subsystem} - ${comp.chosen_option}\n`;
-      content += `Why chosen: ${comp.why_chosen}\n\n`;
-      if (comp.pros?.length) {
+    blueprint.components.forEach((comp) => {
+      const subsystemName = typeof comp.subsystem === 'string'
+        ? comp.subsystem
+        : comp.subsystem.name;
+      const chosenOption = 'chosen_option' in comp ? comp.chosen_option : comp.selectedOption.name;
+      const whyChosen = 'why_chosen' in comp ? comp.why_chosen : comp.selectedOption.why_it_works;
+      const pros = 'pros' in comp ? comp.pros : comp.selectedOption.pros;
+      const cons = 'cons' in comp ? comp.cons : comp.selectedOption.cons;
+
+      content += `## ${subsystemName} - ${chosenOption}\n`;
+      content += `Why chosen: ${whyChosen}\n\n`;
+      if (pros?.length) {
         content += `### Pros\n`;
-        comp.pros.forEach(p => {
+        pros.forEach((p: string) => {
           content += `- ${p}\n`;
         });
         content += '\n';
       }
-      if (comp.cons?.length) {
+      if (cons?.length) {
         content += `### Cons\n`;
-        comp.cons.forEach(c => {
+        cons.forEach((c: string) => {
           content += `- ${c}\n`;
         });
         content += '\n';
@@ -111,7 +119,7 @@ function formatBlueprintForPDF(blueprint: Blueprint): string {
   if (blueprint.skills) {
     content += `# Skills Required\n`;
     const skills = typeof blueprint.skills === 'string'
-      ? blueprint.skills.split(',').map(s => s.trim())
+      ? blueprint.skills.split(',').map(s => s.trim()).filter(Boolean)
       : blueprint.skills;
     skills.forEach(skill => {
       content += `- ${skill}\n`;
@@ -151,11 +159,21 @@ function formatDecisionMatrixForPDF(dm: any): string {
   let content = '';
 
   // Project Overview
-  if (dm.project) {
-    content += `# Project: ${dm.project}\n`;
+  const projectName = dm.project || dm.title;
+  if (projectName) {
+    content += `# Project: ${projectName}\n`;
   }
   if (dm.concept) {
     content += `${dm.concept}\n\n`;
+  }
+
+  // Goals
+  if (dm.goals?.length) {
+    content += `# Goals\n`;
+    dm.goals.forEach((goal: string) => {
+      content += `- ${goal}\n`;
+    });
+    content += '\n';
   }
 
   // Research
@@ -177,14 +195,39 @@ function formatDecisionMatrixForPDF(dm: any): string {
   }
 
   // Decision Matrix - Subsystems
-  if (dm.decision_matrix?.length) {
+  if (dm.subsystems?.length) {
     content += `# Component Options\n`;
-    dm.decision_matrix.forEach((subsystem: any, idx: number) => {
+    dm.subsystems.forEach((subsystem: any) => {
       content += `## ${subsystem.subsystem} System\n`;
+
+      const inputFrom = subsystem.inputFrom ?? subsystem.from;
+      const outputTo = subsystem.outputTo ?? subsystem.to;
+      if (inputFrom || outputTo) {
+        if (inputFrom) {
+          const fromList = Array.isArray(inputFrom)
+            ? inputFrom
+            : [inputFrom];
+          content += `Inputs: ${fromList.filter(Boolean).join(', ')}\n`;
+        }
+        if (outputTo) {
+          const toList = Array.isArray(outputTo)
+            ? outputTo
+            : [outputTo];
+          content += `Outputs: ${toList.filter(Boolean).join(', ')}\n`;
+        }
+        content += '\n';
+      }
+
       if (subsystem.options?.length) {
         subsystem.options.forEach((option: any, optIdx: number) => {
           content += `### Option ${optIdx + 1}: ${option.name}\n`;
           content += `Why it works: ${option.why_it_works}\n`;
+          if (option.features?.length) {
+            content += `Features:\n`;
+            option.features.forEach((feature: string) => {
+              content += `- ${feature}\n`;
+            });
+          }
           if (option.pros?.length) {
             content += `Pros:\n`;
             option.pros.forEach((pro: string) => {
@@ -196,6 +239,12 @@ function formatDecisionMatrixForPDF(dm: any): string {
             option.cons.forEach((con: string) => {
               content += `- ${con}\n`;
             });
+          }
+          if (option.estimated_cost) {
+            content += `Estimated cost: ${option.estimated_cost}\n`;
+          }
+          if (option.availability) {
+            content += `Availability: ${option.availability}\n`;
           }
           content += '\n';
         });
@@ -212,15 +261,6 @@ function formatDecisionMatrixForPDF(dm: any): string {
     
     skillsList.forEach((skill: string) => {
       content += `- ${skill}\n`;
-    });
-    content += '\n';
-  }
-
-  // Final Architecture
-  if (dm.final_architecture?.length) {
-    content += `# Final Architecture\n`;
-    dm.final_architecture.forEach((item: string) => {
-      content += `- ${item}\n`;
     });
     content += '\n';
   }
