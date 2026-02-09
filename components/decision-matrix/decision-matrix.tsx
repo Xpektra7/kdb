@@ -70,11 +70,12 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
 
         // Save decisions for each subsystem
         for (const [subsystemName, option] of Object.entries(selectedOptions)) {
-          const subsystem = subsystems.find((s: any) => s.name === subsystemName);
+          const subsystem = subsystems.find((s: any) => s.subsystem === subsystemName);
           if (!subsystem) continue;
 
           const matchingOption = subsystem.options.find((o: any) => o.name === option.name);
           if (!matchingOption) continue;
+
 
           // Save decision
           const decisionResponse = await fetch(`/api/projects/${projectId}/decisions`, {
@@ -87,7 +88,8 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
           });
 
           if (!decisionResponse.ok) {
-            console.warn(`Failed to save decision for ${subsystemName}`);
+            const errorData = await decisionResponse.json().catch(() => ({}));
+            throw new Error(errorData.error || `Failed to save decision for ${subsystemName}`);
           }
         }
 
@@ -196,9 +198,9 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       </div>
 
       {/* Skills Required */}
-      <div ref={(el) => { contentRefs.current['skills'] = el; }} className="scroll-mt-20">
+      {/* <div ref={(el) => { contentRefs.current['skills'] = el; }} className="scroll-mt-20">
         <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
-      </div>
+      </div> */}
 
       {error && (
         <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">

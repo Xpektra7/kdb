@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
+import z from "zod";
+import { arch } from "os";
 
 /**
  * POST /api/projects/[id]/blueprint/generate
@@ -29,6 +31,29 @@ import prisma from "@/lib/prisma";
  *   architecture, estimatedCost, skills
  * }
  */
+
+
+// create a validation schema for the expected AI output format
+const aiOutputSchema = z.object({
+  problem: z.object({
+    statement: z.string(),
+    constraints: z.array(z.string())
+  }),
+  architecture: z.object({
+    overview: z.string(),
+    block_diagram: z.array(z.string()).optional()
+  }),
+  execution_steps: z.array(z.string()),
+  testing: z.object({
+    methods: z.array(z.string()),
+    success_criteria: z.string()
+  }),
+  references: z.array(z.string()),
+  extensions: z.array(z.string()),
+  cost: z.string(),
+  skills: z.array(z.string())
+});
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -49,6 +74,16 @@ export async function POST(
     if (!aiOutput) {
       return NextResponse.json(
         { error: "Invalid AI output format" },
+        { status: 400 }
+      );
+    }
+
+    // Validate AI output structure
+    const parseResult = aiOutputSchema.safeParse(aiOutput);
+    if (!parseResult.success) {
+      console.error("AI output validation failed:", parseResult.error);
+      return NextResponse.json(
+        { error: "AI output is missing required fields or has invalid types" },
         { status: 400 }
       );
     }
@@ -80,29 +115,53 @@ export async function POST(
       );
     }
 
-    // Save blueprint result
-    const blueprint = await prisma.blueprintResult.upsert({
-      where: { projectId },
-      update: {
-        // aiOutput: aiOutput,
-        architecture: aiOutput.architecture?.overview || null,
-        blockDiagram: aiOutput.architecture?.block_diagram || null,
-        estimatedTotalCost: aiOutput.cost || null,
-        requiredSkills: aiOutput.skills ? [aiOutput.skills] : [],
-        executionSteps: aiOutput.execution_steps || [],
-        generatedAt: new Date()
-      },
-      create: {
-        projectId,
-        // aiOutput: aiOutput,
-        architecture: aiOutput.architecture?.overview || null,
-        blockDiagram: aiOutput.architecture?.block_diagram || null,
-        estimatedTotalCost: aiOutput.cost || null,
-        requiredSkills: aiOutput.skills ? [aiOutput.skills] : [],
-        executionSteps: aiOutput.execution_steps || []
-      }
+    const { architecture, cost, skills, execution_steps, references, extensions, problem, testing } = parseResult.data;
+
+    // Save blueprint result with transaction to ensure consistency
+    const blueprint = await prisma.$transaction(async (tx) => {
+      // Upsert blueprint result
+      const bp = await tx.blueprintResult.create({
+        data: {
+          projectId, cost, executionSteps: execution_steps, references, extensions,
+        }
     });
 
+      // Save architecture details
+      await tx.architecture.create({
+        data: {
+          blueprintId: bp.id, ...architecture,
+        }
+      });
+      await tx.problem.create({
+        data: {
+          blueprintId: bp.id,
+          statment: problem.statement,
+          constraints: problem.constraints,
+        }
+      });
+      await tx.testing.create({
+        data: {
+          blueprintId: bp.id, ...testing,
+        }
+      });
+
+      // we also need to fetch decision details to link components to decisions
+      const decisions = await tx.projectDecision.findMany({
+        where: { projectId },
+        include: {
+          subsystem: {
+            select: { name: true }
+          },
+          selectedOption: {
+            select: { name: true, why_it_works: true, pros: true, cons: true }
+          }
+        }
+      });
+
+      // Save components with links to decisions
+
+      return {bp, decisions};
+  })
     // Update project stage
     const updatedProject = await prisma.project.update({
       where: { id: projectId },
@@ -112,11 +171,7 @@ export async function POST(
     return NextResponse.json(
       {
         projectId,
-        blueprintId: blueprint.id,
-        stage: updatedProject.stage,
-        architecture: aiOutput.architecture?.overview,
-        estimatedCost: aiOutput.cost,
-        skills: aiOutput.skills
+       blueprint
       },
       { status: 201 }
     );

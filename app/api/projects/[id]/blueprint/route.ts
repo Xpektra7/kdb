@@ -29,10 +29,22 @@ export async function GET(
     }
 
     const result = await prisma.blueprintResult.findUnique({
-      where: { projectId }, include:{ }
+      where: { projectId }, include: { architecture: true, problem: true, project: true, testing: true }
     });
 
-    if (!result) {
+    const components = await prisma.projectDecision.findMany({
+      where: { projectId },
+      include: {
+        subsystem: {
+          select: { name: true }
+        },
+        selectedOption: {
+          select: { name: true, why_it_works: true, pros: true, cons: true }
+        }
+      }
+    });
+
+    if (!result || !components) {
       return NextResponse.json(
         { error: "Blueprint not yet generated for this project" },
         { status: 404 }
@@ -47,7 +59,7 @@ export async function GET(
       );
     }
 
-    return NextResponse.json(result, { status: 200 });
+    return NextResponse.json({result,components}, { status: 200 });
   } catch (error) {
     console.error("[GET /api/projects/[id]/blueprint] Error:", error);
     return NextResponse.json(

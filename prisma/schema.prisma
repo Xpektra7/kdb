@@ -216,7 +216,7 @@ model Problem {
   id Int @id @default(autoincrement())
   blueprintId  Int @unique
   statment String
-  constraint String[]
+  constraints String[]
   blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
 }
 
@@ -232,7 +232,7 @@ model Testing {
   id Int @id @default(autoincrement())
   blueprintId  Int @unique
   methods String[]
-  successCriteria String
+  success_criteria String
   blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
 }
 model BlueprintResult {

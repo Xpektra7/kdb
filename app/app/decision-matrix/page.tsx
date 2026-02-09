@@ -5,16 +5,19 @@ import type { DecisionMatrixOutput } from "@/lib/definitions";
 // Transform database project format to DecisionMatrixOutput format
 function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOutput {
   return {
+    id:project.id,
     project: project.title,
     concept: project.description || "",
     research: project.research || [], // Research is stored separately in ProjectResearch table
     goals : project.goals ,
     problems_overall: project.problems_overall, // Problems are stored separately
     subsystems: project.subsystems.map((subsystem: any) => ({
+      id:subsystem.id,
       subsystem: subsystem.name,
       from: subsystem.inputFrom || null,
       to: subsystem.outputTo || null,
       options: subsystem.options.map((option: any) => ({
+        id:option.id,
         name: option.name,
         why_it_works: option.whyItWorks || option.description,
         features: option.features || [],
@@ -30,7 +33,7 @@ function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOut
 
 async function fetchProject(projectId: string): Promise<{ project: any; decisionMatrixOutput: DecisionMatrixOutput }> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
-  const response = await fetch(`${baseUrl}/api/projects/${projectId}/decision-matrix/`, {
+  const response = await fetch(`${baseUrl}/api/projects/${projectId}/subsystems/`, {
     cache: "no-store",
   });
 

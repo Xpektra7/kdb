@@ -158,6 +158,7 @@ export interface SkillsProps {
 
 // Decision matrix
 export interface DecisionMatrixOption {
+  id:Number;
   name: string;
   why_it_works: string;
   pros: string[];
@@ -165,6 +166,7 @@ export interface DecisionMatrixOption {
 }
 
 export interface DecisionMatrixItem {
+  id:Number;
   subsystem: string;
   from?: string | string[] | null;
   to?: string | string[] | null;
@@ -177,6 +179,7 @@ export interface Problem {
 }
 
 export interface DecisionMatrixOutput {
+  id:Number
   project: string;
   concept: string;
   research: string[]; // Updated to array of objects with title and url
