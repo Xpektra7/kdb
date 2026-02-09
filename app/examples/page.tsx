@@ -15,6 +15,13 @@ const examples = [
             "Unified architecture, block diagram, and cost estimate generated from selected options.",
         href: "/examples/blueprint",
     },
+    {
+        title: "Build Guide",
+        stage: "Stage 3",
+        description:
+            "Unified architecture, block diagram, and cost estimate generated from selected options.",
+        href: "/examples/build-guide",
+    },
 ];
 
 export default function Page() {
