@@ -37,14 +37,11 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            description: true,
-            whyItWorks: true,
+            why_it_works: true,
             pros: true,
             cons: true,
-            estimatedCost: true,
+            estimated_cost: true,
             availability: true,
-            imageUrl: true,
-            datasheet: true
           }
         },
         decisions: {
@@ -68,7 +65,7 @@ export async function GET(
     const formatted = subsystems.map(subsystem => ({
       id: subsystem.id,
       name: subsystem.name,
-      description: subsystem.description,
+      // description: subsystem.description,
       order: subsystem.order,
       options: subsystem.options,
       decision: subsystem.decisions.length > 0 ? subsystem.decisions[0] : null

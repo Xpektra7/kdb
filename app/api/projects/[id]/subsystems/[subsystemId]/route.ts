@@ -38,14 +38,12 @@ export async function GET(
           select: {
             id: true,
             name: true,
-            description: true,
-            whyItWorks: true,
+            // description: true,
+            why_it_works: true,
             pros: true,
             cons: true,
-            estimatedCost: true,
+            estimated_cost: true,
             availability: true,
-            imageUrl: true,
-            datasheet: true
           }
         },
         decisions: {
@@ -72,7 +70,6 @@ export async function GET(
     const response = {
       id: subsystem.id,
       name: subsystem.name,
-      description: subsystem.description,
       order: subsystem.order,
       options: subsystem.options,
       currentDecision: subsystem.decisions.length > 0
