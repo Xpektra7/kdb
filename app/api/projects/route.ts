@@ -6,9 +6,72 @@ import { auth } from "@/auth";
 import { retryWithBackoff } from "@/lib/utils/retry";
 import { ProjectStage } from "@/lib/generated/prisma/enums";
 
-// Temporary userId for demonstration purposes
+/**
+ * Helper function to safely delete a project and all related records
+ * Used for cleanup when AI generation fails
+ */
+async function deleteProjectSafely(projectId: number) {
+  try {
+    await prisma.$transaction(async (tx) => {
+      // Delete build guide related records
+      const buildGuide = await tx.buildGuide.findUnique({
+        where: { projectId },
+      });
+      
+      if (buildGuide) {
+        await tx.prerequisite.deleteMany({ where: { buildGuideId: buildGuide.id } });
+        await tx.wiring.deleteMany({ where: { buildGuideId: buildGuide.id } });
+        await tx.firmware.deleteMany({ where: { buildGuideId: buildGuide.id } });
+        await tx.buildTesting.deleteMany({ where: { buildGuideId: buildGuide.id } });
+        await tx.commonFailures.deleteMany({ where: { buildGuideId: buildGuide.id } });
+        await tx.buildGuide.delete({ where: { projectId } });
+      }
 
-// const userId = "cml54po810000f4uwbqqsrie3";
+      // Delete blueprint related records
+      const blueprint = await tx.blueprintResult.findUnique({
+        where: { projectId },
+        include: { architecture: true, testing: true, problem: true }
+      });
+
+      if (blueprint) {
+        if (blueprint.architecture) {
+          await tx.architecture.delete({ where: { blueprintId: blueprint.id } });
+        }
+        if (blueprint.testing) {
+          await tx.testing.delete({ where: { blueprintId: blueprint.id } });
+        }
+        if (blueprint.problem) {
+          await tx.problem.delete({ where: { blueprintId: blueprint.id } });
+        }
+        await tx.blueprintResult.delete({ where: { projectId } });
+      }
+
+      // Delete decisions
+      await tx.projectDecision.deleteMany({ where: { projectId } });
+
+      // Delete problem overall records
+      await tx.problemOverall.deleteMany({ where: { projectId } });
+
+      // Delete subsystem options and subsystems
+      const subsystems = await tx.subsystem.findMany({
+        where: { projectId },
+        include: { options: true }
+      });
+
+      for (const subsystem of subsystems) {
+        await tx.subsystemOption.deleteMany({ where: { subsystemId: subsystem.id } });
+      }
+
+      await tx.subsystem.deleteMany({ where: { projectId } });
+
+      // Finally delete the project
+      await tx.project.delete({ where: { id: projectId } });
+    });
+  } catch (error) {
+    console.error(`[deleteProjectSafely] Failed to delete project ${projectId}:`, error);
+    // Don't throw - this is cleanup code, we don't want to mask the original error
+  }
+}
 
 const validateInput = {
   title: z.string().min(1),
@@ -161,7 +224,7 @@ export async function POST(request: NextRequest) {
           });
 
           const text = genResult.text;
-          // tokensUsed = genResult.usageMetadata?.totalTokenCount || 0;
+      // tokensUsed = genResult.usageMetadata?.totalTokenCount || 0;
           // console.log(genResult.text);
 
           const cleanedText = text ? text.replace(/```json\n|\n```/g, "").trim() : "";
@@ -187,7 +250,7 @@ export async function POST(request: NextRequest) {
     } catch (aiError) {
       // await prisma.aIGeneration.create({
       //   data: {
-      //     projectId: project.id,
+      //     projectId,
       //     userId,
       //     stage: "DECISION_MATRIX",
       //     status: "FAILED",
@@ -195,7 +258,7 @@ export async function POST(request: NextRequest) {
       //     errorMessage: aiError instanceof Error ? aiError.message : String(aiError)
       //   }
       // });
-      await prisma.project.delete({ where: { id: project.id } });
+      await deleteProjectSafely(project.id);
       console.error("[POST /api/projects] AI generation failed:", aiError);
       return NextResponse.json(
         { error: aiError instanceof Error ? `AI generation failed: ${aiError.message}` : "AI generation failed" },
@@ -209,7 +272,7 @@ export async function POST(request: NextRequest) {
 
     console.log("AI Output Validation Result:", validation);
     if (!validation.success) {
-      await prisma.project.delete({ where: { id: project.id } });
+      await deleteProjectSafely(project.id);
       console.error("[POST /api/projects] AI output validation failed:", validation.error);
       return NextResponse.json(
         { error: "AI output does not match expected schema" },

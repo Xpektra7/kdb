@@ -174,8 +174,99 @@ export async function DELETE(
       );
     }
 
-    await prisma.project.delete({
-      where: { id: projectId }
+    // Use a transaction to delete all related records in the correct order
+    await prisma.$transaction(async (tx) => {
+      // 1. Delete build guide related records (if they exist)
+      const buildGuide = await tx.buildGuide.findUnique({
+        where: { projectId },
+      });
+      
+      if (buildGuide) {
+        // Delete related records first
+        await tx.prerequisite.deleteMany({
+          where: { buildGuideId: buildGuide.id }
+        });
+        await tx.wiring.deleteMany({
+          where: { buildGuideId: buildGuide.id }
+        });
+        await tx.firmware.deleteMany({
+          where: { buildGuideId: buildGuide.id }
+        });
+        await tx.buildTesting.deleteMany({
+          where: { buildGuideId: buildGuide.id }
+        });
+        await tx.commonFailures.deleteMany({
+          where: { buildGuideId: buildGuide.id }
+        });
+        // Delete the build guide
+        await tx.buildGuide.delete({
+          where: { projectId }
+        });
+      }
+
+      // 2. Delete blueprint related records (if they exist)
+      const blueprint = await tx.blueprintResult.findUnique({
+        where: { projectId },
+        include: { architecture: true, testing: true, problem: true }
+      });
+
+      if (blueprint) {
+        // Delete architecture if it exists
+        if (blueprint.architecture) {
+          await tx.architecture.delete({
+            where: { blueprintId: blueprint.id }
+          });
+        }
+        // Delete testing if it exists
+        if (blueprint.testing) {
+          await tx.testing.delete({
+            where: { blueprintId: blueprint.id }
+          });
+        }
+        // Delete problem if it exists
+        if (blueprint.problem) {
+          await tx.problem.delete({
+            where: { blueprintId: blueprint.id }
+          });
+        }
+        // Delete the blueprint
+        await tx.blueprintResult.delete({
+          where: { projectId }
+        });
+      }
+
+      // 3. Delete decisions
+      await tx.projectDecision.deleteMany({
+        where: { projectId }
+      });
+
+      // 4. Delete problem overall records
+      await tx.problemOverall.deleteMany({
+        where: { projectId }
+      });
+
+      // 5. Delete subsystem options (they should cascade with subsystems, but let's be explicit)
+      const subsystems = await tx.subsystem.findMany({
+        where: { projectId },
+        include: { options: true }
+      });
+
+      for (const subsystem of subsystems) {
+        // Delete options for each subsystem
+        await tx.subsystemOption.deleteMany({
+          where: { subsystemId: subsystem.id }
+        });
+      }
+
+      // 6. Delete subsystems
+      await tx.subsystem.deleteMany({
+        where: { projectId }
+      });
+
+      // 7. Finally, delete the project
+      await tx.project.delete({
+        where: { id: projectId }
+      });
     });
 
     return NextResponse.json(
