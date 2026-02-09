@@ -146,7 +146,7 @@ export default function Blueprint({
       {/* Project Header */}
       <div className="bg-background rounded-lg shadow-sm border border-border p-4 sm:p-6">
         <h1 className="text-2xl sm:text-3xl lg:text-4xl mb-2 wrap-break-words">
-          {blueprintData.project}
+          {blueprintData.project.title}
         </h1>
         <p className="text-xs sm:text-sm text-muted-foreground">Blueprint</p>
       </div>
@@ -201,13 +201,6 @@ export default function Blueprint({
         />
       )}
 
-      {/* Failure Modes */}
-      {blueprintData.testing.failure_modes && (
-        <FailureModes
-          failureModes={blueprintData.testing.failure_modes}
-          contentRef={(el) => (contentRefs.current["failures"] = el)}
-        />
-      )}
 
       {/* Skills */}
       {blueprintData.skills && (

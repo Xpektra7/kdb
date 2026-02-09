@@ -176,7 +176,6 @@ model SubsystemOption {
   
   name            String
   features        String[]
-  // description     String    @db.Text
   why_it_works      String    @db.Text
   
   pros            String[]

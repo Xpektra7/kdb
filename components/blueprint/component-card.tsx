@@ -11,10 +11,10 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
       >
         <div className="text-left flex-1 min-w-0">
           <p className="text-xs mb-1">
-            {component.subsystem} System
+            {component.subsystem.name} System
           </p>
           <p className="text-sm sm:text-base wrap-break-words pr-2">
-            {component.chosen_option}
+            {component.selectedOption.name}
           </p>
         </div>
         {isExpanded ? 
@@ -27,10 +27,10 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
         <div className="p-4 sm:p-6 space-y-3 border-t border-border">
           <div>
             <p className="text-xs mb-1">Why Chosen</p>
-            <p className="text-xs sm:text-sm">{component.why_chosen}</p>
+            <p className="text-xs sm:text-sm">{component.selectedOption.why_it_works}</p>
           </div>
           
-          {component.features && component.features.length > 0 && (
+          {/* {component.features && component.features.length > 0 && (
             <div>
               <p className="text-xs mb-1">Features</p>
               <ul className="space-y-1">
@@ -42,13 +42,13 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
                 ))}
               </ul>
             </div>
-          )}
+          )} */}
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <p className="text-xs mb-1">Pros</p>
               <ul className="space-y-1">
-                {component.pros.map((pro, j) => (
+                {component.selectedOption.pros.map((pro, j) => (
                   <li key={j} className="text-xs sm:text-sm">• {pro}</li>
                 ))}
               </ul>
@@ -56,14 +56,14 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
             <div>
               <p className="text-xs mb-1">Cons</p>
               <ul className="space-y-1">
-                {component.cons.map((con, j) => (
+                {component.selectedOption.cons.map((con, j) => (
                   <li key={j} className="text-xs sm:text-sm">• {con}</li>
                 ))}
               </ul>
             </div>
           </div>
           
-          {component.alternatives_considered && component.alternatives_considered.length > 0 && (
+          {/* {component.alternatives_considered && component.alternatives_considered.length > 0 && (
             <div>
               <p className="text-xs mb-1">Alternatives Considered</p>
               <p className="text-xs sm:text-sm">{component.alternatives_considered.join(', ')}</p>
@@ -75,7 +75,7 @@ export function ComponentCard({ component, isExpanded, onToggle }: ComponentCard
               {component.availability && <span className="text-xs sm:text-sm">{component.availability}</span>}
               {component.estimated_cost && <span className="text-sm sm:text-base">{component.estimated_cost}</span>}
             </div>
-          )}
+          )} */}
         </div>
       )}
     </div>

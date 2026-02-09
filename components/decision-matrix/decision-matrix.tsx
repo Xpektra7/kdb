@@ -172,7 +172,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
 
 
       {/* Block Diagram */}
-      <BlockDiagram matrix={output} className=''/>
+      <BlockDiagram matrix={output.subsystems} className=''/>
       
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
@@ -180,11 +180,12 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
         {output.subsystems && (
           <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
             {output.subsystems.map((matrix, index) => (
+
               <div
-                key={index}
+              key={index}
                 ref={(el) => { contentRefs.current[`component-${index}`] = el; }}
                 className="scroll-mt-20"
-              >
+                >
                 <Subsystem 
                   subsystem={matrix} 
                   onOptionSelect={(selectedOption) => handleOptionSelect(matrix.subsystem, selectedOption)}
@@ -192,6 +193,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
                   showError={missingSubs.includes(matrix.subsystem)}
                 />
               </div>
+                
             ))}
           </div>
         )}

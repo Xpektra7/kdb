@@ -75,15 +75,12 @@ export async function POST(
 ) {
   try {
 
-    console.log('yes we are getting there')
     const { id } = await params;
     const projectId = parseInt(id);
     const body = await request.json();
     const { subsystemId, selectedOptionId } = body;
 
-    console.log('================')
     console.log(subsystemId, selectedOptionId)
-    console.log('====================')
 
     if (isNaN(projectId) || !subsystemId || !selectedOptionId) {
       return NextResponse.json(

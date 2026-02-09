@@ -94,7 +94,7 @@ export default function BlueprintClient({ blueprintData, projectId, dummy }: Blu
 
   const pdfData: PDFExportData = {
     title: "Blueprint Report",
-    projectName: blueprintData.project,
+    projectName: blueprintData.project.title,
     blueprint: blueprintData,
   };
 

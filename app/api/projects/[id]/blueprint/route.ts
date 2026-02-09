@@ -59,7 +59,8 @@ export async function GET(
       );
     }
 
-    return NextResponse.json({result,components}, { status: 200 });
+
+    return NextResponse.json({...result,componets: components}, { status: 200 });
   } catch (error) {
     console.error("[GET /api/projects/[id]/blueprint] Error:", error);
     return NextResponse.json(

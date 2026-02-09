@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
       "research":"string[]",
       "goals":["string"],
       "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-      "subsystems":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
+      "subsystems":[{"subsystem":"string","inputFrom":"string|string[]|null","outputTo":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
     }
     RULES:
     - block_diagram represents abstract subsystems only and must be decision-agnostic and stable, and should ONLY include subsystem name.

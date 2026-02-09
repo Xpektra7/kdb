@@ -52,12 +52,12 @@ export function buildDecisionMatrixNav(output: DecisionMatrixOutput): NavItem[] 
     nav.push({ id: 'problems', label: 'Problems', level: 0 });
   }
 
-  if (output.decision_matrix) {
+  if (output.subsystems) {
     nav.push({
       id: 'components',
       label: 'Components',
       level: 0,
-      children: output.decision_matrix.map((m, i) => ({
+      children: output.subsystems.map((m, i) => ({
         id: `component-${i}`,
         label: `${m.subsystem} System`,
         level: 1,
@@ -65,9 +65,6 @@ export function buildDecisionMatrixNav(output: DecisionMatrixOutput): NavItem[] 
     });
   }
 
-  if (output.skills) {
-    nav.push({ id: 'skills', label: 'Skills Required', level: 0 });
-  }
 
   return nav;
 }

@@ -31,18 +31,18 @@ export interface Edge {
 }
 
 export interface BlockDiagramProps {
-  matrix: DecisionMatrixOutput;
+  matrix: DecisionMatrixItem[];
   className?: string;
 }
 
 // Blueprint page and components
 export interface Blueprint {
-  project: string;
+  project: {title: string};
   problem: { statement: string; constraints: string[] };
-  architecture: { overview: string; block_diagram: string[]; data_flow?: string;};
+  architecture: { overview: string; block_diagram: string[]; data_flow?: string; };
   components: { subsystem: string; chosen_option: string; why_chosen: string; pros: string[]; cons: string[] }[];
   execution_steps: string[];
-  testing: { methods: string[]; success_criteria: string ; failure_modes?: {issue: string; mitigation: string}[] };
+  testing: { methods: string[]; success_criteria: string; failure_modes?: { issue: string; mitigation: string }[] };
   references: string[];
   extensions: string[];
   cost: string;
@@ -65,19 +65,15 @@ export interface ArchitectureProps {
 }
 
 export interface Component {
-  subsystem: string;
-  chosen_option: string;
-  why_chosen: string;
+  subsystem: { name: string };
+  selectedOption: { name: string, why_it_works: string,pros: string[], cons: string[];};
   features?: string[];
-  pros: string[];
-  cons: string[];
-  alternatives_considered?: string[];
-  availability?: string;
-  estimated_cost?: string;
+  // availability?: string;
+  // estimated_cost?: string;
 }
 
 export interface ComponentsProps {
-  components: Component[];
+  components: any;
   isExpanded: boolean;
   onToggle: () => void;
   expandedItems: Record<string, boolean>;
@@ -158,18 +154,20 @@ export interface SkillsProps {
 
 // Decision matrix
 export interface DecisionMatrixOption {
-  id:Number;
+  id: Number;
   name: string;
   why_it_works: string;
   pros: string[];
   cons: string[];
+  estimated_cost: string;
+  availability: string;
 }
 
 export interface DecisionMatrixItem {
-  id:Number;
+  id: Number;
   subsystem: string;
-  from?: string | string[] | null;
-  to?: string | string[] | null;
+  inputFrom?: string | string[] | null;
+  outputTo?: string | string[] | null;
   options: DecisionMatrixOption[];
 }
 
@@ -179,7 +177,7 @@ export interface Problem {
 }
 
 export interface DecisionMatrixOutput {
-  id:Number
+  id: Number
   project: string;
   concept: string;
   research: string[]; // Updated to array of objects with title and url

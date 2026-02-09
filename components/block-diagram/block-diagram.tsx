@@ -6,10 +6,10 @@ import { cn } from '@/lib/utils';
 import type { BlockDiagramProps, DecisionMatrixItem } from '@/lib/definitions';
 
 export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
-  const data = matrix.decision_matrix || [];
-  
+  const data = matrix
+
   const blocks = useMemo(() => {
-    const blockMap = new Map<string, { subsystem: string; to: string[] }>();
+    const blockMap = new Map<string, { subsystem: string; outputTo: string[] }>();
 
     const getConnections = (val: string | string[] | null | undefined): string[] => {
       if (!val) return [];
@@ -20,16 +20,16 @@ export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
     data.forEach((item: DecisionMatrixItem) => {
       if (!item.subsystem) return;
       const current = item.subsystem.trim();
-      
+
       if (!blockMap.has(current)) {
-        blockMap.set(current, { subsystem: current, to: [] });
+        blockMap.set(current, { subsystem: current, outputTo: [] });
       }
 
-      const targets = getConnections(item.to);
+      const targets = getConnections(item.outputTo);
       const existing = blockMap.get(current)!;
       targets.forEach(target => {
-        if (!existing.to.includes(target)) {
-          existing.to.push(target);
+        if (!existing.outputTo.includes(target)) {
+          existing.outputTo.push(target);
         }
       });
     });
@@ -39,6 +39,7 @@ export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
 
   return (
     <div className={cn("w-full py-4", className)}>
+      <h2 className='text-xl sm:text-2xl font-semibold mb-6 sm:mb-8'>Block Diagram</h2>
       <div className="rounded-lg p-4 sm:p-6 border border-border">
         <div className="flex flex-col gap-3">
           {blocks.map((block, i) => (
@@ -47,8 +48,8 @@ export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
               className="p-4 rounded border border-border bg-muted/30"
             >
               <p className="text-sm sm:text-base capitalize font-medium">{block.subsystem}</p>
-              {block.to && block.to.length > 0 && (
-                <p className="text-xs mt-1 capitalize">→ {block.to.join(", ")}</p>
+              {block.outputTo && block.outputTo.length > 0 && (
+                <p className="text-xs mt-1 capitalize">→ {block.outputTo.join(", ")}</p>
               )}
             </div>
           ))}
@@ -57,4 +58,4 @@ export function BlockDiagram({ matrix, className }: BlockDiagramProps) {
     </div>
   );
 }
- 
+

@@ -19,7 +19,7 @@ export function Components({ components, isExpanded, onToggle, expandedItems, on
           </AccordionTrigger>
           <AccordionContent className="pt-4 pl-4 border-l-2 border-accent-border">
             <div className="space-y-4">
-              {components.map((comp, i) => (
+              {components.map((comp : Component, i:any) => (
                 <ComponentCard
                   key={i}
                   component={comp}
