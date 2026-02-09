@@ -156,7 +156,7 @@ export async function POST(request: NextRequest) {
       const result = await retryWithBackoff(
         async () => {
           const genResult = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
+            model: "gemini-3-pro-preview",
             contents: input,
           });
 
