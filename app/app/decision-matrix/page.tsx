@@ -1,6 +1,8 @@
 import DecisionMatrixClient from "./DecisionMatrixClient";
 import type { DecisionMatrixOutput } from "@/lib/definitions";
 
+export const dynamic = "force-dynamic";
+
 // Transform database project format to DecisionMatrixOutput format
 function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOutput {
   return {
@@ -48,9 +50,9 @@ async function fetchProject(projectId: string): Promise<{ project: any; decision
 }
 
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams?: { projectId?: string } }) {
   try {
-    const params = await searchParams;
+    const params = searchParams ?? {};
     
     // New flow: Use projectId from persistent storage
     if (params.projectId) {
@@ -58,7 +60,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
       return <DecisionMatrixClient output={decisionMatrixOutput} projectId={parseInt(params.projectId)} />;
     }
 
-    throw new Error("Missing projectId");
+    return null;
   } catch (err) {
     console.error("Decision matrix page error:", err);
   }

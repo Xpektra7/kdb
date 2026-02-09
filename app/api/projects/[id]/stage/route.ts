@@ -152,7 +152,7 @@ export async function GET(
           include: { decisions: { select: { id: true } } },
           select: { id: true, decisions: true }
         },
-        decisionMatrix: { select: { id: true } },
+        decisions: { select: { id: true } },
         blueprint: { select: { id: true } }
       }
     });
@@ -185,7 +185,7 @@ export async function GET(
         currentStage: project.stage,
         subsystemsTotal,
         subsystemsDecided,
-        hasDecisionMatrix: !!project.decisionMatrix,
+        hasDecisionMatrix: project.decisions.length > 0,
         hasBlueprint: !!project.blueprint,
         progress: Math.round(progress)
       },

@@ -3,6 +3,8 @@ import { getDataModeServer } from "@/lib/data-mode.server";
 import type { Blueprint } from "@/lib/definitions";
 import BlueprintClient from "./BlueprintClient";
 
+export const dynamic = "force-dynamic";
+
 async function fetchBlueprintFromProject(projectId: string): Promise<Blueprint> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
   
@@ -48,9 +50,9 @@ async function generateBlueprint(project: string, selectedOptions: Record<string
   return typeof output === "string" ? JSON.parse(output) : output;
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams?: { projectId?: string } }) {
   try {
-    const params = await searchParams;
+    const params = searchParams ?? {};
     const useDummyData = await getDataModeServer();
 
     if (useDummyData) {
@@ -63,7 +65,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
       return <BlueprintClient blueprintData={blueprintData} projectId={parseInt(params.projectId)} />;
     }
 
-    throw new Error("Missing projectId");
+    return null;
   } catch (err) {
     console.error("Blueprint page error:", err);
   }

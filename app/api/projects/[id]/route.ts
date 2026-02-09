@@ -31,6 +31,7 @@ export async function GET(
     const project = await prisma.project.findUnique({
       where: { id: projectId },
       include: {
+        problems_overall: true,
         subsystems: {
           orderBy: { order: "asc" },
           include: {

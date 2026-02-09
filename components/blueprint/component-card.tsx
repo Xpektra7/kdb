@@ -2,20 +2,44 @@ import { HugeiconsIcon } from '@hugeicons/react';
 import { ArrowDown01Icon, ArrowRight01Icon } from '@hugeicons/core-free-icons';
 import type { Component, ComponentCardProps } from '@/lib/definitions';
 
+type SelectedOptionObject = {
+  name: string;
+  why_it_works: string;
+  pros: string[];
+  cons: string[];
+};
+
+type ComponentWithSelectedOptionObject = {
+  subsystem: { name: string };
+  selectedOption: SelectedOptionObject;
+  features?: string[];
+};
+
+function hasSelectedOptionObject(
+  component: Component
+): component is ComponentWithSelectedOptionObject {
+  return (
+    typeof component.selectedOption === "object" &&
+    component.selectedOption !== null &&
+    "name" in component.selectedOption
+  );
+}
+
 export function ComponentCard({ component, isExpanded, onToggle }: ComponentCardProps) {
   const subsystemName = typeof component.subsystem === "string"
     ? component.subsystem
     : component.subsystem.name;
-  const selectedName = "selectedOption" in component
+  const isObjectSelection = hasSelectedOptionObject(component);
+  const selectedName = isObjectSelection
     ? component.selectedOption.name
     : component.selectedOption;
-  const whyChosen = "selectedOption" in component
+  const whyChosen = isObjectSelection
     ? component.selectedOption.why_it_works
     : component.why_chosen;
-  const pros = "selectedOption" in component
+  const pros: string[] = isObjectSelection
     ? component.selectedOption.pros
     : component.pros;
-  const cons = "selectedOption" in component
+  const cons: string[] = isObjectSelection
     ? component.selectedOption.cons
     : component.cons;
 

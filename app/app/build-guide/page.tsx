@@ -3,6 +3,8 @@ import { getDataModeServer } from "@/lib/data-mode.server";
 import { buildGuideDummyData } from "@/schema/build-guide-dummy";
 import BuildGuideClient from "./BuildGuideClient";
 
+export const dynamic = "force-dynamic";
+
 async function fetchBuildGuideFromProject(projectId: string): Promise<BuildGuide> {
   const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
 
@@ -20,10 +22,10 @@ async function fetchBuildGuideFromProject(projectId: string): Promise<BuildGuide
   return response.json();
 }
 
-export default async function Page({ searchParams }: { searchParams: Promise<{ projectId?: string }> }) {
+export default async function Page({ searchParams }: { searchParams?: { projectId?: string } }) {
   
   try {
-    const params = await searchParams;
+    const params = searchParams ?? {};
     const useDummyData = await getDataModeServer();
 
     if (useDummyData) {
@@ -37,7 +39,7 @@ export default async function Page({ searchParams }: { searchParams: Promise<{ p
     }
 
 
-    throw new Error("Missing projectId");
+    return null;
   } catch (err) {
     console.error("Build guide page error:", err);
   }

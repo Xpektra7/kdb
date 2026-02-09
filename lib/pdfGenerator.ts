@@ -1,5 +1,5 @@
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib';
-import type { Blueprint, BuildGuide, DecisionMatrixOutput } from '@/lib/definitions';
+import type { Blueprint, BuildGuide, DecisionMatrixOutput, Component } from '@/lib/definitions';
 
 export interface PageContent {
   type: 'heading' | 'paragraph' | 'list';
@@ -63,16 +63,35 @@ function formatBlueprintForPDF(blueprint: Blueprint): string {
   if (blueprint.components?.length) {
     content += `# Components\n`;
     blueprint.components.forEach((comp) => {
+      const hasSelectedOptionObject = isComponentWithSelectedOptionObject(comp);
       const subsystemName = typeof comp.subsystem === 'string'
         ? comp.subsystem
         : comp.subsystem.name;
-      const chosenOption = 'chosen_option' in comp ? comp.chosen_option : comp.selectedOption.name;
-      const whyChosen = 'why_chosen' in comp ? comp.why_chosen : comp.selectedOption.why_it_works;
-      const pros = 'pros' in comp ? comp.pros : comp.selectedOption.pros;
-      const cons = 'cons' in comp ? comp.cons : comp.selectedOption.cons;
+      const chosenOption = 'chosen_option' in comp
+        ? comp.chosen_option
+        : hasSelectedOptionObject
+          ? comp.selectedOption.name
+          : comp.selectedOption;
+      const whyChosen = 'why_chosen' in comp
+        ? comp.why_chosen
+        : hasSelectedOptionObject
+          ? comp.selectedOption.why_it_works
+          : undefined;
+      const pros = 'pros' in comp
+        ? comp.pros
+        : hasSelectedOptionObject
+          ? comp.selectedOption.pros
+          : [];
+      const cons = 'cons' in comp
+        ? comp.cons
+        : hasSelectedOptionObject
+          ? comp.selectedOption.cons
+          : [];
 
       content += `## ${subsystemName} - ${chosenOption}\n`;
-      content += `Why chosen: ${whyChosen}\n\n`;
+      if (whyChosen) {
+        content += `Why chosen: ${whyChosen}\n\n`;
+      }
       if (pros?.length) {
         content += `### Pros\n`;
         pros.forEach((p: string) => {
@@ -152,6 +171,29 @@ function formatBlueprintForPDF(blueprint: Blueprint): string {
   }
 
   return content;
+}
+
+type SelectedOptionObject = {
+  name: string;
+  why_it_works: string;
+  pros: string[];
+  cons: string[];
+};
+
+type ComponentWithSelectedOptionObject = {
+  subsystem: { name: string };
+  selectedOption: SelectedOptionObject;
+  features?: string[];
+};
+
+function isComponentWithSelectedOptionObject(
+  component: Component
+): component is ComponentWithSelectedOptionObject {
+  return (
+    typeof component.selectedOption === 'object' &&
+    component.selectedOption !== null &&
+    'name' in component.selectedOption
+  );
 }
 
 // Format DecisionMatrix object into readable text

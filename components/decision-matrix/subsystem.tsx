@@ -45,6 +45,9 @@ export default function Subsystem({ subsystem, onOptionSelect, selectedOption, s
                                         <Badge className="text-xs sm:text-sm" variant="secondary">{option.availability}</Badge>
                                     </div>
                                 </div>
+                                {option.features && option.features.length > 0 && (
+                                  <AccordionList name="Features" list={option.features} />
+                                )}
                                 <AccordionList name="Pros" list={option.pros} />
                                 <AccordionList name="Cons" list={option.cons} />
 

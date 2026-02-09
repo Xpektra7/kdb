@@ -150,7 +150,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       </div>
 
       {/* Research */}
-      {output.research && (
+      {output.research?.length > 0 && (
         <div ref={(el) => { contentRefs.current['research'] = el; }} className="scroll-mt-20">
           <Research research={output.research} />
         </div>
@@ -164,7 +164,7 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       )}
 
       {/* Problems */}
-      {output.problems_overall && (
+      {output.problems_overall?.length > 0 && (
         <div ref={(el) => { contentRefs.current['problems'] = el; }} className="scroll-mt-20">
           <ProblemsOverall problems={output.problems_overall} />
         </div>
@@ -228,4 +228,3 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
     </div>
   );
 }
-

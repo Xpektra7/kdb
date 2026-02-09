@@ -23,7 +23,11 @@ function compressBlueprintForBuildGuide(blueprint: Blueprint) {
     location: "Nigeria", // Default location, could be made dynamic
     systems: blueprint.components.map((comp) => ({
       subsystem: typeof comp.subsystem === "string" ? comp.subsystem : comp.subsystem.name,
-      choice: "chosen_option" in comp ? comp.chosen_option : comp.selectedOption.name,
+      choice: "chosen_option" in comp
+        ? comp.chosen_option
+        : typeof comp.selectedOption === "string"
+          ? comp.selectedOption
+          : comp.selectedOption.name,
     })),
     constraints: blueprint.problem?.constraints || [],
   };

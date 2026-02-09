@@ -5,7 +5,7 @@ import type { DecisionMatrixOutput } from "@/lib/definitions";
 export default function Page() {
   return (
     <main className="">
-      <DecisionMatrixClient output={dummyData as DecisionMatrixOutput} dummy={true} />
+      <DecisionMatrixClient output={dummyData as any} dummy={true} />
     </main>
   );
 }

@@ -300,7 +300,7 @@ model BuildTesting {
 
 model CommonFailures {
   id Int @id @default(autoincrement())
-  buildGuideId Int @unique
+  buildGuideId Int
 
   issue String @db.Text
   cause String @db.Text

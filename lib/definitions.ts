@@ -163,6 +163,7 @@ export interface DecisionMatrixOption {
   id: number;
   name: string;
   why_it_works: string;
+  features?: string[];
   pros: string[];
   cons: string[];
   estimated_cost: string;

@@ -60,6 +60,65 @@ const aiOutputSchema = z.object({
   next_steps: z.array(z.string())
 });
 
+function toStringArray(value: unknown): string[] {
+  if (Array.isArray(value)) {
+    return value.map((item) => String(item)).filter(Boolean);
+  }
+  if (value === null || value === undefined) {
+    return [];
+  }
+  return [String(value)].filter(Boolean);
+}
+
+function normalizeBuildGuideOutput(aiOutput: any, fallbackProject: string) {
+  const prerequisites = aiOutput?.prerequisites || {};
+  const wiring = aiOutput?.wiring || {};
+  const firmware = aiOutput?.firmware || {};
+  const testing = aiOutput?.testing || {};
+
+  const commonFailuresRaw = Array.isArray(aiOutput?.common_failures)
+    ? aiOutput.common_failures
+    : [];
+
+  const common_failures = commonFailuresRaw.map((failure: any) => {
+    if (typeof failure === "string") {
+      return { issue: failure, cause: "", fix: "" };
+    }
+    return {
+      issue: String(failure?.issue ?? ""),
+      cause: String(failure?.cause ?? ""),
+      fix: String(failure?.fix ?? "")
+    };
+  });
+
+  return {
+    project: String(aiOutput?.project || fallbackProject || ""),
+    build_overview: String(aiOutput?.build_overview || ""),
+    prerequisites: {
+      tools: toStringArray(prerequisites.tools),
+      materials: toStringArray(prerequisites.materials)
+    },
+    wiring: {
+      description: String(wiring.description || ""),
+      connections: toStringArray(wiring.connections)
+    },
+    firmware: {
+      language: String(firmware.language || ""),
+      structure: toStringArray(firmware.structure),
+      key_logic: toStringArray(firmware.key_logic)
+    },
+    calibration: toStringArray(aiOutput?.calibration),
+    testing: {
+      unit: toStringArray(testing.unit),
+      integration: toStringArray(testing.integration),
+      acceptance: toStringArray(testing.acceptance)
+    },
+    common_failures,
+    safety: toStringArray(aiOutput?.safety),
+    next_steps: toStringArray(aiOutput?.next_steps)
+  };
+}
+
 export async function POST(
   request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -84,7 +143,20 @@ export async function POST(
       );
     }
 
-    const parseResult = aiOutputSchema.safeParse(aiOutput);
+    let parsedOutput = aiOutput;
+    if (typeof aiOutput === "string") {
+      try {
+        parsedOutput = JSON.parse(aiOutput);
+      } catch {
+        return NextResponse.json(
+          { error: "AI output is not valid JSON" },
+          { status: 400 }
+        );
+      }
+    }
+
+    const normalizedCandidate = normalizeBuildGuideOutput(parsedOutput, "");
+    const parseResult = aiOutputSchema.safeParse(normalizedCandidate);
     if (!parseResult.success) {
       return NextResponse.json(
         { error: "AI output is missing required fields or has invalid types" },
@@ -97,6 +169,7 @@ export async function POST(
       where: { id: projectId },
       select: { 
         id: true,
+        title: true,
         blueprint: { select: { id: true } }
       }
     });
@@ -115,7 +188,7 @@ export async function POST(
       );
     }
 
-    const normalized = parseResult.data;
+    const normalized = normalizeBuildGuideOutput(parsedOutput, project.title || "");
 
     const buildGuide = await prisma.$transaction(async (tx) => {
       const base = await tx.buildGuide.upsert({
