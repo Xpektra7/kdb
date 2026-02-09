@@ -157,7 +157,7 @@ model Subsystem {
   createdAt   DateTime @default(now())
   
   name        String
-  description String?
+  // description String?
   inputFrom String[]
   outputTo  String[]
   
@@ -176,7 +176,7 @@ model SubsystemOption {
   
   name            String
   features        String[]
-  description     String    @db.Text
+  // description     String    @db.Text
   why_it_works      String    @db.Text
   
   pros            String[]
@@ -216,7 +216,7 @@ model Problem {
   id Int @id @default(autoincrement())
   blueprintId  Int @unique
   statment String
-  constraint String[]
+  constraints String[]
   blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
 }
 
@@ -232,7 +232,7 @@ model Testing {
   id Int @id @default(autoincrement())
   blueprintId  Int @unique
   methods String[]
-  successCriteria String
+  success_criteria String
   blueprint    BlueprintResult @relation(fields: [blueprintId], references: [id], onDelete: Cascade)
 }
 model BlueprintResult {
@@ -281,7 +281,31 @@ model Firmware {
   id Int @id @default(autoincrement())
   buildGuideId Int @unique
   language String @db.Text
-  codeStructure String @db.Text
+  structure String[] @db.Text
+  key_logic String[] @db.Text
+
+  buildGuide BuildGuide @relation(fields: [buildGuideId], references: [id], onDelete: Cascade)
+}
+
+model BuildTesting {
+  id Int @id @default(autoincrement())
+  buildGuideId Int @unique
+
+  unit String @db.Text
+  integration String[] @db.Text
+  acceptance String[] @db.Text
+
+  buildGuide BuildGuide @relation(fields: [buildGuideId], references: [id], onDelete: Cascade)
+
+}
+
+model CommonFailures {
+  id Int @id @default(autoincrement())
+  buildGuideId Int @unique
+
+  issue String @db.Text
+  cause String @db.Text
+  fix   String @db.Text
 
   buildGuide BuildGuide @relation(fields: [buildGuideId], references: [id], onDelete: Cascade)
 }
@@ -296,10 +320,12 @@ model BuildGuide {
   prerequisites       Prerequisite?
 
   wiring  Wiring?
-  codeStructure       String    @db.Text
-  calibrationSteps    String[]
-  testingProcedures   String[]
-  commonFailureModes  String[]
+  firmware Firmware?
+  calibration    String[]
+  testing BuildTesting?
+  common_failures CommonFailures[]
+  safety  String[]
+  next_steps  String[]
   
   generatedAt         DateTime  @default(now())
   updatedAt           DateTime  @updatedAt

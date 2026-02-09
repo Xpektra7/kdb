@@ -18,16 +18,14 @@ const input = `You are an engineering execution planner.
 Return ONLY minified valid JSON. No prose, markdown, or extra text.
 SCHEMA:
 {
-"project":"string",
 "problem":{"statement":"string","constraints":["string"]},
 "architecture":{"overview":"string","block_diagram":["string"]},
-"components":[{"subsystem":"string","chosen_option":"string","why_chosen":"string","pros":["string"],"cons":["string"]}],
 "execution_steps":["string"],
 "testing":{"methods":["string"],"success_criteria":"string"},
 "references":["string"],
 "extensions":["string"],
 "cost":"string",
-"skills":"string"
+"skills":["string"],
 }
 RULES:
 - All decisions are final; no alternatives.

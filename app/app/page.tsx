@@ -40,7 +40,7 @@ export default function Page() {
         });
     }, []);
 
-    async function      handleBuildClick(currentProjectDescription: string) {
+    async function handleBuildClick(currentProjectDescription: string) {
         setIsLoading(true);
         setError(null);
 
@@ -51,7 +51,6 @@ export default function Page() {
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ 
                     title: currentProjectDescription,
-                    description: currentProjectDescription 
                 }),
             });
 

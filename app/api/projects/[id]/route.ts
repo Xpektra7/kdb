@@ -38,14 +38,12 @@ export async function GET(
               select: {
                 id: true,
                 name: true,
-                description: true,
-                whyItWorks: true,
+                features: true,
+                why_it_works: true,
                 pros: true,
                 cons: true,
-                estimatedCost: true,
+                estimated_cost: true,
                 availability: true,
-                imageUrl: true,
-                datasheet: true
               }
             },
             decisions: {
@@ -60,24 +58,15 @@ export async function GET(
             }
           }
         },
-        // decisionMatrix: {
-        //   select: {
-        //     id: true,
-        //     projectTitle: true,
-        //     concept: true,
-        //     skillsRequired: true,
-        //     generatedAt: true,
-        //     expiresAt: true
-        //   }
-        // },
         blueprint: {
           select: {
             id: true,
             //aiOutput: true,
             architecture: true,
-            estimatedTotalCost: true,
-            requiredSkills: true,
-            generatedAt: true
+            cost: true,
+            skills: true,
+            generatedAt: true,
+            references:true
           }
         },
         buildGuide: {
@@ -115,54 +104,54 @@ export async function GET(
  * Request: { title?: string, description?: string }
  * Response: Updated project
  */
-export async function PUT(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
-  try {
-    const { id } = await params;
-    const projectId = parseInt(id);
+// export async function PUT(
+//   request: NextRequest,
+//   { params }: { params: Promise<{ id: string }> }
+// ) {
+//   try {
+//     const { id } = await params;
+//     const projectId = parseInt(id);
 
-    if (isNaN(projectId)) {
-      return NextResponse.json(
-        { error: "Invalid project ID" },
-        { status: 400 }
-      );
-    }
+//     if (isNaN(projectId)) {
+//       return NextResponse.json(
+//         { error: "Invalid project ID" },
+//         { status: 400 }
+//       );
+//     }
 
-    const body = await request.json();
-    const { title, description } = body;
+//     const body = await request.json();
+//     const { title, concept } = body;
 
-    const project = await prisma.project.update({
-      where: { id: projectId },
-      data: {
-        ...(title && { title: title.trim() }),
-        ...(description !== undefined && { description: description?.trim() || null })
-      },
-      select: {
-        id: true,
-        title: true,
-        description: true,
-        stage: true,
-        updatedAt: true
-      }
-    });
+//     const project = await prisma.project.update({
+//       where: { id: projectId },
+//       data: {
+//         ...(title && { title: title.trim() }),
+//         ...(concept !== undefined && { concept: concept?.trim() || null })
+//       },
+//       select: {
+//         id: true,
+//         title: true,
+//         concept: true,
+//         stage: true,
+//         updatedAt: true
+//       }
+//     });
 
-    return NextResponse.json(project, { status: 200 });
-  } catch (error: any) {
-    if (error.code === "P2025") {
-      return NextResponse.json(
-        { error: "Project not found" },
-        { status: 404 }
-      );
-    }
-    console.error("[PUT /api/projects/[id]] Error:", error);
-    return NextResponse.json(
-      { error: "Failed to update project" },
-      { status: 500 }
-    );
-  }
-}
+//     return NextResponse.json(project, { status: 200 });
+//   } catch (error: any) {
+//     if (error.code === "P2025") {
+//       return NextResponse.json(
+//         { error: "Project not found" },
+//         { status: 404 }
+//       );
+//     }
+//     console.error("[PUT /api/projects/[id]] Error:", error);
+//     return NextResponse.json(
+//       { error: "Failed to update project" },
+//       { status: 500 }
+//     );
+//   }
+// }
 
 /**
  * DELETE /api/projects/[id]

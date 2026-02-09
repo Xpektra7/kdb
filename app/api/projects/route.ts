@@ -12,7 +12,6 @@ import { ProjectStage } from "@/lib/generated/prisma/enums";
 
 const validateInput = {
   title: z.string().min(1),
-  description: z.string().optional(),
   location: z.string().default("Nigeria")
 };
 
@@ -54,8 +53,7 @@ const aiOutputSchema = z.object({
     problem: z.string(),
     suggested_solution: z.string()
   })).optional(),
-  decision_matrix: z.array(aiSubsystemSchema),
-  skills: z.string().optional()
+  subsystems: z.array(aiSubsystemSchema),
 });
 
 
@@ -79,7 +77,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const { title, description, location } = parsed.data;
+    const { title, location } = parsed.data;
 
     const session = await auth();
     const userId = session?.user?.id;
@@ -109,14 +107,14 @@ export async function POST(request: NextRequest) {
     const project = await prisma.project.create({
       data: {
         title: title.trim(),
-        concept: description?.trim() || null,
+        // concept: description?.trim() || null,
         userId,
         stage: "IDEATION"
       },
       select: {
         id: true,
         title: true,
-        description: true,
+        // concept: true,
       }
     });
 
@@ -128,27 +126,24 @@ export async function POST(request: NextRequest) {
       "research":"string[]",
       "goals":["string"],
       "problems_overall":[{"problem":"string","suggested_solution":"string"}],
-      "decision_matrix":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
-      "skills":"string",
+      "subsystems":[{"subsystem":"string","from":"string|string[]|null","to":"string|string[]|null","options":[{"name":"string","why_it_works":"string","features":["string"],"pros":["string"],"cons":["string"],"estimated_cost":"string","availability":"string"}]}],
     }
     RULES:
     - block_diagram represents abstract subsystems only and must be decision-agnostic and stable, and should ONLY include subsystem name.
-    - decision_matrix subsystems must map 1-to-1 to block_diagram blocks.
     - Omit subsystems with no viable options.
     - Engineering systems only.
     - Provide 2–4 options per subsystem with real tradeoffs.
     - Keep output concise and execution-focused.
-    - Prefer textbooks or peer-reviewed sources.
+    - research should be list of things user should research to understand the solution, not general background reading.
     - Describe the simplest viable system; extras are optional.
     PROJECT:
     Title: ${title}
-    Description: ${description || "N/A"}
     LOCATION:
     ${location}
     `;
 
     let aiOutput;
-    let tokensUsed = 0;
+    // let tokensUsed = 0;
 
     try {
       const result = await retryWithBackoff(
@@ -159,7 +154,7 @@ export async function POST(request: NextRequest) {
           });
 
           const text = genResult.text;
-          tokensUsed = genResult.usageMetadata?.totalTokenCount || 0;
+          // tokensUsed = genResult.usageMetadata?.totalTokenCount || 0;
           // console.log(genResult.text);
 
           const cleanedText = text ? text.replace(/```json\n|\n```/g, "").trim() : "";
@@ -183,16 +178,16 @@ export async function POST(request: NextRequest) {
 
       console.log("AI Output:", aiOutput);
     } catch (aiError) {
-      await prisma.aIGeneration.create({
-        data: {
-          projectId: project.id,
-          userId,
-          stage: "DECISION_MATRIX",
-          status: "FAILED",
-          tokensUsed,
-          errorMessage: aiError instanceof Error ? aiError.message : String(aiError)
-        }
-      });
+      // await prisma.aIGeneration.create({
+      //   data: {
+      //     projectId: project.id,
+      //     userId,
+      //     stage: "DECISION_MATRIX",
+      //     status: "FAILED",
+      //     tokensUsed,
+      //     errorMessage: aiError instanceof Error ? aiError.message : String(aiError)
+      //   }
+      // });
       await prisma.project.delete({ where: { id: project.id } });
       console.error("[POST /api/projects] AI generation failed:", aiError);
       return NextResponse.json(
@@ -220,7 +215,7 @@ export async function POST(request: NextRequest) {
 
     try {
       createdSubsystems = await prisma.$transaction(async (tx) => {
-        const subsystemsData = validation.data.decision_matrix;
+        const subsystemsData = validation.data.subsystems;
         const created = [];
 
         for (let i = 0; i < subsystemsData.length; i++) {
@@ -230,37 +225,23 @@ export async function POST(request: NextRequest) {
             data: {
               projectId,
               name: subsysData.subsystem,
-              description: null,
               order: i
             }
           });
-
-
-
-         
-          // for (const researchItem of validation.data.research || []) {
-          //   await tx.projectResearch.create({
-          //     data: {
-          //       projectId,
-          //       url: researchItem.url,
-          //       title: researchItem.title
-          //     }
-          //   });
-          // }
 
           const optionsData = subsysData.options || [];
           const createdOptions = [];
 
           for (const optionData of optionsData) {
+            
             const option = await tx.subsystemOption.create({
               data: {
                 subsystemId: subsystem.id,
                 name: optionData.name,
-                description: optionData.why_it_works || "",
-                whyItWorks: optionData.why_it_works || "",
+                why_it_works: optionData.why_it_works || "",
                 pros: optionData.pros || [],
                 cons: optionData.cons || [],
-                estimatedCost: optionData.estimated_cost || "N/A",
+                estimated_cost: optionData.estimated_cost || "N/A",
                 availability: optionData.availability || "Unknown"
               }
             });
@@ -281,27 +262,7 @@ export async function POST(request: NextRequest) {
             }
           })
         }
-        // tx.problemOverall.create({data:{projectId, validation.data.problems_overall?.map(p => ({problem: p.problem, suggested_solution: p.suggested_solution})) || []}})
 
-        // await tx.decisionMatrixResult.upsert({
-        //   where: { projectId },
-        //   update: {
-        //     generatedAt: new Date(),
-        //     aiOutput: validation.data,
-        //     projectTitle: validation.data.project,
-        //     concept: validation.data.concept,
-        //     problemsOverall: validation.data.problems_overall ?? undefined,
-        //     skillsRequired: validation.data.skills ?? undefined
-        //   },
-        //   create: {
-        //     projectId,
-        //     aiOutput: validation.data,
-        //     projectTitle: validation.data.project,
-        //     concept: validation.data.concept,
-        //     problemsOverall: validation.data.problems_overall ?? undefined,
-        //     skillsRequired: validation.data.skills ?? undefined
-        //   }
-        // });
 
         await tx.project.update({
           where: { id: projectId },
@@ -312,15 +273,6 @@ export async function POST(request: NextRequest) {
           }
         });
 
-        await tx.aIGeneration.create({
-          data: {
-            projectId,
-            userId,
-            stage: "DECISION_MATRIX",
-            status: "SUCCESS",
-            tokensUsed
-          }
-        });
 
         return created;
       });
@@ -381,7 +333,6 @@ export async function GET(request: NextRequest) {
     const projects = await prisma.project.findMany({
       where: { userId },
       include: {
-        // decisionMatrix:true,
         subsystems: true,
         blueprint: true,
         buildGuide: true,

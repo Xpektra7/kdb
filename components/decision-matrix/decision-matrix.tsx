@@ -39,14 +39,14 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
   // Send selected options to Blueprint API and navigate
   const handleProceedToBlueprint = async () => {
     // Validate all subsystems have a selection
-    const missing = (output.decision_matrix || [])
+    const missing = (output.subsystems || [])
       .filter((m) => !selectedOptions[m.subsystem])
       .map((m) => m.subsystem);
 
     if (missing.length > 0) {
       setMissingSubs(missing);
       // Scroll to the first missing subsystem for better UX
-      const firstMissingIdx = (output.decision_matrix || []).findIndex((m) => m.subsystem === missing[0]);
+      const firstMissingIdx = (output.subsystems || []).findIndex((m) => m.subsystem === missing[0]);
       const target = contentRefs.current[`component-${firstMissingIdx}`] || contentRefs.current['components'];
       if (target) {
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -61,18 +61,21 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       if (projectId) {
         // New flow: Save decisions to project, generate blueprint, then navigate
         // Fetch subsystems once
-        const subsystemResponse = await fetch(`/api/projects/${projectId}/subsystems`);
-        if (!subsystemResponse.ok) throw new Error('Failed to fetch subsystems');
+        // const subsystemResponse = await fetch(`/api/projects/${projectId}/subsystems`);
+        // if (!subsystemResponse.ok) throw new Error('Failed to fetch subsystems');
         
-        const { subsystems } = await subsystemResponse.json();
+        // const { subsystems } = await subsystemResponse.json();
+
+        const subsystems = output.subsystems;
 
         // Save decisions for each subsystem
         for (const [subsystemName, option] of Object.entries(selectedOptions)) {
-          const subsystem = subsystems.find((s: any) => s.name === subsystemName);
+          const subsystem = subsystems.find((s: any) => s.subsystem === subsystemName);
           if (!subsystem) continue;
 
           const matchingOption = subsystem.options.find((o: any) => o.name === option.name);
           if (!matchingOption) continue;
+
 
           // Save decision
           const decisionResponse = await fetch(`/api/projects/${projectId}/decisions`, {
@@ -85,7 +88,8 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
           });
 
           if (!decisionResponse.ok) {
-            console.warn(`Failed to save decision for ${subsystemName}`);
+            const errorData = await decisionResponse.json().catch(() => ({}));
+            throw new Error(errorData.error || `Failed to save decision for ${subsystemName}`);
           }
         }
 
@@ -173,9 +177,9 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       {/* Components */}
       <div ref={(el) => { contentRefs.current['components'] = el; }} className="scroll-mt-20">
         <h1 className="text-xl sm:text-2xl font-semibold mb-6 sm:mb-8">Component Options</h1>
-        {output.decision_matrix && (
+        {output.subsystems && (
           <div className="flex flex-col rounded-lg p-2 sm:p-3 md:p-4 gap-6 sm:gap-7 md:gap-8">
-            {output.decision_matrix.map((matrix, index) => (
+            {output.subsystems.map((matrix, index) => (
               <div
                 key={index}
                 ref={(el) => { contentRefs.current[`component-${index}`] = el; }}
@@ -194,9 +198,9 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       </div>
 
       {/* Skills Required */}
-      <div ref={(el) => { contentRefs.current['skills'] = el; }} className="scroll-mt-20">
+      {/* <div ref={(el) => { contentRefs.current['skills'] = el; }} className="scroll-mt-20">
         <AccordionList name="Skills Required" list={output.skills ? [output.skills] : []} />
-      </div>
+      </div> */}
 
       {error && (
         <div className="p-4 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">
