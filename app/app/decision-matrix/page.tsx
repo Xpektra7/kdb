@@ -10,7 +10,7 @@ function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOut
     research: project.research || [], // Research is stored separately in ProjectResearch table
     goals : project.goals ,
     problems_overall: project.problems_overall, // Problems are stored separately
-    decision_matrix: project.subsystems.map((subsystem: any) => ({
+    subsystems: project.subsystems.map((subsystem: any) => ({
       subsystem: subsystem.name,
       from: subsystem.inputFrom || null,
       to: subsystem.outputTo || null,
@@ -24,8 +24,7 @@ function transformProjectToDecisionMatrixOutput(project: any): DecisionMatrixOut
         availability: option.availability || "Unknown"
       }))
     })),
-    cost: "",
-    skills: project.decisionMatrix?.skillsRequired || ""
+    cost: ""
   };
 }
 

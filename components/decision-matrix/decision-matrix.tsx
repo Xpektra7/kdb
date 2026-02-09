@@ -61,10 +61,12 @@ export default function DecisionMatrix({ output, contentRefs, projectId }: Exten
       if (projectId) {
         // New flow: Save decisions to project, generate blueprint, then navigate
         // Fetch subsystems once
-        const subsystemResponse = await fetch(`/api/projects/${projectId}/subsystems`);
-        if (!subsystemResponse.ok) throw new Error('Failed to fetch subsystems');
+        // const subsystemResponse = await fetch(`/api/projects/${projectId}/subsystems`);
+        // if (!subsystemResponse.ok) throw new Error('Failed to fetch subsystems');
         
-        const { subsystems } = await subsystemResponse.json();
+        // const { subsystems } = await subsystemResponse.json();
+
+        const subsystems = output.subsystems;
 
         // Save decisions for each subsystem
         for (const [subsystemName, option] of Object.entries(selectedOptions)) {

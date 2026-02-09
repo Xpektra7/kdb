@@ -184,7 +184,6 @@ export interface DecisionMatrixOutput {
   problems_overall: Problem[];
   subsystems: DecisionMatrixItem[];
   cost: string;
-  skills: string;
 }
 
 export interface DecisionMatrixProps {
