@@ -6,6 +6,7 @@ import { HugeiconsIcon } from "@hugeicons/react";
 import { ArrowUp, FolderOpen, Clock, ChevronRight, Delete01Icon, MoreVerticalIcon } from "@hugeicons/core-free-icons";
 import { useSession } from "next-auth/react";
 import ErrorComponent from "@/components/error/error-boundary";
+import { showError, showSuccess } from "@/lib/notifications";
 import Link from "next/link";
 
 interface Project {
@@ -41,9 +42,14 @@ export default function Page() {
             if (response.ok) {
                 const data = await response.json();
                 setProjects(data.projects || []);
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                const message = errorData.error || "Failed to fetch projects";
+                showError(message);
             }
         } catch (err) {
             console.error("Error fetching projects:", err);
+            showError("Failed to fetch projects");
         } finally {
             setIsLoadingProjects(false);
         }
@@ -64,14 +70,19 @@ export default function Page() {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.error || `API Error: ${response.status}`);
+                const message = errorData.error || `API Error: ${response.status}`;
+                showError(message);
+                throw new Error(message);
             }
 
             const { projectId } = await response.json();
+            showSuccess("Project created. Redirecting...");
             router.push(`/app/decision-matrix?projectId=${projectId}`);
         } catch (err) {
+            const message = err instanceof Error ? err.message : "Failed to create project";
             console.error("Error creating project:", err);
-            setError(err instanceof Error ? err.message : "Failed to create project");
+            setError(message);
+            showError(message);
         } finally {
             setIsLoading(false);
         }
@@ -93,13 +104,14 @@ export default function Page() {
 
             if (response.ok) {
                 setProjects(projects.filter(p => p.id !== projectId));
+                showSuccess("Project deleted.");
             } else {
                 const errorData = await response.json();
-                alert(errorData.error || "Failed to delete project");
+                showError(errorData.error || "Failed to delete project");
             }
         } catch (err) {
             console.error("Error deleting project:", err);
-            alert("Failed to delete project");
+            showError("Failed to delete project");
         } finally {
             setDeletingId(null);
         }

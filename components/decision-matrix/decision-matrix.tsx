@@ -6,6 +6,7 @@ import Subsystem from "./subsystem";
 import { BlockDiagram } from '../block-diagram/block-diagram';
 import { Button } from '../ui/button';
 import { useRouter } from 'next/navigation';
+import { showError, showSuccess } from '@/lib/notifications';
 
 import type { DecisionMatrixProps, DecisionMatrixOption } from '@/lib/definitions';
 import Goals from './goals';
@@ -44,8 +45,9 @@ export default function DecisionMatrix({ output, contentRefs, projectId, dummy }
       .filter((m) => !selectedOptions[m.subsystem])
       .map((m) => m.subsystem);
 
-    if (missing.length > 0) {
-      setMissingSubs(missing);
+        if (missing.length > 0) {
+          setMissingSubs(missing);
+          showError("Select an option for each subsystem before continuing.");
       // Scroll to the first missing subsystem for better UX
       const firstMissingIdx = (output.subsystems || []).findIndex((m) => m.subsystem === missing[0]);
       const target = contentRefs.current[`component-${firstMissingIdx}`] || contentRefs.current['components'];
@@ -126,14 +128,17 @@ export default function DecisionMatrix({ output, contentRefs, projectId, dummy }
           throw new Error(errorData.error || 'Failed to save blueprint');
         }
 
+        showSuccess("Blueprint generated. Redirecting...");
         router.push(`/app/blueprint?projectId=${projectId}`);
       } else {
         // No projectId - this shouldn't happen in the new flow
         throw new Error('Project ID is required');
       }
     } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to proceed to blueprint';
       console.error('Error proceeding to blueprint:', err);
-      setError(err instanceof Error ? err.message : 'Failed to proceed to blueprint');
+      setError(message);
+      showError(message);
     } finally {
       setIsLoading(false);
     }
@@ -158,11 +163,14 @@ export default function DecisionMatrix({ output, contentRefs, projectId, dummy }
       )}
 
       {/* Goals */}
-      {output.goals && (
-        <div ref={(el) => { contentRefs.current['goals'] = el; }} className="scroll-mt-20">
-          <Goals goals={output.goals} />
-        </div>
-      )}
+      {(() => {
+        const goals = output.goals ?? [];
+        return goals.length > 0 ? (
+          <div ref={(el) => { contentRefs.current['goals'] = el; }} className="scroll-mt-20">
+            <Goals goals={goals} />
+          </div>
+        ) : null;
+      })()}
 
       {/* Problems */}
       {output.problems_overall?.length > 0 && (

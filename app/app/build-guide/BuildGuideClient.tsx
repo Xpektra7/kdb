@@ -11,6 +11,7 @@ import type { BuildGuide, NavItem } from "@/lib/definitions";
 import Link from "next/link";
 import { ExportButton } from "@/components/pdf-export/ExportButton";
 import { PDFExportData } from "@/lib/pdfGenerator";
+import { showError } from "@/lib/notifications";
 
 const Z_INDEX = {
   OVERLAY: 40,
@@ -29,8 +30,17 @@ export default function BuildGuideClient({ buildGuideData, projectId, dummy }: B
   const [activeSection, setActiveSection] = useState("overview");
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
+  const setContentRef = (key: string) => (el: HTMLDivElement | null) => {
+    contentRefs.current[key] = el;
+  };
 
   const navStructure: NavItem[] = useMemo(() => buildBuildGuideNav(buildGuideData), [buildGuideData]);
+
+  useEffect(() => {
+    if (!buildGuideData) {
+      showError("Build guide data is unavailable.");
+    }
+  }, [buildGuideData]);
 
   const scrollToSection = (id: string) => {
     const element = contentRefs.current[id];
@@ -128,7 +138,7 @@ export default function BuildGuideClient({ buildGuideData, projectId, dummy }: B
 
             <div className="flex gap-2 items-center">
               {buildGuideData && pdfData && (
-                <ExportButton data={pdfData} buttonText="Export PDF" fileName="blueprint-report.pdf" />
+                <ExportButton data={pdfData} buttonText="Export PDF" fileName="build-guide-report.pdf" />
               )}
 
               {dummy ? null : (
@@ -142,7 +152,7 @@ export default function BuildGuideClient({ buildGuideData, projectId, dummy }: B
           <div className="w-full h-auto flex flex-col gap-6 mt-20 md:mt-8">
             <BuildGuideView
               buildGuideData={buildGuideData}
-              contentRefs={contentRefs}
+              contentRefSetter={setContentRef}
             />
           </div>
         </div>

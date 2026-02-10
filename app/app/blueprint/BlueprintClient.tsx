@@ -11,6 +11,7 @@ import type { Blueprint, NavItem } from "@/lib/definitions";
 import { ExportButton } from "@/components/pdf-export/ExportButton";
 import type { PDFExportData } from "@/lib/pdfGenerator";
 import Link from "next/link";
+import { showError } from "@/lib/notifications";
 
 const Z_INDEX = {
   OVERLAY: 40,
@@ -37,6 +38,12 @@ export default function BlueprintClient({ blueprintData, projectId, dummy }: Blu
   const contentRefs = useRef<Record<string, HTMLDivElement | null>>({});
 
   const navStructure: NavItem[] = useMemo(() => buildBlueprintNav(blueprintData), [blueprintData]);
+
+  useEffect(() => {
+    if (!blueprintData) {
+      showError("Blueprint data is unavailable.");
+    }
+  }, [blueprintData]);
 
   const scrollToSection = (id: string) => {
     const element = contentRefs.current[id];

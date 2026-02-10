@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import prisma from "@/lib/prisma";
-import ai from "@/lib/ai/ai-config";
+import { generateWithFallback } from "@/lib/gemini-client";
 import z from "zod";
 import { auth } from "@/auth";
 import { retryWithBackoff } from "@/lib/utils/retry";
@@ -175,6 +175,25 @@ export async function POST(request: NextRequest) {
     //   );
     // }
 
+    const now = new Date();
+    const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate()));
+
+    const createdTodayCount = await prisma.projectCreation.count({
+      where: {
+        userId,
+        createdAt: {
+          gte: startOfToday
+        }
+      }
+    });
+
+    if (createdTodayCount >= 2) {
+      return NextResponse.json(
+        { error: "You've reached your daily limit of 2 projects. Try again tomorrow." },
+        { status: 429 }
+      );
+    }
+
     const project = await prisma.project.create({
       data: {
         title: title.trim(),
@@ -218,11 +237,7 @@ export async function POST(request: NextRequest) {
     try {
       const result = await retryWithBackoff(
         async () => {
-          const genResult = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: input,
-          });
-
+          const genResult = await generateWithFallback(input);
           const text = genResult.text;
       // tokensUsed = genResult.usageMetadata?.totalTokenCount || 0;
           // console.log(genResult.text);
@@ -362,6 +377,12 @@ export async function POST(request: NextRequest) {
         { status: 500 }
       );
     }
+
+    await prisma.projectCreation.create({
+      data: {
+        userId
+      }
+    });
 
     return NextResponse.json(
       {

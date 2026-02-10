@@ -140,8 +140,8 @@ export default function DecisionMatrixClient({ output, projectId, dummy }: Decis
                   fileName="decision-matrix-report.pdf"
                 />
               )}
-             { dummy ? null : (  
-                <Link href="/.." className={buttonVariants({variant: "outline", size: "lg" , className: "py-2 h-fit"})}>
+             { dummy ? null : (
+                <Link href="/app/" className={buttonVariants({variant: "outline", size: "lg" , className: "py-2 h-fit"})}>
                   Back
                 </Link>
               )}

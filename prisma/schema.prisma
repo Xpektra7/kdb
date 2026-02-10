@@ -78,6 +78,7 @@ model User {
   sessions      Session[]
   usages    Usage[]
   projects  Project[]
+  projectCreations ProjectCreation[]
   // aiGenerations    AIGeneration[]
 }
 
@@ -103,6 +104,16 @@ model Usage {
   action    String   // "AI_PROMPT"
   cost      Int
   createdAt DateTime @default(now())
+}
+
+model ProjectCreation {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, createdAt])
 }
 
 enum ProjectStage {

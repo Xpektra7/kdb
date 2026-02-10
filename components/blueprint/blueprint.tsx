@@ -13,6 +13,7 @@ import type { Blueprint } from '@/lib/definitions';
 import { Button } from '../ui/button';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { showError, showSuccess } from '@/lib/notifications';
 
 /**
  * Compresses the full blueprint into a minimal format for build guide generation
@@ -97,8 +98,6 @@ export default function Blueprint({
       // Output is already parsed from the API
       const buildGuideOutput = output;
 
-      console.log("Received build guide output:", buildGuideOutput);
-
       if (projectId) {
         // New flow: Persist build guide to project
         const persistResponse = await fetch(`/api/projects/${projectId}/build-guide/generate`, {
@@ -112,6 +111,7 @@ export default function Blueprint({
           throw new Error(errorData.error || 'Failed to save build guide');
         }
 
+        showSuccess("Build guide generated. Redirecting...");
         router.push(`/app/build-guide?projectId=${projectId}`);
       } else {
         // Legacy flow: Store in temporary request store
@@ -133,8 +133,10 @@ export default function Blueprint({
       }
       
     } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to generate build guide';
       console.error('Error generating build guide:', err);
-      setError(err instanceof Error ? err.message : 'Failed to generate build guide');
+      setError(message);
+      showError(message);
     } finally {
       setIsGenerating(false);
     }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Figtree, Inter } from "next/font/google";
 import { Provider } from "@/components/providers/session-provider";
 import Navbar from "@/components/navbar";
+import { Toaster } from "@/components/ui/sonner";
 import "./globals.css";
 
 const figtree = Figtree({subsets:['latin'],variable:'--font-sans'});
@@ -30,6 +31,7 @@ export default function RootLayout({
         <Provider>
           <Navbar />
           {children}
+          <Toaster />
         </Provider>
       </body>
     </html>

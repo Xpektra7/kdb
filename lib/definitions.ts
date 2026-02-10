@@ -251,5 +251,5 @@ export interface BuildGuide {
 
 export interface BuildGuideProps {
   buildGuideData: BuildGuide;
-  contentRefs: React.MutableRefObject<Record<string, HTMLDivElement | null>>;
+  contentRefSetter: (key: string) => (el: HTMLDivElement | null) => void;
 }

@@ -1,16 +1,9 @@
-import { GoogleGenAI } from "@google/genai";
 // Load local .env when present (optional). Install dotenv if you plan to use a .env file:
 // npm install dotenv
 import "dotenv/config";
+import { generateWithFallback } from "@/lib/gemini-client";
 
 export async function POST(request: Request) {
-    const apiKey = process.env.GEMINI_API_KEY;
-    if (!apiKey) {
-        return new Response(
-            JSON.stringify({ error: "Missing GEMINI_API_KEY" }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
-        );
-    }
     console.log("Reached POST");
     const { project } = await request.json();
     const input = `You are an engineering project planner. Return ONLY valid minified JSON (no newlines), No prose, markdown, or extra text.
@@ -38,12 +31,7 @@ Nigeria
 `;
 
     // The client gets the API key from the environment variable `GEMINI_API_KEY`.
-    const ai = new GoogleGenAI({apiKey});
-
-    const result = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: input,
-    });
+    const result = await generateWithFallback(input);
 
     const text = result.text;
 
